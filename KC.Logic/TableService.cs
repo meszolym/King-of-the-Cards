@@ -10,17 +10,17 @@ using System.Threading.Tasks;
 
 namespace KC.Logic
 {
-    public class TableLogic
+    public static class TableService
     {
-        public static Table CreateTable(int numberOfBoxes)
+        public static Table CreateTable(int numberOfBoxes, ShoeProperties shoeProperties)
         {
-            Table table = new Table();
+            Table table = new Table(shoeProperties);
             table.Boxes = Enumerable.Range(0, numberOfBoxes)
                 .Select(i =>
                     new BettingBox(table, i, Option<Player>.None, []))
                 .ToImmutableList();
+            table.Shoe = ShoeService.CreateShuffledShoe(table.ShoeProperties);
             return table;
         }
-
     }
 }

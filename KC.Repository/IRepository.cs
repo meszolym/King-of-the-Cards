@@ -7,13 +7,13 @@ using LanguageExt;
 
 namespace KC.Repository
 {
-    public interface IRepository<TV, TK> where TV : class
+    public interface IRepository<TValue, TKey> where TValue : class
     {
-        Either<Exception, TV> Get(TK id);
-        IEnumerable<TV> GetAll();
-        Either<Exception,TV> Add(TV entity);
-        Either<Exception, TV> Update(TV entity);
-        Either<Exception, TV> Delete(TK id);
+        Either<Exception, TValue> Get(TKey id);
+        IEnumerable<TValue> GetAll();
+        Either<Exception,TValue> Add(TValue entity);
+        Either<Exception, TValue> Update(TValue entity);
+        Either<Exception, TValue> Delete(TKey id);
 
     }
 }
