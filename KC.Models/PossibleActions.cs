@@ -8,8 +8,8 @@ namespace KC.Models
 {
     public record PossibleActions(bool CanHit, bool CanDouble, bool CanSplit)
     {
-        public bool CanHit = CanHit;
-        public bool CanDouble = CanDouble;
-        public bool CanSplit = CanSplit;
+        public bool CanHit { get; set; } = CanHit;
+        public bool CanDouble { get; set; } = CanDouble;
+        public bool CanSplit { get; set; } = CanSplit;
     }
 }
