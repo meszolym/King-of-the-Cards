@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using KC.Models;
 using LanguageExt;
 
-namespace KC.Logic
+namespace KC.Logic.Services
 {
     public class ShoeService
     {
@@ -15,7 +15,7 @@ namespace KC.Logic
         /// </summary>
         /// <param name="numberOfDecks"></param>
         /// <returns></returns>
-        private static IEnumerable<Card> CardsForCompleteShoe(int numberOfDecks) 
+        private static IEnumerable<Card> CardsForCompleteShoe(int numberOfDecks)
             => Enumerable.Range(0, numberOfDecks)
                 .SelectMany(i => Enum.GetValues<CardSuit>()
                     .SelectMany(s => Enum.GetValues<CardFace>()
@@ -36,7 +36,7 @@ namespace KC.Logic
             }
 
             int penetration = (int)(cards.Count * properties.MaxShoePenetration);
-            int shuffleCardIndex = 
+            int shuffleCardIndex =
                 RandomProvider.Random.Next(
                     penetration - properties.ShuffleCardRadius,
                     penetration + properties.ShuffleCardRadius);

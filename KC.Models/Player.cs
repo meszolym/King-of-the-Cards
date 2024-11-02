@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace KC.Models
 {
-    public class Player
+    public class Player(string hardwareId, string name, double balance)
     {
-        public string HardwareID { get; set; }
-        public string Name { get; set; }
-        public double Balance { get; set; }
+        public string HardwareID { get; set; } = hardwareId;
+        public string Name { get; set; } = name;
+        public double Balance { get; set; } = balance;
     }
 }

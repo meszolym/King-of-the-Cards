@@ -8,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KC.Logic
+namespace KC.Logic.Services
 {
     public static class TableService
     {
