@@ -24,7 +24,7 @@ namespace KC.Logic.Services
 
                 //no action on split aces
                 { hand.Cards.Count: 2, firstcard.Face: CardFace.Ace, hand.Splittable: false }
-                    => new PossibleActions(),
+                    => new PossibleActions(CanHit: false, CanDouble: false, CanSplit: false),
 
                 //can double on any two cards
                 { hand.Cards.Count: 2 } 
