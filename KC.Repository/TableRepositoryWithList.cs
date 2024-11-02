@@ -5,48 +5,49 @@ using System.Text;
 using System.Threading.Tasks;
 using KC.Models;
 using LanguageExt;
+using LanguageExt.Common;
 
 namespace KC.Repository
 {
     internal class TableRepositoryWithList : IRepository<Table, Guid>
     {
         private readonly List<Table> _tables = [];
-        public Either<Exception, Table> Get(Guid id)
+        public Fin<Table> Get(Guid id)
             => Try.lift(()
                     => _tables.Single(p => p.TableId == id)).Run()
-                .Match<Either<Exception, Table>>(
+                .Match<Fin<Table>>(
                     Succ: t => t,
-                    Fail: er => new Exception(er.Message));
+                    Fail: er => Error.New(er.Message));
 
         public IEnumerable<Table> GetAll() => _tables;
 
-        public Either<Exception, Table> Add(Table entity) 
-            => Get(entity.TableId).Match<Either<Exception, Table>>(
-            Right: _ => new Exception("Table already exists"),
-            Left: _ =>
+        public Fin<Table> Add(Table entity) 
+            => Get(entity.TableId).Match<Fin<Table>>(
+            Succ: _ => Error.New("Table already exists"),
+            Fail: _ =>
             {
                 _tables.Add(entity);
                 return entity;
             });
 
-        public Either<Exception, Table> Update(Table entity) =>
-            Get(entity.TableId).Match<Either<Exception, Table>>(
-                Right: t =>
+        public Fin<Table> Update(Table entity) =>
+            Get(entity.TableId).Match<Fin<Table>>(
+                Succ: t =>
                 {
                     var index = _tables.IndexOf(t);
                     _tables[index] = entity;
                     return t;
                 },
-                Left: ex => ex);
+                Fail: er => er);
 
-        public Either<Exception, Table> Delete(Guid id) => Get(id).Match<Either<Exception, Table>>(
-            Right: Remove,
-            Left: er => new Exception(er.Message));
+        public Fin<Table> Delete(Guid id) => Get(id).Match<Fin<Table>>(
+            Succ: Remove,
+            Fail: er => Error.New(er.Message));
 
-        private Either<Exception, Table> Remove(Table table)
+        private Fin<Table> Remove(Table table)
             => Try.lift(() => _tables.Remove(table)).Run()
-                .Match<Either<Exception, Table>>(
+                .Match<Fin<Table>>(
                     Succ: _ => table,
-                    Fail: er => new Exception(er.Message));
+                    Fail: er => Error.New(er.Message));
     }
 }

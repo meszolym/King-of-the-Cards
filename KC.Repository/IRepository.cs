@@ -9,11 +9,11 @@ namespace KC.Repository
 {
     public interface IRepository<TValue, TKey> where TValue : class
     {
-        Either<Exception, TValue> Get(TKey id);
+        Fin<TValue> Get(TKey id);
         IEnumerable<TValue> GetAll();
-        Either<Exception,TValue> Add(TValue entity);
-        Either<Exception, TValue> Update(TValue entity);
-        Either<Exception, TValue> Delete(TKey id);
+        Fin<TValue> Add(TValue entity);
+        Fin<TValue> Update(TValue entity);
+        Fin<TValue> Delete(TKey id);
 
     }
 }

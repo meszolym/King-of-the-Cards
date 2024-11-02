@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LanguageExt.Common;
 
 namespace KC.Logic.Extensions
 {
@@ -17,7 +18,7 @@ namespace KC.Logic.Extensions
             return box;
         }
 
-        public static Either<Exception, BettingBox> SetBet(this BettingBox box, int amount)
+        public static Fin<BettingBox> SetBet(this BettingBox box, int amount)
         {
             if (amount >= 0)
             {
@@ -25,7 +26,7 @@ namespace KC.Logic.Extensions
                 return box;
             }
 
-            return new Exception("Bet cannot be negative.");
+            return Error.New("Bet cannot be negative.");
         }
     }
 }

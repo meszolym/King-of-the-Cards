@@ -1,48 +1,50 @@
 ﻿using KC.Models;
 using LanguageExt;
+using LanguageExt.Common;
+
 namespace KC.Repository
 {
     public class PlayerRepositoryWithList : IRepository<Player,string>
     {
         private readonly List<Player> _players = [];
 
-        public Either<Exception, Player> Add(Player entity)
-            => Get(entity.HardwareID).Match<Either<Exception, Player>>(
-                Right: _ => new Exception("Player already exists"),
-                Left: _ =>
+        public Fin<Player> Add(Player entity)
+            => Get(entity.HardwareID).Match<Fin<Player>>(
+                Succ: _ => Error.New("Player already exists"),
+                Fail: _ =>
                 {
                     _players.Add(entity);
                     return entity;
                 });
         
-        public Either<Exception,Player> Delete(string id) 
-            => Get(id).Match<Either<Exception, Player>>(
-                Right: Remove, 
-                Left: er => new Exception(er.Message));
+        public Fin<Player> Delete(string id) 
+            => Get(id).Match<Fin<Player>>(
+                Succ: Remove, 
+                Fail: er => er);
 
-        private Either<Exception, Player> Remove(Player player)
+        private Fin<Player> Remove(Player player)
             => Try.lift(() => _players.Remove(player)).Run()
-                .Match<Either<Exception, Player>>(
+                .Match<Fin<Player>>(
                     Succ: _ => player,
-                    Fail: er => new Exception(er.Message));
+                    Fail: er => er);
 
-        public Either<Exception,Player> Get(string id) 
+        public Fin<Player> Get(string id) 
             => Try.lift(() 
                     => _players.Single(p => p.HardwareID == id)).Run()
-                .Match<Either<Exception, Player>>(
+                .Match<Fin<Player>>(
                     Succ: p => p,
-                    Fail: er => new Exception(er.Message));
+                    Fail: er => er);
 
         public IEnumerable<Player> GetAll() => _players;
 
-        public Either<Exception,Player> Update(Player entity)
-            => Get(entity.HardwareID).Match<Either<Exception, Player>>(
-                Right: p =>
+        public Fin<Player> Update(Player entity)
+            => Get(entity.HardwareID).Match<Fin<Player>>(
+                Succ: p =>
                 {
                     var index = _players.IndexOf(p);
                     _players[index] = entity;
                     return p;
                 },
-                Left: ex => ex);
+                Fail: er => er);
     }
 }

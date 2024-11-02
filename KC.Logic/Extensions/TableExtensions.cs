@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace KC.Logic.Extensions
 {
-    public static class TableExtenstions
+    public static class TableExtensions
     {
         //Setters that give back the item.
         public static Table SetBoxes(this Table table, ImmutableList<BettingBox> boxes)
