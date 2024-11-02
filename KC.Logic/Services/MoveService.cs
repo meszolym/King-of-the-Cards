@@ -2,45 +2,37 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Win32.SafeHandles;
 
 namespace KC.Logic.Services
 {
     public static class MoveService
     {
-        public static PossibleActions GetPossibleActions(Hand hand)
-        {
-            bool canHit = false;
-            bool canDouble = false;
-            bool canSplit = false;
-
-            var handValue = hand.GetValue();
-
-            //no action on bust hands
-            if (handValue.Value >= 21) return new PossibleActions(canHit, canDouble, canSplit);
-
-            //can hit on any hand that is not bust
-            canHit = true;
-
-            if (hand.Cards.Count == 2)
+        public static PossibleActions GetPossibleActions(this Hand hand)
+            => (hand, value: hand.GetValue(), firstcard: hand.Cards[0]) switch
             {
-                //no action on split aces (you get a card when you split aces, no more)
-                if (hand.Cards[0].Face == CardFace.Ace && !hand.Splittable) return new PossibleActions(canHit, canDouble, canSplit);
+                //no action on bust hands
+                { value.Value: >= 21 }
+                    => new PossibleActions(CanHit: false, CanDouble: false, CanSplit: false),
 
-                //can double any 2 cards (even after splitting)
-                canDouble = true;
+                //can split pairs, can double on any two cards
+                { value.IsPair: true, hand.Splittable: true }
+                    => new PossibleActions(CanHit: true, CanDouble: true, CanSplit: true),
 
-                if (handValue.IsPair && hand.Splittable)
-                {
-                    //can split any pair, defined by the face of the cards (no resplits!)
-                    canSplit = true;
-                }
-            }
+                //no action on split aces
+                { hand.Cards.Count: 2, firstcard.Face: CardFace.Ace, hand.Splittable: false }
+                    => new PossibleActions(),
 
-            return new PossibleActions(canHit, canDouble, canSplit);
+                //can double on any two cards
+                { hand.Cards.Count: 2 } 
+                    => new PossibleActions(CanHit: true, CanDouble: true, CanSplit: false),
 
-        }
+                //can hit on any hand that is not bust
+                _ => new PossibleActions(CanHit: true, CanDouble: false, CanSplit: false)
 
+            };
     }
 }

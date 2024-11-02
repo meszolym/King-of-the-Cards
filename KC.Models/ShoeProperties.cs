@@ -9,10 +9,10 @@ namespace KC.Models
 {
     public record ShoeProperties(int NumberOfDecks, double MaxShoePenetration, int ShuffleCardRadius)
     {
-        public int NumberOfDecks = NumberOfDecks;
+        public int NumberOfDecks { get; } = NumberOfDecks;
 
         [Range(0, 1)]
-        public double MaxShoePenetration = MaxShoePenetration;
-        public int ShuffleCardRadius = ShuffleCardRadius;
+        public double MaxShoePenetration { get; } = MaxShoePenetration;
+        public int ShuffleCardRadius { get; } = ShuffleCardRadius;
     }
 }

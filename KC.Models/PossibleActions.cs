@@ -6,10 +6,23 @@ using System.Threading.Tasks;
 
 namespace KC.Models
 {
-    public record PossibleActions(bool CanHit, bool CanDouble, bool CanSplit)
+    public record PossibleActions
     {
-        public bool CanHit { get; set; } = CanHit;
-        public bool CanDouble { get; set; } = CanDouble;
-        public bool CanSplit { get; set; } = CanSplit;
-    }
+        public bool CanHit { get; }
+        public bool CanDouble { get; }
+        public bool CanSplit { get; }
+
+        public PossibleActions(bool CanHit, bool CanDouble, bool CanSplit)
+        {
+            this.CanHit = CanHit;
+            this.CanDouble = CanDouble;
+            this.CanSplit = CanSplit;
+        }
+
+        public PossibleActions(){}
+
+        public PossibleActions AddHit() => new(true, this.CanDouble, this.CanSplit);
+        public PossibleActions AddDouble() => new(this.CanHit, true, this.CanSplit);
+        public PossibleActions AddSplit() => new(this.CanHit, this.CanDouble, true);
+    } 
 }

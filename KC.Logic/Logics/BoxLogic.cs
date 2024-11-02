@@ -4,7 +4,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using KC.Logic.Extensions;
 using KC.Models;
 using KC.Repository;
 using LanguageExt;
@@ -25,7 +24,7 @@ namespace KC.Logic.Logics
         public Fin<BettingBox> UnclaimBox(string playerId, Guid tableId, int boxIdx)
             => GetBoxFromTable(tableId,boxIdx)
                 .Bind(b => b.Owner.Match<Fin<BettingBox>>(
-                    Some: p => p.HardwareID == playerId
+                    Some: p => p.HardwareId == playerId
                             ? b.SetOwner(Option<Player>.None) : Error.New("Box not claimed by player"),
                     None: () => Error.New("Box not claimed")));
 
@@ -35,7 +34,7 @@ namespace KC.Logic.Logics
         public Fin<BettingBox> Bet(string playerId, Guid tableId, int boxIdx, int amount)
             => GetBoxFromTable(tableId, boxIdx)
                 .Bind(b => b.Owner.Match<Fin<BettingBox>>(
-                    Some: p => p.HardwareID == playerId
+                    Some: p => p.HardwareId == playerId
                         ? b.SetBet(amount) : Error.New("Box not claimed by player"),
                     None: () => Error.New("Box not claimed")));
 

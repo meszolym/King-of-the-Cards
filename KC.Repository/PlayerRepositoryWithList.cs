@@ -9,7 +9,7 @@ namespace KC.Repository
         private readonly List<Player> _players = [];
 
         public Fin<Player> Add(Player entity)
-            => Get(entity.HardwareID).Match<Fin<Player>>(
+            => Get(entity.HardwareId).Match<Fin<Player>>(
                 Succ: _ => Error.New("Player already exists"),
                 Fail: _ =>
                 {
@@ -30,7 +30,7 @@ namespace KC.Repository
 
         public Fin<Player> Get(string id) 
             => Try.lift(() 
-                    => _players.Single(p => p.HardwareID == id)).Run()
+                    => _players.Single(p => p.HardwareId == id)).Run()
                 .Match<Fin<Player>>(
                     Succ: p => p,
                     Fail: er => er);
@@ -38,7 +38,7 @@ namespace KC.Repository
         public IEnumerable<Player> GetAll() => _players;
 
         public Fin<Player> Update(Player entity)
-            => Get(entity.HardwareID).Match<Fin<Player>>(
+            => Get(entity.HardwareId).Match<Fin<Player>>(
                 Succ: p =>
                 {
                     var index = _players.IndexOf(p);

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace KC.Models
 {
-    public record Card(CardSuit suit, CardFace face)
+    public record Card(CardSuit Suit, CardFace Face)
     {
-        public CardSuit Suit { get; set; } = suit;
-        public CardFace Face { get; set; } = face;
+        public CardSuit Suit { get; } = Suit;
+        public CardFace Face { get; } = Face;
     }
 
     public enum CardFace

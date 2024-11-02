@@ -8,13 +8,13 @@ using LanguageExt;
 
 namespace KC.Models
 {
-    public class Table(ShoeProperties shoeProperties)
+    public class Table(ShoeProperties ShoeProperties)
     {
-        public Guid TableId { get; set; } = Guid.NewGuid();
-        public ImmutableList<BettingBox> Boxes { get; set; } = [];
+        public Guid TableId { get; } = Guid.NewGuid();
+        public ImmutableList<BettingBox> Boxes { get; } = [];
         public ImmutableList<Hand> Hands => Boxes.SelectMany(b => b.Hands).ToImmutableList();
-        public ShoeProperties ShoeProperties { get; set; } = shoeProperties;
-        public Option<ShuffledShoe> Shoe { get; set; }
-        public int CurrentHandInTurn { get; set; } = -1;
+        public ShoeProperties ShoeProperties { get; } = ShoeProperties;
+        public Option<ShuffledShoe> Shoe { get; }
+        public int CurrentHandInTurn { get; } = -1;
     }
 }

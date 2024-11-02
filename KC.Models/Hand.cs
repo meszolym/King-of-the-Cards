@@ -1,10 +1,11 @@
-﻿using LanguageExt;
+﻿using System.Collections.Immutable;
+using LanguageExt;
 
 namespace KC.Models;
 
-public class Hand(bool splittable, List<Card> cards, double bet)
+public record Hand(bool Splittable, ImmutableList<Card> Cards, double Bet)
 {
-    public bool Splittable { get; set; } = splittable;
-    public List<Card> Cards { get; set; } = cards;
-    public double Bet { get; set; } = bet;
+    public bool Splittable { get; } = Splittable;
+    public ImmutableList<Card> Cards { get; } = Cards;
+    public double Bet { get; } = Bet;
 }

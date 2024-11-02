@@ -11,7 +11,7 @@ namespace KC.Logic.Services
     public static class ValueService
     {
         /// <summary>
-        /// Gets the value of a card.
+        /// Gets the value of a card. Aces are counted as 1.
         /// </summary>
         /// <param name="card"></param>
         /// <returns>The value of the card in blackjack. Aces are counted as 1.</returns>

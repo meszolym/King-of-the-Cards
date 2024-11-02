@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using LanguageExt;
 
 namespace KC.Logic.Services
 {
-    public class ShoeService
+    public static class ShoeService
     {
         /// <summary>
         /// Generates a list of cards given the number of decks.
@@ -21,28 +22,36 @@ namespace KC.Logic.Services
                     .SelectMany(s => Enum.GetValues<CardFace>()
                         .Select(f => new Card(s, f))));
 
+        private static int NumOfCards(int numberOfDecks) => numberOfDecks * Enum.GetValues<CardSuit>().Length * Enum.GetValues<CardFace>().Length;
 
-        // Can't really use functional programming here :(
         /// <summary>
         /// Creates a shuffled shoe with the given set of properties.
         /// </summary>
         public static ShuffledShoe CreateShuffledShoe(ShoeProperties properties)
+            => new ShuffledShoe(
+                ShuffleCardIndex: RandomProvider.Random.Next(
+                    (int)(NumOfCards(properties.NumberOfDecks) * properties.MaxShoePenetration)
+                    - properties.ShuffleCardRadius,
+
+                    (int)(NumOfCards(properties.NumberOfDecks) * properties.MaxShoePenetration)
+                    + properties.ShuffleCardRadius
+                ),
+                Cards: CardsForCompleteShoe(properties.NumberOfDecks).ToImmutableList().Shuffle()
+            );
+
+        private static ImmutableQueue<Card> Shuffle(this ImmutableList<Card> cards)
         {
-            List<Card> cards = CardsForCompleteShoe(properties.NumberOfDecks).ToList();
+            Card[] shuffled = new Card[cards.Count];
 
             for (int i = 0; i < cards.Count; i++)
             {
                 int j = RandomProvider.Random.Next(i, cards.Count);
-                (cards[i], cards[j]) = (cards[j], cards[i]);
+                shuffled[i] = cards[j];
+                shuffled[j] = cards[i];
             }
 
-            int penetration = (int)(cards.Count * properties.MaxShoePenetration);
-            int shuffleCardIndex =
-                RandomProvider.Random.Next(
-                    penetration - properties.ShuffleCardRadius,
-                    penetration + properties.ShuffleCardRadius);
+            return ImmutableQueue.Create(shuffled);
 
-            return new ShuffledShoe(shuffleCardIndex, new Queue<Card>(cards));
         }
 
     }

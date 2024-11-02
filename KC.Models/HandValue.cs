@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace KC.Models
 {
-    public record HandValue(int value, bool isBlackJack, bool isPair, bool isSoft)
+    public record HandValue(int Value, bool IsBlackJack, bool IsPair, bool IsSoft)
     {
-        public int Value { get; set; } = value;
-        public bool IsBlackJack { get; set; } = isBlackJack;
-        public bool IsPair { get; set; } = isPair;
-        public bool IsSoft { get; set; } = isSoft;
+        public int Value { get; } = Value;
+        public bool IsBlackJack { get; } = IsBlackJack;
+        public bool IsPair { get; } = IsPair;
+        public bool IsSoft { get; } = IsSoft;
 
         public override string ToString() => this switch
         {
