@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace KC.Models
 {
-    public record ShoeProperties(int NumberOfDecks, double MaxShoePenetration, int ShuffleCardRadius)
+    public record ShoeProperties(int NumberOfDecks, [property: Range(0, 1)] double MaxShoePenetration, int ShuffleCardRadius)
     {
-        public int NumberOfDecks { get; } = NumberOfDecks;
-
-        [Range(0, 1)]
-        public double MaxShoePenetration { get; } = MaxShoePenetration;
-        public int ShuffleCardRadius { get; } = ShuffleCardRadius;
+        public void Deconstruct(out int NumberOfDecks, out double MaxShoePenetration, out int ShuffleCardRadius)
+        {
+            NumberOfDecks = this.NumberOfDecks;
+            MaxShoePenetration = this.MaxShoePenetration;
+            ShuffleCardRadius = this.ShuffleCardRadius;
+        }
     }
 }

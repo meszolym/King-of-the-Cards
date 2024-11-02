@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using KC.Models.Interfaces;
 
 namespace KC.Models
 {
-    public record Player(string HardwareId, string Name, double Balance)
+    public record Player(string Id, string Name, double Balance) : IIdentityBearer<string>
     {
-        public string HardwareId { get; } = HardwareId;
-        public string Name { get; } = Name;
-        public double Balance { get; } = Balance;
+        public void Deconstruct(out string Id, out string Name, out double Balance)
+        {
+            Id = this.Id;
+            Name = this.Name;
+            Balance = this.Balance;
+        }
     }
 }

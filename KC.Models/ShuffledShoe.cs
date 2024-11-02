@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 namespace KC.Models
 {
-    public class ShuffledShoe(Guid TableId, int ShuffleCardIndex, ImmutableQueue<Card> Cards)
+    public record ShuffledShoe(Guid TableId, int ShuffleCardIndex, ImmutableQueue<Card> Cards)
     {
-        public Guid TableId { get; } = TableId;
-        public int ShuffleCardIndex { get; } = ShuffleCardIndex;
-        public ImmutableQueue<Card> Cards { get; } = Cards;
+        public void Deconstruct(out Guid TableId, out int ShuffleCardIndex, out ImmutableQueue<Card> Cards)
+        {
+            TableId = this.TableId;
+            ShuffleCardIndex = this.ShuffleCardIndex;
+            Cards = this.Cards;
+        }
     }
 }

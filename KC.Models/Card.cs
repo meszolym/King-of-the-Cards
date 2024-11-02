@@ -8,8 +8,11 @@ namespace KC.Models
 {
     public record Card(CardSuit Suit, CardFace Face)
     {
-        public CardSuit Suit { get; } = Suit;
-        public CardFace Face { get; } = Face;
+        public void Deconstruct(out CardSuit Suit, out CardFace Face)
+        {
+            Suit = this.Suit;
+            Face = this.Face;
+        }
     }
 
     public enum CardFace

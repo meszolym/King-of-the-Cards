@@ -8,11 +8,6 @@ namespace KC.Models
 {
     public record HandValue(int Value, bool IsBlackJack, bool IsPair, bool IsSoft)
     {
-        public int Value { get; } = Value;
-        public bool IsBlackJack { get; } = IsBlackJack;
-        public bool IsPair { get; } = IsPair;
-        public bool IsSoft { get; } = IsSoft;
-
         public override string ToString() => this switch
         {
             { IsBlackJack: true } => "BJ",
@@ -22,5 +17,12 @@ namespace KC.Models
             _ => Value.ToString()
         };
 
+        public void Deconstruct(out int Value, out bool IsBlackJack, out bool IsPair, out bool IsSoft)
+        {
+            Value = this.Value;
+            IsBlackJack = this.IsBlackJack;
+            IsPair = this.IsPair;
+            IsSoft = this.IsSoft;
+        }
     }
 }

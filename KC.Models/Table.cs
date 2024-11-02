@@ -4,16 +4,21 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using KC.Models.Interfaces;
 using LanguageExt;
 
 namespace KC.Models
 {
-    public class Table(Guid TableId, ShoeProperties ShoeProperties, ImmutableList<BettingBox> Boxes)
+    public record Table(Guid Id, ShoeProperties ShoeProperties, ImmutableList<BettingBox> Boxes, int CurrentHandInTurn)
+        : IIdentityBearer<Guid>
     {
-        public Guid TableId { get; } = TableId;
-        public ImmutableList<BettingBox> Boxes { get; } = Boxes;
         //public ImmutableList<Hand> Hands => Boxes.SelectMany(b => b.Hands).ToImmutableList();
-        public ShoeProperties ShoeProperties { get; } = ShoeProperties;
-        public int CurrentHandInTurn { get; } = -1;
+
+        public void Deconstruct(out Guid Id, out ShoeProperties ShoeProperties, out ImmutableList<BettingBox> Boxes)
+        {
+            Id = this.Id;
+            ShoeProperties = this.ShoeProperties;
+            Boxes = this.Boxes;
+        }
     }
 }

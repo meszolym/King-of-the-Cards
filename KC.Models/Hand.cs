@@ -5,7 +5,10 @@ namespace KC.Models;
 
 public record Hand(bool Splittable, ImmutableList<Card> Cards, double Bet)
 {
-    public bool Splittable { get; } = Splittable;
-    public ImmutableList<Card> Cards { get; } = Cards;
-    public double Bet { get; } = Bet;
+    public void Deconstruct(out bool Splittable, out ImmutableList<Card> Cards, out double Bet)
+    {
+        Splittable = this.Splittable;
+        Cards = this.Cards;
+        Bet = this.Bet;
+    }
 }

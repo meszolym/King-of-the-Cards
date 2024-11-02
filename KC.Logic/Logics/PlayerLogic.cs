@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,10 +16,19 @@ namespace KC.Logic.Logics
 
         public IEnumerable<Player> GetAll() => repository.GetAll();
 
-        public Fin<Player> Add(Player entity) => repository.Add(entity);
+        public Fin<IEnumerable<Player>> Add(Player entity) => repository.Add(entity).Match<Fin<IEnumerable<Player>>>(
+            Succ: imm => imm.ToList(),
+            Fail: er => er
+            );
 
-        public Fin<Player> Update(Player entity) => repository.Update(entity);
+        public Fin<IEnumerable<Player>> Update(Player entity) => repository.Update(entity).Match<Fin<IEnumerable<Player>>>(
+            Succ: imm => imm.ToList(),
+            Fail: er => er
+        );
 
-        public Fin<Player> Delete(string id) => repository.Delete(id);
+        public Fin<IEnumerable<Player>> Delete(string id) => repository.Delete(id).Match<Fin<IEnumerable<Player>>>(
+            Succ: imm => imm.ToList(),
+            Fail: er => er
+        );
     }
 }

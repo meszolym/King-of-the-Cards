@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,9 +12,9 @@ namespace KC.Repository
     {
         Fin<TValue> Get(TKey id);
         IEnumerable<TValue> GetAll();
-        Fin<TValue> Add(TValue entity);
-        Fin<TValue> Update(TValue entity);
-        Fin<TValue> Delete(TKey id);
+        Fin<ImmutableList<TValue>> Add(TValue entity);
+        Fin<ImmutableList<TValue>> Update(TValue entity);
+        Fin<ImmutableList<TValue>> Delete(TKey id);
 
     }
 }
