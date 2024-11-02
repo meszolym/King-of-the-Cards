@@ -22,6 +22,7 @@ namespace KC.Logic.Services
                         .Select(f => new Card(s, f))));
 
 
+        // Can't really use functional programming here :(
         /// <summary>
         /// Creates a shuffled shoe with the given set of properties.
         /// </summary>

@@ -11,16 +11,14 @@ namespace KC.Logic.Logics
 {
     public class PlayerLogic(IRepository<Player, string> repository)
     {
-        private readonly IRepository<Player,string> _repository = repository;
+        public Either<Exception, Player> Get(string id) => repository.Get(id);
 
-        public Either<Exception, Player> Get(string id) => _repository.Get(id);
+        public IEnumerable<Player> GetAll() => repository.GetAll();
 
-        public IEnumerable<Player> GetAll() => _repository.GetAll();
+        public Either<Exception, Player> Add(Player entity) => repository.Add(entity);
 
-        public Either<Exception, Player> Add(Player entity) => _repository.Add(entity);
+        public Either<Exception, Player> Update(Player entity) => repository.Update(entity);
 
-        public Either<Exception, Player> Update(Player entity) => _repository.Update(entity);
-
-        public Either<Exception, Player> Delete(string id) => _repository.Delete(id);
+        public Either<Exception, Player> Delete(string id) => repository.Delete(id);
     }
 }
