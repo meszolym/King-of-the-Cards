@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using LanguageExt;
+
+namespace KC.Models
+{
+    public class Table
+    {
+        public Guid TableID { get; set; } = Guid.NewGuid();
+        public ImmutableList<BettingBox> Boxes { get; set; } = [];
+        public ImmutableList<Hand> Hands => Boxes.SelectMany(b => b.Hands).ToImmutableList();
+        public int CurrentHandInTurn { get; set; } = -1;
+    }
+}
