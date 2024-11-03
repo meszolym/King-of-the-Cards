@@ -8,6 +8,6 @@ namespace KC.Logic
 {
     public static class RandomProvider
     {
-        public static Random Random = new Random();
+        public static Random Random = new();
     }
 }

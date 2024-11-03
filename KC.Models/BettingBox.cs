@@ -10,7 +10,7 @@ public record BettingBox(Guid TableId, int BoxIdx, Option<string> OwnerId, Immut
     public (Guid, int) Id => (TableId, BoxIdx);
 
     [NotMapped] 
-    public Option<string> OwnerId = OwnerId;
+    public Option<string> OwnerId { get; } = OwnerId;
 
     public string? OwnerIdNullable => OwnerId.Match(s => s, () => null);
 

@@ -12,8 +12,8 @@ namespace KC.Logic.Services
 {
     public static class TableService
     {
-        public static Table CreateTable(int numberOfBoxes, ShoeProperties shoeProperties)
-            => new Table(Id: Guid.NewGuid(),
+        public static Table CreateTable(ShoeProperties shoeProperties)
+            => new(Id: Guid.NewGuid(),
                 ShoeProperties: shoeProperties,
                 CurrentHandInTurn: -1 // -1 means no hand is in turn, round has not started
             );

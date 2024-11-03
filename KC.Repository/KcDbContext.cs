@@ -14,7 +14,7 @@ namespace KC.Repository
         public DbSet<Table> Tables { get; set; }
         public DbSet<BettingBox> BettingBoxes { get; set; }
 
-        public KcDbContext(DbContextOptions<KcDbContext> options) => Database.EnsureCreated();
+        public KcDbContext() => Database.EnsureCreated();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

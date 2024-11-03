@@ -28,7 +28,7 @@ namespace KC.Logic.Services
         /// Creates a shuffled shoe with the given set of properties.
         /// </summary>
         public static ShuffledShoe CreateShuffledShoe(Guid tableId, ShoeProperties properties)
-            => new ShuffledShoe(
+            => new(
                 TableId: tableId,
                 ShuffleCardIndex: RandomProvider.Random.Next(
                     (int)(NumOfCards(properties.NumberOfDecks) * properties.MaxShoePenetration)
