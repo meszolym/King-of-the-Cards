@@ -9,16 +9,16 @@ using LanguageExt;
 
 namespace KC.Models
 {
-    public record Table(Guid Id, ShoeProperties ShoeProperties, ImmutableList<BettingBox> Boxes, int CurrentHandInTurn)
+    public record Table(Guid Id, ShoeProperties ShoeProperties, int CurrentHandInTurn)
         : IIdentityBearer<Guid>
     {
         //public ImmutableList<Hand> Hands => Boxes.SelectMany(b => b.Hands).ToImmutableList();
 
-        public void Deconstruct(out Guid Id, out ShoeProperties ShoeProperties, out ImmutableList<BettingBox> Boxes)
+        public void Deconstruct(out Guid Id, out ShoeProperties ShoeProperties, out int CurrentHandInTurn)
         {
             Id = this.Id;
             ShoeProperties = this.ShoeProperties;
-            Boxes = this.Boxes;
+            CurrentHandInTurn = this.CurrentHandInTurn;
         }
     }
 }

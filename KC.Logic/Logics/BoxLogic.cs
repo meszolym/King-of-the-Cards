@@ -11,8 +11,10 @@ using LanguageExt.Common;
 
 namespace KC.Logic.Logics
 {
-    public class BoxLogic(IRepository<Table, Guid> tableRepository, IRepository<Player, string> playerRepository)
+    public class BoxLogic()
     {
+
+
         public Fin<BettingBox> ClaimBox(string playerId, Guid tableId, int boxIdx) 
             => GetBoxFromTable(tableId, boxIdx)
                 .Bind(b => b.Owner.Match<Fin<BettingBox>>(
@@ -24,7 +26,7 @@ namespace KC.Logic.Logics
         public Fin<BettingBox> UnclaimBox(string playerId, Guid tableId, int boxIdx)
             => GetBoxFromTable(tableId,boxIdx)
                 .Bind(b => b.Owner.Match<Fin<BettingBox>>(
-                    Some: p => p.HardwareId == playerId
+                    Some: p => p.Id == playerId
                             ? b.SetOwner(Option<Player>.None) : Error.New("Box not claimed by player"),
                     None: () => Error.New("Box not claimed")));
 
@@ -34,7 +36,7 @@ namespace KC.Logic.Logics
         public Fin<BettingBox> Bet(string playerId, Guid tableId, int boxIdx, int amount)
             => GetBoxFromTable(tableId, boxIdx)
                 .Bind(b => b.Owner.Match<Fin<BettingBox>>(
-                    Some: p => p.HardwareId == playerId
+                    Some: p => p.Id == playerId
                         ? b.SetBet(amount) : Error.New("Box not claimed by player"),
                     None: () => Error.New("Box not claimed")));
 
