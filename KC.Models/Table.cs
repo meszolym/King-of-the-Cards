@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,5 +21,8 @@ namespace KC.Models
             ShoeProperties = this.ShoeProperties;
             CurrentHandInTurn = this.CurrentHandInTurn;
         }
+
+        [NotMapped]
+        public virtual IEnumerable<BettingBox> BettingBoxes { get; set; }
     }
 }

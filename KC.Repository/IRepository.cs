@@ -12,9 +12,9 @@ namespace KC.Repository
     {
         Fin<TValue> Get(TKey id);
         IEnumerable<TValue> GetAll();
-        Fin<ImmutableList<TValue>> Add(TValue entity);
-        Fin<ImmutableList<TValue>> Update(TValue entity);
-        Fin<ImmutableList<TValue>> Delete(TKey id);
+        Fin<IEnumerable<TValue>> Add(TValue entity);
+        Fin<IEnumerable<TValue>> Update(TValue entity);
+        Fin<IEnumerable<TValue>> Delete(TKey id);
 
     }
 }

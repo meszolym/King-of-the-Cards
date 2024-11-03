@@ -13,8 +13,6 @@ namespace KC.Logic.Logics
 {
     public class BoxLogic()
     {
-
-
         public Fin<BettingBox> ClaimBox(string playerId, Guid tableId, int boxIdx) 
             => GetBoxFromTable(tableId, boxIdx)
                 .Bind(b => b.Owner.Match<Fin<BettingBox>>(

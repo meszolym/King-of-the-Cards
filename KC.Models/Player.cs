@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,5 +16,8 @@ namespace KC.Models
             Name = this.Name;
             Balance = this.Balance;
         }
+
+        [NotMapped]
+        public virtual IEnumerable<BettingBox> BettingBoxes { get; }
     }
 }
