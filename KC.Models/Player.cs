@@ -16,8 +16,5 @@ namespace KC.Models
             Name = this.Name;
             Balance = this.Balance;
         }
-
-        [NotMapped]
-        public virtual IEnumerable<BettingBox> BettingBoxes { get; }
     }
 }

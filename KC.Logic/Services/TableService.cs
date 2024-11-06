@@ -21,7 +21,7 @@ namespace KC.Logic.Services
         public static IEnumerable<BettingBox> CreateBoxes(Table table, int numberOfBoxes)
             => Enumerable.Range(0, numberOfBoxes)
                 .Select(i => new BettingBox(table.Id, i, Option<string>.None, 
-                    [new Hand(true, [], 0)]));
+                    [new Hand(table.Id, i, 0,true, [], 0)]));
 
     }
 }

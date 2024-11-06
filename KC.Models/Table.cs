@@ -22,7 +22,5 @@ namespace KC.Models
             CurrentHandInTurn = this.CurrentHandInTurn;
         }
 
-        [NotMapped]
-        public virtual IEnumerable<BettingBox> BettingBoxes { get; set; }
     }
 }
