@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using KC.Models.Classes;
 using KC.Models.Records;
 
 namespace KC.Logic.TableLogic;

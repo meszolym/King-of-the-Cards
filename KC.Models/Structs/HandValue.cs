@@ -8,13 +8,8 @@ namespace KC.Models.Structs;
 
 
 //TODO: Create a builder for this struct
-public readonly struct HandValue(int value, bool isBlackJack, bool isPair, bool isSoft)
+public record struct HandValue(int Value, bool IsBlackJack, bool IsPair, bool IsSoft)
 {
-    public int Value { get; } = value;
-    public bool IsBlackJack { get; } = isBlackJack;
-    public bool IsPair { get; } = isPair;
-    public bool IsSoft { get; } = isSoft;
-
     public override string ToString() => this switch
     {
         { IsBlackJack: true } => "BJ",
