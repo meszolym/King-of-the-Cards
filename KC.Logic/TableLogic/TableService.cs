@@ -13,6 +13,6 @@ namespace KC.Logic.TableLogic;
 public static class TableService
 {
     public static Table CreateTable(int numberOfBoxes, int numberOfDecks) => new Table(
-        Enumerable.Range(0, numberOfBoxes).Select(i => new BettingBox(i,new List<Hand>())).ToImmutableList(),
+        Enumerable.Range(0, numberOfBoxes).Select(i => new BettingBox(i, [])).ToImmutableList(),
         ShoeService.CreateShoe(numberOfDecks));
 }

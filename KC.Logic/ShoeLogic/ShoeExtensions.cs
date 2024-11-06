@@ -12,9 +12,9 @@ namespace KC.Logic.ShoeLogic
     {
         public static Shoe Shuffle(this Shoe shoe, Random random)
         {
-            for (int i = 0; i < shoe.Cards.Count; i++)
+            for (int i = 0; i < shoe.Cards.Length; i++)
             {
-                int j = random.Next(i, shoe.Cards.Count);
+                int j = random.Next(i, shoe.Cards.Length);
                 (shoe.Cards[i], shoe.Cards[j]) = (shoe.Cards[j], shoe.Cards[i]);
             }
 
