@@ -26,10 +26,13 @@ public static class BettingBoxExtensions
     });
 
     public static Fin<BettingBox> PlaceBet(this BettingBox box, Player player, int amount) => box.CheckOwner(player)
-    .Map(b => {
-        //check bet >= 0
-        //place bet
-    })
+    .Bind(b => amount >= 0 ? box.SetBet(amount) : FinFail<BettingBox>(Error.New("Bet cannot be less than 0")));
+
+    private static BettingBox SetBet(this BettingBox box, int amount)
+    {
+        box.Hands[0].Bet = amount;
+        return box;
+    }
 
     public static Fin<BettingBox> CheckOwner(this BettingBox box, Player player) => box.Owner.Match<Fin<BettingBox>>(
         Some: p => p.MacAddress == player.MacAddress ? box : FinFail<BettingBox>(Error.New("Box is not owned by player")),

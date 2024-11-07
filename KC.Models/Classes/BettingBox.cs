@@ -13,7 +13,7 @@ public class BettingBox
     /// </summary>
     public BettingBox()
     {
-        Hands = [new Hand([],0)];
+        Hands = [new Hand([],0,true)];
         Owner = Option<Player>.None;
     }
 
