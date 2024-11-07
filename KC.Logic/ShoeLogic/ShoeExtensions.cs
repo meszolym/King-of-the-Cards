@@ -6,22 +6,26 @@ using System.Text;
 using System.Threading.Tasks;
 using KC.Models.Classes;
 using KC.Models.Structs;
+using LanguageExt;
+using LanguageExt.UnsafeValueAccess;
 
-namespace KC.Logic.ShoeLogic
+namespace KC.Logic.ShoeLogic;
+
+public static class ShoeExtensions
 {
-    public static class ShoeExtensions
+    public static Unit Shuffle(this Shoe shoe, Random random)
     {
-        public static Shoe Shuffle(this Shoe shoe, Random random)
+        // Fischer-Yates shuffle
+        var cardsMutable = shoe.Cards.ToArray();
+        for (int i = 0; i < shoe.Cards.Length; i++)
         {
-            for (int i = 0; i < shoe.Cards.Length; i++)
-            {
-                int j = random.Next(i, shoe.Cards.Length);
-                (shoe.Cards[i], shoe.Cards[j]) = (shoe.Cards[j], shoe.Cards[i]);
-            }
-
-            return shoe;
+            int j = random.Next(i, shoe.Cards.Length);
+            (cardsMutable[i], cardsMutable[j]) = (cardsMutable[j], cardsMutable[i]);
         }
-
-        public static Card TakeCard(this Shoe shoe) => shoe.Cards[shoe.NextCardIdx++];
+        shoe.NextCardIdx = 0;
+        shoe.Cards = new Seq<Card>(cardsMutable.AsEnumerable());
+        return Unit.Default;
     }
+
+    public static Card TakeCard(this Shoe shoe) => shoe.Cards[shoe.NextCardIdx++];
 }

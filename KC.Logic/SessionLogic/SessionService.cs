@@ -13,6 +13,6 @@ public class SessionService
     // public static Session CreateSession(Table table) => new Session(Guid.NewGuid(), table);
 
     public static Session CreateEmptySession(int numberOfBoxes, int numberOfDecks) => new Session(Guid.NewGuid(),
-        new Table(Enumerable.Range(0,numberOfBoxes).Select(i => new BettingBox([])).ToImmutableList(),
+        new Table(Enumerable.Range(0,numberOfBoxes).Select(i => new BettingBox()).ToImmutableList(),
             ShoeService.CreateShoe(numberOfBoxes)));
 }

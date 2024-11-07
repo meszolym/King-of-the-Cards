@@ -7,7 +7,4 @@
   <ItemGroup>
     <ProjectReference Include="..\KC.Models\KC.Models.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="HandLogic\" />
-  </ItemGroup>
 </Project>
