@@ -9,6 +9,6 @@ public class ShoeService
     public static Shoe CreateShoe(int numberOfDecks) =>
         new Shoe(new Seq<Card>(Enumerable.Range(0, numberOfDecks).SelectMany(i => GetDeck())));
 
-    public static IEnumerable<Card> GetDeck() => Enum.GetValues<CardSuit>()
+    public static IEnumerable<Card> GetDeck() => Enum.GetValues<CardSuit>().Where(s => s != CardSuit.None)
         .SelectMany(suit => Enum.GetValues<CardFace>().Select(face => new Card(suit, face)));
 }
