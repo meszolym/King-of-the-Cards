@@ -6,6 +6,7 @@ namespace KC.Logic.BettingBoxLogic;
 
 public class BettingBoxService
 {
-    public static BettingBox CreateBox() => new BettingBox([]);
+    //unnecessary
+    //public static BettingBox CreateBox() => new BettingBox([]);
 
 }

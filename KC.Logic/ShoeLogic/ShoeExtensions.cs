@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using KC.Models.Classes;
+using KC.Models.Structs;
 
 namespace KC.Logic.ShoeLogic
 {
@@ -20,5 +21,7 @@ namespace KC.Logic.ShoeLogic
 
             return shoe;
         }
+
+        public static Card TakeCard(this Shoe shoe) => shoe.Cards[shoe.NextCardIdx++];
     }
 }

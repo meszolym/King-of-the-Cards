@@ -11,5 +11,6 @@ namespace KC.Logic.TableLogic;
 
 public static class TableExtensions
 {
-    public static Option<BettingBox> FindBox(this Table table, int boxIdx) => table.Boxes.ElementAtOrDefault(boxIdx);
+    //unnecesary, can be substituted with indexing.
+    //public static Option<BettingBox> FindBox(this Table table, int boxIdx) => table.Boxes.ElementAtOrDefault(boxIdx);
 }
