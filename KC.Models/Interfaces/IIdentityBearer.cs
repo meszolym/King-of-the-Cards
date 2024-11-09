@@ -4,5 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KC.Models.Structs;
-public record struct PossibleActions(bool CanHit, bool CanDouble, bool CanSplit);
+namespace KC.Models.Interfaces
+{
+    public interface IIdentityBearer<T>
+    {
+        T Id { get; }
+    }
+}

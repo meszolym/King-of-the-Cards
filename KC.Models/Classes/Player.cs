@@ -1,8 +1,10 @@
-﻿namespace KC.Models.Structs;
+﻿using KC.Models.Interfaces;
 
-public class Player(string macAddress, string name, double balance)
+namespace KC.Models.Classes;
+
+public class Player(string id, string name, double balance) : IIdentityBearer<string>
 {
-    public string MacAddress { get; init; } = macAddress;
+    public string Id { get; init; } = id;
     public string Name { get; set; } = name;
     public double Balance { get; set; } = balance;
 }

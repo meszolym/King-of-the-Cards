@@ -35,7 +35,7 @@ public static class BettingBoxExtensions
     }
 
     public static Fin<BettingBox> CheckOwner(this BettingBox box, Player player) => box.Owner.Match<Fin<BettingBox>>(
-        Some: p => p.MacAddress == player.MacAddress ? box : FinFail<BettingBox>(Error.New("Box is not owned by player")),
+        Some: p => p.Id == player.Id ? box : FinFail<BettingBox>(Error.New("Box is not owned by player")),
         None: FinFail<BettingBox>(Error.New("Box has no owner"))
     );
 

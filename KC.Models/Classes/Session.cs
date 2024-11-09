@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using KC.Models.Interfaces;
 using KC.Models.Records;
 
 namespace KC.Models.Classes;
 
-public class Session(Guid id, Table table)
+public class Session(Guid id, Table table) : IIdentityBearer<Guid>
 {
     public Guid Id { get; } = id;
     public Table Table { get; } = table;
