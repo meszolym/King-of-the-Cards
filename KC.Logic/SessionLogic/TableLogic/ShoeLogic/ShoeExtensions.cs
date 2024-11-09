@@ -9,7 +9,7 @@ using KC.Models.Structs;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 
-namespace KC.Logic.ShoeLogic;
+namespace KC.Logic.SessionLogic.TableLogic.ShoeLogic;
 
 public static class ShoeExtensions
 {

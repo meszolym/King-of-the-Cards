@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\KC.Data\KC.Data.csproj" />
     <ProjectReference Include="..\KC.Models\KC.Models.csproj" />
   </ItemGroup>
 </Project>

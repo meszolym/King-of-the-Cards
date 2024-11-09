@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using KC.Logic.CardLogic;
+using KC.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
 using KC.Models.Classes;
 using KC.Models.Enums;
 using KC.Models.Structs;
@@ -7,7 +8,7 @@ using LanguageExt;
 using LanguageExt.Common;
 using static LanguageExt.Prelude;
 
-namespace KC.Logic.HandLogic;
+namespace KC.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
 
 public static class HandExtensions
 {
@@ -32,7 +33,7 @@ public static class HandExtensions
         return new HandValue(value, isBlackJack, isPair, isSoft);
     }
 
-    
+
     public static string GetValueString(this Hand hand) => (hand, val: hand.GetValue()) switch
     {
         { val.IsBlackJack: true } => "BJ",
@@ -42,7 +43,7 @@ public static class HandExtensions
         _ => hand.GetValue().Value.ToString()
     };
 
-    public static Fin<PossibleActions> GetPossibleActions(this Hand hand) 
+    public static Fin<PossibleActions> GetPossibleActions(this Hand hand)
     => (hand, val: hand.GetValue(), fCard: hand.Cards.ElementAtOrDefault(1)) switch
     {
         { hand.Cards.Count: < 2 } => FinFail<PossibleActions>(Error.New("Can't get actions on incomplete hand")),

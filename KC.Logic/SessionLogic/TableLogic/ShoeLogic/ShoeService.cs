@@ -3,7 +3,7 @@ using KC.Models.Classes;
 using KC.Models.Enums;
 using KC.Models.Structs;
 using LanguageExt;
-namespace KC.Logic.ShoeLogic;
+namespace KC.Logic.SessionLogic.TableLogic.ShoeLogic;
 
 public class ShoeService
 {
