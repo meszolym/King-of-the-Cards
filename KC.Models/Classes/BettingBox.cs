@@ -3,18 +3,8 @@ using LanguageExt;
 
 namespace KC.Models.Classes;
 
-public class BettingBox
+public class BettingBox(List<Hand> hands, Option<Player> owner)
 {
-    public List<Hand> Hands { get; init; }
-    public Option<Player> Owner { get; set; }
-
-    /// <summary>
-    /// Creates an empty betting box that has no owner and one empty hand.
-    /// </summary>
-    public BettingBox()
-    {
-        Hands = [new Hand([],0,true)];
-        Owner = Option<Player>.None;
-    }
-
+    public List<Hand> Hands { get; init; } = hands;
+    public Option<Player> Owner { get; set; } = owner;
 }

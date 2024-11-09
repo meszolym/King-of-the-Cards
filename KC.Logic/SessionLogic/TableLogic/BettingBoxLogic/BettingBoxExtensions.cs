@@ -4,6 +4,7 @@ using KC.Models.Classes;
 using KC.Models.Structs;
 using LanguageExt;
 using LanguageExt.Common;
+using LanguageExt.Traits;
 using static LanguageExt.Prelude;
 
 namespace KC.Logic.SessionLogic.TableLogic.BettingBoxLogic;
@@ -27,10 +28,10 @@ public static class BettingBoxExtensions
         return b;
     });
 
-    public static Fin<BettingBox> PlaceBet(this BettingBox box, Player player, int amount) => box.CheckOwner(player)
-    .Bind(b => amount >= 0 ? box.SetBet(amount) : FinFail<BettingBox>(Error.New("Bet cannot be less than 0")));
+    public static Fin<BettingBox> PlaceBet(this BettingBox box, Player player, double amount) => box.CheckOwner(player)
+        .Bind(_ => amount >= 0 ? SetBet(box, amount) : FinFail<BettingBox>(Error.New("Bet cannot be less than 0.")));
 
-    private static BettingBox SetBet(this BettingBox box, int amount)
+    private static BettingBox SetBet(this BettingBox box, double amount)
     {
         box.Hands[0].Bet = amount;
         return box;

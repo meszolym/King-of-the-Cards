@@ -5,6 +5,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="System.Reactive" Version="6.0.1" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\KC.Data\KC.Data.csproj" />
     <ProjectReference Include="..\KC.Models\KC.Models.csproj" />
   </ItemGroup>
