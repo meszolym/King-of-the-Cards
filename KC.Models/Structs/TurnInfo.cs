@@ -1,2 +1,2 @@
 ﻿namespace KC.Models.Structs;
-public readonly record struct TurnInfo(Guid CessionId, int CurrentBoxIdx, int CurrentHandIdx);
+public readonly record struct TurnInfo(Guid SessionId, int CurrentBoxIdx, int CurrentHandIdx);

@@ -14,16 +14,6 @@ public static class SessionService
             new Table(
                 Enumerable.Range(0, (int)numberOfBoxes).Select(i => BettingBoxService.CreateEmptyBettingBox())
                     .ToImmutableList(),
-                ShoeService.CreateUnshuffledShoe(numberOfBoxes)), timerAfterFirstBet).AddCanBetChangeOnTimerElapsed();
+                ShoeService.CreateUnshuffledShoe(numberOfBoxes)), timerAfterFirstBet);
 
-    //although this is an extension, it is put here because it is only used in the context of creating a session
-    private static Session AddCanBetChangeOnTimerElapsed(this Session session)
-    {
-        session.BetPlacementTimer.Elapsed += (sender, args) =>
-        {
-            session.CanPlaceBets = false;
-            session.BetPlacementTimer.Stop();
-        };
-        return session;
-    }
 }
