@@ -1,7 +1,9 @@
-﻿using KC.Data;
+﻿using System.Reactive.Subjects;
+using KC.Data;
 using KC.Logic.SessionLogic.TableLogic;
 using KC.Logic.SessionLogic.TableLogic.BettingBoxLogic;
 using KC.Models.Classes;
+using KC.Models.Structs;
 using LanguageExt;
 using LanguageExt.Common;
 using static LanguageExt.Prelude;
@@ -12,7 +14,9 @@ namespace KC.Logic.SessionLogic;
 
 internal class SessionLogic(IDataStore<Session, Guid> dataStore)
 {
-    public IObservable<> TurnChangedObservable
+    private readonly Subject<TurnInfo> _turnChangedSubject = new();
+    public IObservable<TurnInfo> TurnChangedObservable => _turnChangedSubject;
+
     public Fin<Unit> CreateSession(uint numberOfBoxes, uint numberOfDecks, Timer timerAfterFirstBet) =>
         dataStore.Add(SessionService.CreateEmptySession(numberOfBoxes, numberOfDecks, timerAfterFirstBet));
 
