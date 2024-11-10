@@ -1,5 +1,4 @@
-﻿using KC.Models.Classes;
-using KC.Models.Interfaces;
+﻿using KC.Models.Interfaces;
 using LanguageExt;
 using LanguageExt.Common;
 using static LanguageExt.Prelude;

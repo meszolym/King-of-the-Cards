@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-using KC.Models.Classes;
+﻿using KC.Models.Classes;
 using KC.Models.Enums;
 using KC.Models.Structs;
 using LanguageExt;

@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using KC.Models.Classes;
+﻿using KC.Models.Classes;
 using KC.Models.Structs;
 using LanguageExt;
-using LanguageExt.UnsafeValueAccess;
 
 namespace KC.Logic.SessionLogic.TableLogic.ShoeLogic;
 

@@ -3,8 +3,6 @@ using KC.Logic.SessionLogic.TableLogic;
 using KC.Logic.SessionLogic.TableLogic.BettingBoxLogic;
 using KC.Models.Classes;
 using LanguageExt;
-using System.Reactive;
-using System.Reactive.Linq;
 using LanguageExt.Common;
 using static LanguageExt.Prelude;
 using Timer = System.Timers.Timer;
@@ -14,6 +12,7 @@ namespace KC.Logic.SessionLogic;
 
 internal class SessionLogic(IDataStore<Session, Guid> dataStore)
 {
+    public IObservable<> TurnChangedObservable
     public Fin<Unit> CreateSession(uint numberOfBoxes, uint numberOfDecks, Timer timerAfterFirstBet) =>
         dataStore.Add(SessionService.CreateEmptySession(numberOfBoxes, numberOfDecks, timerAfterFirstBet));
 
@@ -51,6 +50,8 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
 
     public Fin<(int boxIdx, int handIdx)> GetCurrentTurn(Guid sessionId) =>
         dataStore.Get(sessionId).Map(s => (s.CurrentBoxIdx, s.CurrentHandIdx));
+
+    //startdealing
 
     //getmoves
 

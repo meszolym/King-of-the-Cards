@@ -1,11 +1,9 @@
 using System.Collections.Immutable;
-using System.Windows.Markup;
 using KC.Logic.SessionLogic.TableLogic.BettingBoxLogic;
 using KC.Logic.SessionLogic.TableLogic.ShoeLogic;
 using KC.Models.Classes;
 using KC.Models.Records;
 using Timer = System.Timers.Timer;
-using LanguageExt;
 
 namespace KC.Logic.SessionLogic;
 

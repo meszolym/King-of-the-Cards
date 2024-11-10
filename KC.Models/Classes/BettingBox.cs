@@ -1,5 +1,4 @@
-﻿using KC.Models.Structs;
-using LanguageExt;
+﻿using LanguageExt;
 
 namespace KC.Models.Classes;
 

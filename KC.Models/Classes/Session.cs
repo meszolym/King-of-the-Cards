@@ -1,6 +1,5 @@
 ﻿using KC.Models.Interfaces;
 using KC.Models.Records;
-using System.Timers;
 using Timer = System.Timers.Timer;
 
 namespace KC.Models.Classes;
