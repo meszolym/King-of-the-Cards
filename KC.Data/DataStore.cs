@@ -6,7 +6,7 @@ using static LanguageExt.Prelude;
 
 namespace KC.Data
 {
-    public abstract class DataStore<TVal, TKey> : IDataStore<TVal, TKey> where TVal : class, IIdentityBearer<TKey> where TKey : IComparable
+    public class DataStore<TVal, TKey> : IDataStore<TVal, TKey> where TVal : class, IIdentityBearer<TKey> where TKey : IComparable
     {
         private readonly List<TVal> _dataList = [];
         public IEnumerable<TVal> GetAll() => _dataList;
