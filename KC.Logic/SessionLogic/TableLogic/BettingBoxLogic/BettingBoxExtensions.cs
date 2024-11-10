@@ -21,7 +21,7 @@ public static class BettingBoxExtensions
         return b;
     });
 
-    public static Fin<BettingBox> Unclaim(this BettingBox box, Player player) => box.CheckOwner(player)
+    public static Fin<BettingBox> Disclaim(this BettingBox box, Player player) => box.CheckOwner(player)
     .Map(b =>
     {
         b.Owner = Option<Player>.None;
