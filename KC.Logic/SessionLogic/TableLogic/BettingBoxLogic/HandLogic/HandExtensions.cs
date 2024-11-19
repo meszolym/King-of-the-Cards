@@ -1,4 +1,7 @@
+using System.Collections.Immutable;
 using KC.Logic.CardLogic;
+using KC.Logic.Other_extensions;
+using KC.Logic.SessionLogic.TableLogic.ShoeLogic;
 using KC.Models.Classes;
 using KC.Models.Enums;
 using KC.Models.Structs;
@@ -41,16 +44,15 @@ public static class HandExtensions
         _ => hand.GetValue().Value.ToString()
     };
 
-    public static Fin<PossibleActions> GetPossibleActions(this Hand hand)
-    => (hand, val: hand.GetValue(), fCard: hand.Cards.ElementAtOrDefault(1)) switch
+    public static Fin<Seq<Move>> GetPossibleActions(this Hand hand)
+    => (hand, val: hand.GetValue(), firstCard: hand.Cards.ElementAtOrDefault(0)) switch
     {
-        { hand.Cards.Count: < 2 } => FinFail<PossibleActions>(Error.New("Can't get actions on incomplete hand")),
-        { val.Value: >= 21 } => new PossibleActions(), //no action on bust hands
-        { fCard.Face: CardFace.Ace, hand.Splittable: false } => new PossibleActions(), //no action on split aces (they automatically get only one card)
-        _ => new PossibleActions(
-            CanHit: true, //can hit anything else
-            CanDouble: hand.Cards.Count() == 2, //can double on any two cards
-            CanSplit: hand.Splittable && hand.GetValue().IsPair //can split if the hand has not been split (splittable) and it is a pair
-        )
+        { hand.Cards.Count: < 2 } => FinFail<Seq<Move>>(Error.New("Can't get actions on incomplete hand")),
+        { val.Value: >= 21 } => new Seq<Move>(), //no action on bust hands
+        { firstCard.Face: CardFace.Ace, hand.Splittable: false } => new Seq<Move>(), //no action on split aces (they automatically get only one card)
+        _ => new Seq<Move>()
+            .Add(Move.Hit) //can hit on any card
+            .AddIf(hand.Cards.Count() == 2, Move.Double) //can double on any two cards
+            .AddIf(hand.Splittable && hand.GetValue().IsPair, Move.Split) //can split if the hand has not been split (splittable) and it is a pair
     };
 }

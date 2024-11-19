@@ -1,3 +1,4 @@
+using KC.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
 using KC.Models.Classes;
 using LanguageExt;
 using LanguageExt.Common;
@@ -42,5 +43,12 @@ public static class BettingBoxExtensions
         Some: p => FinFail<BettingBox>(Error.New("Box has an owner")),
         None: () => box
     );
+
+    public static Unit ClearHands(this BettingBox box)
+    {
+        box.Hands.Clear();
+        box.Hands.Add(HandService.CreateEmptyHand());
+        return unit;
+    }
 
 }

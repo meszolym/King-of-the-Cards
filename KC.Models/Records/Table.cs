@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using KC.Models.Classes;
+using LanguageExt;
 
 namespace KC.Models.Records;
 

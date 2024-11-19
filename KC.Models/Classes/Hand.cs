@@ -1,4 +1,6 @@
-﻿using KC.Models.Structs;
+﻿using KC.Models.Enums;
+using KC.Models.Structs;
+using LanguageExt;
 
 namespace KC.Models.Classes;
 

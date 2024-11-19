@@ -1,8 +1,13 @@
-﻿using System.Reactive.Subjects;
+﻿using System.Collections.Immutable;
+using System.Linq;
+using System.Reactive.Subjects;
 using KC.Data;
 using KC.Logic.SessionLogic.TableLogic;
 using KC.Logic.SessionLogic.TableLogic.BettingBoxLogic;
+using KC.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
+using KC.Logic.SessionLogic.TableLogic.ShoeLogic;
 using KC.Models.Classes;
+using KC.Models.Enums;
 using KC.Models.Structs;
 using LanguageExt;
 using LanguageExt.Common;
@@ -65,15 +70,60 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
         .Get(sessionId)
         .Map(s => (s.CurrentBoxIdx, s.CurrentHandIdx));
 
-    //startdealing
+    
+    //REWRITE LATER
+    public Fin<Unit> StartDealing(Guid sessionId) => dataStore.Get(sessionId).Map(session =>
+        {
+            //if shoe needs shuffling, shuffle
+            if (session.Table.DealingShoe.ShuffleCardIdx <= session.Table.DealingShoe.NextCardIdx)
+            {
+                session.Table.DealingShoe.Shuffle(Random.Shared);
+            }
 
-    //getmoves
+            //deal cards
+            for (int i = 0; i < 2; i++)
+            {
+                foreach (BettingBox box in session.Table.BoxesInPlay())
+                {
+                    box.Hands[i].Cards.Add(session.Table.DealingShoe.TakeCard());
+                }
+            }
 
-    //makemove -> if no more moves, transfer turn to next player
+            return Unit.Default;
+        });
+
+    public Fin<Seq<Move>> GetPossibleActions(Guid sessionId, int boxIdx, int handIdx) => dataStore.Get(sessionId).Bind(s => s.Table.GetBettingBox(boxIdx))
+        .Bind<Hand>(b => b.Hands.ElementAtOrDefault(handIdx))
+        .Bind(h => h.GetPossibleActions());
+
+    private Fin<Hand> GetHandWithOwnerValidation(Guid sessionId, int boxIdx, int handIdx, Player player) => dataStore
+        .Get(sessionId).Bind(s => s.Table.GetBettingBox(boxIdx)).Bind(b => b.CheckOwner(player))
+        .Bind<Hand>(b => b.Hands.ElementAtOrDefault(handIdx));
+
+    /// <summary>
+    /// After making a move, make sure to call GetPossibleActions and TransferTurn if there's no more possible actions on a hand.
+    /// </summary>
+    /// <param name="sessionId"></param>
+    /// <param name="boxIdx"></param>
+    /// <param name="handIdx"></param>
+    /// <param name="player"></param>
+    /// <param name="move"></param>
+    public void MakeMove(Guid sessionId, int boxIdx, int handIdx, Player player, Move move) =>
+        GetHandWithOwnerValidation(sessionId, boxIdx, handIdx, player)
+            .Bind(h => h.GetPossibleActions().Map(a => (hand: h, actionPossible: a.Any(x => x == move))))
+            .Bind(a => a.actionPossible 
+                ? a.hand
+                : FinFail<Hand>(Error.New("Can not make this move on this hand.")))
+            .Bind(h => ExecuteMove(sessionId, boxIdx, handIdx, move));
+
+    private Fin<Hand> ExecuteMove(Guid sessionId, int boxIdx, int handIdx, Move move)
+    {
+        throw new NotImplementedException();
+    }
 
     //transferturn -> if everyone has played, fire and forget endround
 
     //endround (if everyone has played)
 
-    //resetsession
+    public Fin<Unit> ResetSession(Guid sessionId) => dataStore.Get(sessionId).Bind(s => s.Table.Reset());
 }
