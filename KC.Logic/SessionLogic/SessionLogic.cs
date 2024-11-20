@@ -71,7 +71,7 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
         .Map(s => (s.CurrentBoxIdx, s.CurrentHandIdx));
 
     
-    //REWRITE LATER
+    //TODO: REWRITE LATER
     public Fin<Unit> StartDealing(Guid sessionId) => dataStore.Get(sessionId).Map(session =>
         {
             //if shoe needs shuffling, shuffle
@@ -101,7 +101,8 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
         .Bind<Hand>(b => b.Hands.ElementAtOrDefault(handIdx));
 
     /// <summary>
-    /// After making a move, make sure to call GetPossibleActions and TransferTurn if there's no more possible actions on a hand.
+    /// After making a move, make sure to call GetPossibleActions and TransferTurn if there's no more possible actions (except stand) on a hand.
+    /// Does not handle player balance changes.
     /// </summary>
     /// <param name="sessionId"></param>
     /// <param name="boxIdx"></param>
@@ -110,18 +111,43 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
     /// <param name="move"></param>
     public void MakeMove(Guid sessionId, int boxIdx, int handIdx, Player player, Move move) =>
         GetHandWithOwnerValidation(sessionId, boxIdx, handIdx, player)
-            .Bind(h => h.GetPossibleActions().Map(a => (hand: h, actionPossible: a.Any(x => x == move))))
-            .Bind(a => a.actionPossible 
-                ? a.hand
-                : FinFail<Hand>(Error.New("Can not make this move on this hand.")))
-            .Bind(h => ExecuteMove(sessionId, boxIdx, handIdx, move));
+            .Bind(h => h.GetPossibleActions().Bind(possibleMoves => possibleMoves.Any(m => m == move)
+                ? ExecuteMove(sessionId, boxIdx, handIdx, move)
+                : FinFail<Hand>(Error.New("Can not make this move on this hand."))));
 
-    private Fin<Hand> ExecuteMove(Guid sessionId, int boxIdx, int handIdx, Move move)
-    {
-        throw new NotImplementedException();
-    }
+    //TODO: REWRITE LATER
+    private Fin<Hand> ExecuteMove(Guid sessionId, int boxIdx, int handIdx, Move move) => dataStore.Get(sessionId)
+        .Bind(s => s.Table.GetBettingBox(boxIdx).Map(b => (box: b, session: s))).Map(
+            tupBS =>
+            {
+                switch (move)
+                {
+                    case Move.Stand:
+                        tupBS.box.Hands[handIdx].Finished = true;
+                        break;
+                    case Move.Hit:
+                        tupBS.box.Hands[handIdx].Cards.Add(tupBS.session.Table.DealingShoe.TakeCard());
+                        break;
+                    case Move.Double:
+                        tupBS.box.Hands[handIdx].Bet *= 2;
+                        tupBS.box.Hands[handIdx].Cards.Add(tupBS.session.Table.DealingShoe.TakeCard());
+                        tupBS.box.Hands[handIdx].Finished = true;
+                        break;
+                    case Move.Split:
+                        tupBS.box.Hands.Add(new Hand(new List<Card> { tupBS.box.Hands[handIdx].Cards[1] },
+                            tupBS.box.Hands[handIdx].Bet, false));
+                        tupBS.box.Hands[handIdx].Cards.RemoveAt(1);
+                        tupBS.box.Hands[handIdx].Cards.Add(tupBS.session.Table.DealingShoe.TakeCard());
+                        tupBS.box.Hands[handIdx].Splittable = false;
+                        break;
+                }
+
+                return tupBS.box.Hands[handIdx];
+            });
+
 
     //transferturn -> if everyone has played, fire and forget endround
+    //(has to handle giving out a card on the second hand of a split)
 
     //endround (if everyone has played)
 

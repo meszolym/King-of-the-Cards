@@ -11,6 +11,7 @@ namespace KC.Models.Enums
     /// </summary>
     public enum Move
     {
+        Stand,
         Hit,
         Double,
         Split,
