@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KC.App.API", "KC.API\KC.App
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KC.App.Data", "KC.Data\KC.App.Data.csproj", "{61899CE5-092A-4EC3-A560-CCBD7C1B1521}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KC.Detector.Logic", "KC.Detector.Logic\KC.Detector.Logic.csproj", "{AAA4771E-F9E2-4E04-883D-3B37152D1FA8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{61899CE5-092A-4EC3-A560-CCBD7C1B1521}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61899CE5-092A-4EC3-A560-CCBD7C1B1521}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61899CE5-092A-4EC3-A560-CCBD7C1B1521}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAA4771E-F9E2-4E04-883D-3B37152D1FA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAA4771E-F9E2-4E04-883D-3B37152D1FA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAA4771E-F9E2-4E04-883D-3B37152D1FA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAA4771E-F9E2-4E04-883D-3B37152D1FA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
