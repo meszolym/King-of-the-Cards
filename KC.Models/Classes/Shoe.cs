@@ -1,7 +1,7 @@
-﻿using KC.Models.Structs;
+﻿using KC.App.Models.Structs;
 using LanguageExt;
 
-namespace KC.Models.Classes;
+namespace KC.App.Models.Classes;
 
 public class Shoe(Seq<Card> cards)
 {

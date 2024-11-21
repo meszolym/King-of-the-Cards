@@ -1,7 +1,7 @@
-using KC.Models.Enums;
-using KC.Models.Structs;
+using KC.App.Models.Enums;
+using KC.App.Models.Structs;
 
-namespace KC.Logic.CardLogic;
+namespace KC.App.Logic.CardLogic;
 
 public static class CardExtensions
 {

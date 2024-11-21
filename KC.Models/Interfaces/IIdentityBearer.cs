@@ -1,4 +1,4 @@
-﻿namespace KC.Models.Interfaces
+﻿namespace KC.App.Models.Interfaces
 {
     public interface IIdentityBearer<T>
     {

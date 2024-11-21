@@ -1,9 +1,9 @@
-﻿using KC.Models.Interfaces;
+﻿using KC.App.Models.Interfaces;
 using LanguageExt;
 using LanguageExt.Common;
 using static LanguageExt.Prelude;
 
-namespace KC.Data
+namespace KC.App.Data
 {
     public class DataStore<TVal, TKey> : IDataStore<TVal, TKey> where TVal : class, IIdentityBearer<TKey> where TKey : IComparable
     {

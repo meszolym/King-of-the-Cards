@@ -1,11 +1,11 @@
 using System.Collections.Immutable;
-using KC.Logic.SessionLogic.TableLogic.BettingBoxLogic;
-using KC.Logic.SessionLogic.TableLogic.ShoeLogic;
-using KC.Models.Classes;
-using KC.Models.Records;
+using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic;
+using KC.App.Logic.SessionLogic.TableLogic.ShoeLogic;
+using KC.App.Models.Classes;
+using KC.App.Models.Records;
 using Timer = System.Timers.Timer;
 
-namespace KC.Logic.SessionLogic;
+namespace KC.App.Logic.SessionLogic;
 
 public static class SessionService
 {

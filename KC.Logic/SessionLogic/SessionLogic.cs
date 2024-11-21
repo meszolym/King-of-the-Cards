@@ -1,21 +1,21 @@
 ﻿using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Subjects;
-using KC.Data;
-using KC.Logic.SessionLogic.TableLogic;
-using KC.Logic.SessionLogic.TableLogic.BettingBoxLogic;
-using KC.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
-using KC.Logic.SessionLogic.TableLogic.ShoeLogic;
-using KC.Models.Classes;
-using KC.Models.Enums;
-using KC.Models.Structs;
+using KC.App.Data;
+using KC.App.Logic.SessionLogic.TableLogic;
+using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic;
+using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
+using KC.App.Logic.SessionLogic.TableLogic.ShoeLogic;
+using KC.App.Models.Classes;
+using KC.App.Models.Enums;
+using KC.App.Models.Structs;
 using LanguageExt;
 using LanguageExt.Common;
 using static LanguageExt.Prelude;
 using Timer = System.Timers.Timer;
 using Unit = LanguageExt.Unit;
 
-namespace KC.Logic.SessionLogic;
+namespace KC.App.Logic.SessionLogic;
 
 internal class SessionLogic(IDataStore<Session, Guid> dataStore)
 {

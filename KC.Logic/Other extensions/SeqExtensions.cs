@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LanguageExt;
 
-namespace KC.Logic.Other_extensions
+namespace KC.App.Logic.Other_extensions
 {
     public static class SeqExtensions
     {

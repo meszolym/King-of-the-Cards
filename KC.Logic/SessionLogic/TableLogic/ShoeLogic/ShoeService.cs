@@ -1,8 +1,8 @@
-﻿using KC.Models.Classes;
-using KC.Models.Enums;
-using KC.Models.Structs;
+﻿using KC.App.Models.Classes;
+using KC.App.Models.Enums;
+using KC.App.Models.Structs;
 using LanguageExt;
-namespace KC.Logic.SessionLogic.TableLogic.ShoeLogic;
+namespace KC.App.Logic.SessionLogic.TableLogic.ShoeLogic;
 
 public class ShoeService
 {

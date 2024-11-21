@@ -1,10 +1,10 @@
-using KC.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
-using KC.Models.Classes;
+using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
+using KC.App.Models.Classes;
 using LanguageExt;
 using LanguageExt.Common;
 using static LanguageExt.Prelude;
 
-namespace KC.Logic.SessionLogic.TableLogic.BettingBoxLogic;
+namespace KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic;
 
 public static class BettingBoxExtensions
 {

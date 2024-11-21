@@ -1,8 +1,8 @@
-﻿using KC.Models.Enums;
-using KC.Models.Structs;
+﻿using KC.App.Models.Structs;
+using KC.App.Models.Enums;
 using LanguageExt;
 
-namespace KC.Models.Classes;
+namespace KC.App.Models.Classes;
 
 public class Hand(List<Card> cards, double bet, bool splittable)
 {

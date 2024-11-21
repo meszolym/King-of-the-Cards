@@ -1,10 +1,10 @@
 ﻿using System.Collections.Immutable;
-using KC.Logic.SessionLogic.TableLogic.BettingBoxLogic;
-using KC.Models.Classes;
-using KC.Models.Records;
+using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic;
+using KC.App.Models.Classes;
+using KC.App.Models.Records;
 using LanguageExt;
 
-namespace KC.Logic.SessionLogic.TableLogic
+namespace KC.App.Logic.SessionLogic.TableLogic
 {
     public static class TableExtensions
     {

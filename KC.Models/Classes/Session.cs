@@ -1,8 +1,8 @@
-﻿using KC.Models.Interfaces;
-using KC.Models.Records;
+﻿using KC.App.Models.Interfaces;
+using KC.App.Models.Records;
 using Timer = System.Timers.Timer;
 
-namespace KC.Models.Classes;
+namespace KC.App.Models.Classes;
 
 public class Session(Guid id, Table table, Timer betPlacementTimer) : IIdentityBearer<Guid>
 {

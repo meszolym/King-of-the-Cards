@@ -1,8 +1,8 @@
 
-using KC.Data;
-using KC.Models.Classes;
+using KC.App.Data;
+using KC.App.Models.Classes;
 
-namespace KC.API
+namespace KC.App.API
 {
     public class Program
     {

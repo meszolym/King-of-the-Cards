@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KC.Models.Enums;
+namespace KC.App.Models.Enums;
 public enum CardSuit
 {
     None,

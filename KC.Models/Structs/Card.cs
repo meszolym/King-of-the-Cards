@@ -1,5 +1,5 @@
-﻿using KC.Models.Enums;
+﻿using KC.App.Models.Enums;
 
-namespace KC.Models.Structs;
+namespace KC.App.Models.Structs;
 
 public readonly record struct Card(CardSuit Suit, CardFace Face);

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KC.Models.Enums
+namespace KC.App.Models.Enums
 {
     /// <summary>
     /// The possible moves in a game of blackjack. Stand is not included as it's always a possibility.

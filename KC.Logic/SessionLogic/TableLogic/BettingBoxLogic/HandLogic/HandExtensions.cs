@@ -1,15 +1,15 @@
 using System.Collections.Immutable;
-using KC.Logic.CardLogic;
-using KC.Logic.Other_extensions;
-using KC.Logic.SessionLogic.TableLogic.ShoeLogic;
-using KC.Models.Classes;
-using KC.Models.Enums;
-using KC.Models.Structs;
+using KC.App.Logic.CardLogic;
+using KC.App.Logic.Other_extensions;
+using KC.App.Logic.SessionLogic.TableLogic.ShoeLogic;
+using KC.App.Models.Classes;
+using KC.App.Models.Enums;
+using KC.App.Models.Structs;
 using LanguageExt;
 using LanguageExt.Common;
 using static LanguageExt.Prelude;
 
-namespace KC.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
+namespace KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
 
 public static class HandExtensions
 {

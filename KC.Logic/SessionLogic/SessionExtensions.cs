@@ -1,6 +1,6 @@
-﻿using KC.Models.Classes;
+﻿using KC.App.Models.Classes;
 
-namespace KC.Logic.SessionLogic;
+namespace KC.App.Logic.SessionLogic;
 public static class SessionExtensions
 {
     public static Session AddCanBetChangeOnTimerElapsed(this Session session)

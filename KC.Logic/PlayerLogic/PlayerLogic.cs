@@ -1,8 +1,8 @@
-﻿using KC.Data;
-using KC.Models.Classes;
+﻿using KC.App.Data;
+using KC.App.Models.Classes;
 using LanguageExt;
 
-namespace KC.Logic.PlayerLogic
+namespace KC.App.Logic.PlayerLogic
 {
     public class PlayerLogic(IDataStore<Player,string> dataStore)
     {

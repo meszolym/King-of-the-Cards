@@ -1,7 +1,7 @@
-﻿using KC.Models.Interfaces;
+﻿using KC.App.Models.Interfaces;
 using LanguageExt;
 
-namespace KC.Data;
+namespace KC.App.Data;
 
 public interface IDataStore<TVal, TKey> where TVal : class, IIdentityBearer<TKey> where TKey : IComparable
 {
