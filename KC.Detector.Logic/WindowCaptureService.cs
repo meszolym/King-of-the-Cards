@@ -20,7 +20,6 @@ public static class WindowCaptureService
     [DllImport("user32.dll")]
     private static extern IntPtr GetForegroundWindow();
 
-    [StructLayout(LayoutKind.Sequential)]
     private struct Rect
     {
         public int Left;
@@ -28,6 +27,18 @@ public static class WindowCaptureService
         public int Right;
         public int Bottom;
     }
+
+    private static Fin<IntPtr> GetWindowHandle(string appName) =>
+        ((Option<IntPtr>)Process.GetProcesses().FirstOrDefault(proc => proc.MainWindowTitle.Contains(appName))
+            .MainWindowHandle).ToFin(Error.New("Application not found."));
+
+    public static Fin<Bitmap> CaptureWindowShot(Either<string, IntPtr> appIdentifier, bool hasToBoFocused = true) =>
+        appIdentifier
+            .Match(Left: s => CaptureWindowShot(s, hasToBoFocused),
+                Right: i => CaptureWindowShot(i, hasToBoFocused));
+
+    public static Fin<Bitmap> CaptureWindowShot(string appName, bool hasToBoFocused = true) =>
+        GetWindowHandle(appName).Bind(i => CaptureWindowShot(i, hasToBoFocused));
 
     public static Fin<Bitmap> CaptureWindowShot(IntPtr handle, bool hasToBoFocused = true)
     {
@@ -53,14 +64,5 @@ public static class WindowCaptureService
         return result;
     }
 
-    private static Fin<IntPtr> GetWindowHandle(string appName) =>
-        ((Option<IntPtr>)Process.GetProcesses().FirstOrDefault(proc => proc.MainWindowTitle.Contains(appName))
-            .MainWindowHandle).ToFin(Error.New("Application not found."));
-
-    public static Fin<Bitmap> CaptureWindowShot(string appName, bool hasToBoFocused = true) => GetWindowHandle(appName).Bind(i => CaptureWindowShot(i, hasToBoFocused));
-
-    public static Fin<Bitmap> CaptureWindowShot(Either<string,IntPtr> appIdentifier, bool hasToBoFocused = true) => appIdentifier.Match(
-        Left: s => CaptureWindowShot(s, hasToBoFocused),
-        Right: i => CaptureWindowShot(i, hasToBoFocused)
-    );
+    
 }
