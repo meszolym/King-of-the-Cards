@@ -179,12 +179,15 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
                         return b.Hands[0];
                     }).ToFin(Error.New("No hand left to be played"));
 
+                //dealer to play hand!!!
+
             });
 
     //endround (if everyone has played)
     public Fin<Unit> EndTurn()
     {
         throw new NotImplementedException();
+        //evaluate hands and pay out.
     }
 
     public Fin<Unit> ResetSession(Guid sessionId) => dataStore.Get(sessionId).Bind(s => s.Table.Reset());
