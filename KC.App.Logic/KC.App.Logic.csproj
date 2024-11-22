@@ -8,7 +8,7 @@
     <PackageReference Include="System.Reactive" Version="6.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KC.Data\KC.App.Data.csproj" />
-    <ProjectReference Include="..\KC.Models\KC.App.Models.csproj" />
+    <ProjectReference Include="..\KC.App.Data\KC.App.Data.csproj" />
+    <ProjectReference Include="..\KC.App.Models\KC.App.Models.csproj" />
   </ItemGroup>
 </Project>
