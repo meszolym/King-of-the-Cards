@@ -12,7 +12,7 @@ public static class SessionService
     public static Session CreateEmptySession(uint numberOfBoxes, uint numberOfDecks, Timer timerAfterFirstBet) =>
         new Session(Guid.NewGuid(),
             new Table(
-                Enumerable.Range(0, (int)numberOfBoxes).Select(i => BettingBoxService.CreateEmptyBettingBox())
+                Enumerable.Range(0, (int)numberOfBoxes).Select(BettingBoxService.CreateEmptyBettingBox)
                     .ToImmutableList(),
                 ShoeService.CreateUnshuffledShoe(numberOfBoxes)), timerAfterFirstBet);
 

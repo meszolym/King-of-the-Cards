@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Subjects;
+using System.Reflection.Metadata.Ecma335;
 using KC.App.Data;
 using KC.App.Logic.SessionLogic.TableLogic;
 using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic;
@@ -11,6 +12,7 @@ using KC.App.Models.Enums;
 using KC.App.Models.Structs;
 using LanguageExt;
 using LanguageExt.Common;
+using LanguageExt.Traits;
 using static LanguageExt.Prelude;
 using Timer = System.Timers.Timer;
 using Unit = LanguageExt.Unit;
@@ -134,8 +136,9 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
                         tupBS.box.Hands[handIdx].Finished = true;
                         break;
                     case Move.Split:
-                        tupBS.box.Hands.Add(new Hand(new List<Card> { tupBS.box.Hands[handIdx].Cards[1] },
+                        tupBS.box.Hands.Insert(handIdx+1, new Hand([tupBS.box.Hands[handIdx].Cards[1]],
                             tupBS.box.Hands[handIdx].Bet, false));
+
                         tupBS.box.Hands[handIdx].Cards.RemoveAt(1);
                         tupBS.box.Hands[handIdx].Cards.Add(tupBS.session.Table.DealingShoe.TakeCard());
                         tupBS.box.Hands[handIdx].Splittable = false;
@@ -147,9 +150,48 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
 
 
     //transferturn -> if everyone has played, fire and forget endround
-    //(has to handle giving out a card on the second hand of a split)
+
+
+    public Fin<Hand> TransferTurn(Guid sessionId)
+    {
+        var sess = dataStore.Get(sessionId).Match(
+            Succ: s => s,
+            Fail: e => throw new Exception(e.Message));
+
+        var box = sess.Table.GetBettingBox(sess.CurrentBoxIdx).Match(
+            Succ: b => b,
+            Fail: e => throw new Exception(e.Message));
+
+        box.Hands[sess.CurrentHandIdx].Finished = true;
+
+        if (box.Hands.Count > sess.CurrentHandIdx + 1)
+        {
+            sess.CurrentHandIdx++;
+
+            //(has to handle giving out a card on the second hand of a split)
+            if (box.Hands[sess.CurrentHandIdx].Cards.Count == 1)
+            {
+                box.Hands[sess.CurrentHandIdx].Cards.Add(sess.Table.DealingShoe.TakeCard());
+            }
+            return box.Hands[sess.CurrentHandIdx];
+        }
+
+        var nextBox = sess.Table.BoxesInPlay().Find(b => b.Hands.Any(h => !h.Finished) && b.Idx > box.Idx).Match(
+            Some: b => b,
+            None: () => throw new NotImplementedException()); //TODO: endround
+
+        sess.CurrentBoxIdx = nextBox.Idx;
+        sess.CurrentHandIdx = 0;
+
+        return nextBox.Hands[0];
+
+    }
 
     //endround (if everyone has played)
+    public Fin<Unit> EndTurn()
+    {
+        throw new NotImplementedException();
+    }
 
     public Fin<Unit> ResetSession(Guid sessionId) => dataStore.Get(sessionId).Bind(s => s.Table.Reset());
 }

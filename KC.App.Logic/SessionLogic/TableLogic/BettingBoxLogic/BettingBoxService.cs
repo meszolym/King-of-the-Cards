@@ -6,6 +6,6 @@ namespace KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic
 {
     public static class BettingBoxService
     {
-        public static BettingBox CreateEmptyBettingBox() => new BettingBox([HandService.CreateEmptyHand()], Option<Player>.None);
+        public static BettingBox CreateEmptyBettingBox(int idx) => new BettingBox(idx,[HandService.CreateEmptyHand()], Option<Player>.None);
     }
 }
