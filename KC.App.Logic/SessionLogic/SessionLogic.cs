@@ -119,7 +119,7 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
 
     //TODO: REWRITE LATER
     private Fin<Hand> ExecuteMove(Guid sessionId, int boxIdx, int handIdx, Move move) => dataStore.Get(sessionId)
-        .Bind(s => s.Table.GetBettingBox(boxIdx).Map(b => (box: b, session: s))).Map(
+        .Bind(s => s.Table.GetBettingBox(boxIdx).Map(b => (box: b, session: s))).Bind<Hand>(
             tupBS =>
             {
                 switch (move)
@@ -143,6 +143,8 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
                         tupBS.box.Hands[handIdx].Cards.Add(tupBS.session.Table.DealingShoe.TakeCard());
                         tupBS.box.Hands[handIdx].Splittable = false;
                         break;
+                    default:
+                        return Error.New("Illegal move.");
                 }
 
                 return tupBS.box.Hands[handIdx];
@@ -150,42 +152,34 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
 
 
     //transferturn -> if everyone has played, fire and forget endround
-
-
-    public Fin<Hand> TransferTurn(Guid sessionId)
-    {
-        var sess = dataStore.Get(sessionId).Match(
-            Succ: s => s,
-            Fail: e => throw new Exception(e.Message));
-
-        var box = sess.Table.GetBettingBox(sess.CurrentBoxIdx).Match(
-            Succ: b => b,
-            Fail: e => throw new Exception(e.Message));
-
-        box.Hands[sess.CurrentHandIdx].Finished = true;
-
-        if (box.Hands.Count > sess.CurrentHandIdx + 1)
-        {
-            sess.CurrentHandIdx++;
-
-            //(has to handle giving out a card on the second hand of a split)
-            if (box.Hands[sess.CurrentHandIdx].Cards.Count == 1)
+    //Todo: REWRITE LATER
+    public Fin<Hand> TransferTurn(Guid sessionId) => dataStore.Get(sessionId)
+        .Bind(s => s.Table.GetBettingBox(s.CurrentBoxIdx).Map(b => (sess: s, box: b))).Bind(
+            tupSB =>
             {
-                box.Hands[sess.CurrentHandIdx].Cards.Add(sess.Table.DealingShoe.TakeCard());
-            }
-            return box.Hands[sess.CurrentHandIdx];
-        }
+                tupSB.box.Hands[tupSB.sess.CurrentHandIdx].Finished = true;
+                if (tupSB.box.Hands.Count > tupSB.sess.CurrentHandIdx + 1)
+                {
+                    tupSB.sess.CurrentHandIdx++;
 
-        var nextBox = sess.Table.BoxesInPlay().Find(b => b.Hands.Any(h => !h.Finished) && b.Idx > box.Idx).Match(
-            Some: b => b,
-            None: () => throw new NotImplementedException()); //TODO: endround
+                    //handling of split hands, so that they get two cards each
+                    if (tupSB.box.Hands[tupSB.sess.CurrentHandIdx].Cards.Count == 1)
+                    {
+                        tupSB.box.Hands[tupSB.sess.CurrentHandIdx].Cards.Add(tupSB.sess.Table.DealingShoe.TakeCard());
+                    }
 
-        sess.CurrentBoxIdx = nextBox.Idx;
-        sess.CurrentHandIdx = 0;
+                    return tupSB.box.Hands[tupSB.sess.CurrentHandIdx];
+                }
 
-        return nextBox.Hands[0];
+                return tupSB.sess.Table.BoxesInPlay()
+                    .Find(b => b.Hands.Any(h => !h.Finished) && b.Idx > tupSB.box.Idx).Map(b =>
+                    {
+                        tupSB.sess.CurrentBoxIdx = b.Idx;
+                        tupSB.sess.CurrentHandIdx = 0;
+                        return b.Hands[0];
+                    }).ToFin(Error.New("No hand left to be played"));
 
-    }
+            });
 
     //endround (if everyone has played)
     public Fin<Unit> EndTurn()
