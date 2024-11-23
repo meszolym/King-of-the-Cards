@@ -46,6 +46,7 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
 
     /// <summary>
     /// Places a bet on a box. Make sure to call UpdateTimer after this to start/stop the timer.
+    /// Make sure to take care of player balance changes.
     /// </summary>
     public Fin<BettingBox> PlaceBet(Guid sessionId, int boxIdx, Player player, double amount) => dataStore
         .Get(sessionId)
@@ -85,6 +86,7 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
             //deal cards
             for (int i = 0; i < 2; i++)
             {
+                session.Table.DealerHand.Cards.Add(session.Table.DealingShoe.TakeCard());
                 foreach (BettingBox box in session.Table.BoxesInPlay())
                 {
                     box.Hands[i].Cards.Add(session.Table.DealingShoe.TakeCard());
@@ -151,13 +153,20 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
             });
 
 
-    //transferturn -> if everyone has played, fire and forget endround
+    //transferturn -> if everyone has played, call dealerPlayHand
     //Todo: REWRITE LATER
     public Fin<Hand> TransferTurn(Guid sessionId) => dataStore.Get(sessionId)
         .Bind(s => s.Table.GetBettingBox(s.CurrentBoxIdx).Map(b => (sess: s, box: b))).Bind(
             tupSB =>
             {
                 tupSB.box.Hands[tupSB.sess.CurrentHandIdx].Finished = true;
+
+                //if bust, 0 out bet
+                if (tupSB.box.Hands[tupSB.sess.CurrentHandIdx].GetValue().Value > 21)
+                {
+                    tupSB.box.Hands[tupSB.sess.CurrentHandIdx].Bet = 0;
+                }
+
                 if (tupSB.box.Hands.Count > tupSB.sess.CurrentHandIdx + 1)
                 {
                     tupSB.sess.CurrentHandIdx++;
@@ -178,17 +187,85 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
                         tupSB.sess.CurrentHandIdx = 0;
                         return b.Hands[0];
                     }).ToFin(Error.New("No hand left to be played"));
-
-                //dealer to play hand!!!
-
             });
 
-    //endround (if everyone has played)
-    public Fin<Unit> EndTurn()
+    //TODO: Rewrite later
+    public Fin<Hand> DealerPlayHand(Guid sessionId) => dataStore.Get(sessionId).Map(s =>
     {
-        throw new NotImplementedException();
-        //evaluate hands and pay out.
-    }
+        //dealer plays
+        while (s.Table.DealerHand.GetValue().Value < 17)
+        {
+            s.Table.DealerHand.Cards.Add(s.Table.DealingShoe.TakeCard());
+        }
+        s.Table.DealerHand.Finished = true;
+        return s.Table.DealerHand;
+    });
 
+    //endround (if everyone and the dealer has played)
+    public Fin<Unit> EndTurn(Guid sessionId) => dataStore.Get(sessionId).Map(s =>
+        (dh: s.Table.DealerHand, boxes: s.Table.BoxesInPlay())).Map(
+        tupDB =>
+        {
+            var dhVal = tupDB.dh.GetValue();
+            if (dhVal.Value > 21) //dealer bust
+            {
+                tupDB.boxes.AsIterable().Iter(b => b.Hands.ForEach(h =>
+                {
+                    var hVal = h.GetValue();
+                    if (hVal.Value <= 21) //if player not bust, pay out bet
+                    {
+                        h.Bet += h.Bet;
+
+                        if (hVal.IsBlackJack) //if player has blackjack, pay out 1.5x bet
+                        {
+                            h.Bet += h.Bet / 2;
+                        }
+                    }
+                    else
+                    {
+                        h.Bet = 0;
+                    }
+                }));
+                return Unit.Default;
+            }
+            
+            if (dhVal.IsBlackJack) //dealer blackjack
+            {
+                tupDB.boxes.AsIterable().Iter(b => b.Hands.ForEach(h =>
+                {
+                    if (!h.GetValue().IsBlackJack)
+                    {
+                        h.Bet = 0;
+                    }
+                }));
+                return Unit.Default;
+            }
+
+            //dealer not bust, not blackjack
+            tupDB.boxes.AsIterable().Iter(b => b.Hands.ForEach(h =>
+            {
+                var hVal = h.GetValue();
+                if (hVal.Value <= 21) //if player not bust
+                {
+                    if (hVal.Value > dhVal.Value) //if player has higher value
+                    {
+                        h.Bet += h.Bet;
+                        if (hVal.IsBlackJack) //if player has blackjack, pay out 1.5x bet
+                        {
+                            h.Bet += h.Bet / 2;
+                        }
+                    }
+                    else if (hVal.Value != dhVal.Value) //if player has lower value (same value means bet doesn't change)
+                    {
+                        h.Bet = 0;
+                    }
+                }
+                else //if player bust
+                {
+                    h.Bet = 0;
+                }
+            }));
+            return Unit.Default;
+        });
     public Fin<Unit> ResetSession(Guid sessionId) => dataStore.Get(sessionId).Bind(s => s.Table.Reset());
 }

@@ -14,6 +14,6 @@ public static class SessionService
             new Table(
                 Enumerable.Range(0, (int)numberOfBoxes).Select(BettingBoxService.CreateEmptyBettingBox)
                     .ToImmutableList(),
-                ShoeService.CreateUnshuffledShoe(numberOfBoxes)), timerAfterFirstBet);
+                ShoeService.CreateUnshuffledShoe(numberOfBoxes), new Hand([], 0, false)), timerAfterFirstBet);
 
 }

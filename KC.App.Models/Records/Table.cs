@@ -4,4 +4,4 @@ using LanguageExt;
 
 namespace KC.App.Models.Records;
 
-public record Table(ImmutableList<BettingBox> Boxes, Shoe DealingShoe);
+public record Table(ImmutableList<BettingBox> Boxes, Shoe DealingShoe, Hand DealerHand);
