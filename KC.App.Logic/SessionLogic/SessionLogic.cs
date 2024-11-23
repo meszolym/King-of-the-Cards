@@ -55,6 +55,14 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
             : FinFail<BettingBox>(Error.New("Can not place bets at this time.")))
         .Bind(b => b.PlaceBet(player, amount));
 
+    public Fin<double> GetBetOnBox(Guid sessionId, int boxIdx) => GetBetOnHand(sessionId, boxIdx, 0);
+
+    public Fin<double> GetBetOnHand(Guid sessionId, int boxIdx, int handIdx) => dataStore
+        .Get(sessionId)
+        .Bind(s => s.Table.GetBettingBox(boxIdx))
+        .Bind<Hand>(b => b.Hands.ElementAtOrDefault(handIdx))
+        .Map(h => h.Bet);
+
     /// <summary>
     /// Starts/stops the timer based on whether there are any bets placed.
     /// </summary>
@@ -106,7 +114,7 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
 
     /// <summary>
     /// After making a move, make sure to call GetPossibleActions and TransferTurn if there's no more possible actions (except stand) on a hand.
-    /// Does not handle player balance changes.
+    /// Does not handle player balance changes (eg. split, double).
     /// </summary>
     /// <param name="sessionId"></param>
     /// <param name="boxIdx"></param>
@@ -202,6 +210,12 @@ internal class SessionLogic(IDataStore<Session, Guid> dataStore)
     });
 
     //endround (if everyone and the dealer has played)
+    //TODO: REWRITE LATER
+    /// <summary>
+    /// Ends the turn, pays out bets to the boxes.
+    /// Make sure to handle player balance changes.
+    /// 
+    /// </summary>
     public Fin<Unit> EndTurn(Guid sessionId) => dataStore.Get(sessionId).Map(s =>
         (dh: s.Table.DealerHand, boxes: s.Table.BoxesInPlay())).Map(
         tupDB =>
