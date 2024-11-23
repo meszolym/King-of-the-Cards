@@ -10,6 +10,6 @@ public class Session(Guid id, Table table, Timer betPlacementTimer) : IIdentityB
     public Table Table { get; } = table;
     public Timer BetPlacementTimer { get; } = betPlacementTimer;
     public bool CanPlaceBets { get; set; } = true;
-    public int CurrentBoxIdx { get; set; } = -1; //invalid index
-    public int CurrentHandIdx { get; set; } = -1; //invalid index
+    public int? CurrentBoxIdx { get; set; } = null; //invalid index
+    public int? CurrentHandIdx { get; set; } = null; //invalid index
 }

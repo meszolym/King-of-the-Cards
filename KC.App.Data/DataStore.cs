@@ -1,7 +1,4 @@
 ﻿using KC.App.Models.Interfaces;
-using LanguageExt;
-using LanguageExt.Common;
-using static LanguageExt.Prelude;
 
 namespace KC.App.Data
 {
@@ -9,33 +6,39 @@ namespace KC.App.Data
     {
         public IEnumerable<TVal> GetAll() => data;
 
-        public Fin<Unit> Add(TVal item) => Get(item.Id).Match<Fin<Unit>>(
-            Some: _ => FinFail<Unit>(Error.New("Item with this Id already exists")),
-            None: () =>
+        public void Add(TVal item)
+        {
+            if (Get(item.Id) is not null)
             {
-                data.Add(item);
-                return Unit.Default;
+                throw new ArgumentException("Item with this Id already exists");
             }
-        );
 
-        public Fin<Unit> Remove(TKey id) => Get(id).Match<Fin<Unit>>(
-            Some: _ =>
+            data.Add(item);
+
+            return;
+        }
+
+        public void Remove(TKey id)
+        {
+            var item = Get(id);
+            if (item is null)
             {
-                data.RemoveAll(item => item.Id.Equals(id));
-                return Unit.Default;
-            },
-            None: () => FinFail<Unit>(Error.New("Item with this Id does not exist"))
-        );
+                throw new ArgumentException("Item with this Id does not exist");
+            }
 
-        public Option<TVal> Get(TKey id) => data.SingleOrDefault(d => d.Id.Equals(id));
+            data.Remove(item);
+        }
 
-        public Fin<Unit> Update(TVal item) => Get(item.Id).Match<Fin<Unit>>(
-            Some: _ =>
+        public TVal? Get(TKey id) => data.SingleOrDefault(d => d.Id.Equals(id));
+
+        public void Update(TVal item)
+        {
+            if (Get(item.Id) is null)
             {
-                data[data.FindIndex(d => d.Id.Equals(item.Id))] = item;
-                return Unit.Default;
-            },
-            None: () => FinFail<Unit>(Error.New("Item with this Id does not exist"))
-        );
+                throw new ArgumentException("Item with this Id does not exist");
+            }
+
+            data[data.FindIndex(d => d.Id.Equals(item.Id))] = item;
+        }
     }
 }
