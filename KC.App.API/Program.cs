@@ -3,6 +3,7 @@ using KC.App.Logic.Interfaces;
 using KC.App.Logic.SessionLogic;
 using KC.App.Logic.PlayerLogic;
 using KC.App.Models.Classes;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace KC.App.API
 {
@@ -42,6 +43,20 @@ namespace KC.App.API
             //app.UseAuthorization();
 
             app.MapControllers();
+
+            app.UseExceptionHandler(c => c.Run(async context =>
+            {
+                var ex = context.Features
+                    .Get<IExceptionHandlerPathFeature>()
+                    .Error;
+                var resp = new
+                {
+                    Type = ex.GetType().Name,
+                    Msg = ex.Message
+                };
+                await context.Response.WriteAsJsonAsync(resp);
+
+            }));
 
             app.Run();
         }
