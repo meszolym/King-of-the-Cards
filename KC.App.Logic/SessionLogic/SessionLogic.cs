@@ -11,16 +11,12 @@ using KC.App.Logic.SessionLogic.TableLogic.ShoeLogic;
 using KC.App.Models.Classes;
 using KC.App.Models.Enums;
 using KC.App.Models.Structs;
-using LanguageExt;
-using LanguageExt.Common;
-using LanguageExt.Traits;
-using static LanguageExt.Prelude;
 using Timer = System.Timers.Timer;
-using Unit = LanguageExt.Unit;
+
 
 namespace KC.App.Logic.SessionLogic;
 
-public class SessionLogic(IDataStore<Session, Guid> dataStore) : ISessionLogic
+public class SessionLogic(IDataStore<Session, Guid> dataStore)
 {
     private readonly Subject<TurnInfo> _turnChangedSubject = new();
     public IObservable<TurnInfo> TurnChangedObservable => _turnChangedSubject;

@@ -1,4 +1,5 @@
 ﻿using KC.App.Logic.Interfaces;
+using KC.App.Models.Classes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KC.App.API.Controllers
@@ -8,10 +9,7 @@ namespace KC.App.API.Controllers
     public class PlayerController(IPlayerLogic logic) : Controller
     {
         [HttpGet]
-        public IActionResult GetPlayer(string Id) => logic.Get(Id).Match<IActionResult>(
-            Some: player => Ok(player),
-            None: NotFound
-        );
+        public Player GetPlayer(string Id) => logic.Get(Id);
 
 
 

@@ -8,37 +8,30 @@ namespace KC.App.Data
 
         public void Add(TVal item)
         {
-            if (Get(item.Id) is not null)
+            try
             {
-                throw new ArgumentException("Item with this Id already exists");
+                Get(item.Id);
             }
-
-            data.Add(item);
-
-            return;
+            catch (Exception e)
+            {
+                data.Add(item);
+                return;
+            }
+            
+            throw new ArgumentException("Item with this ID already exists");
         }
 
         public void Remove(TKey id)
         {
             var item = Get(id);
-            if (item is null)
-            {
-                throw new ArgumentException("Item with this Id does not exist");
-            }
-
             data.Remove(item);
         }
 
-        public TVal? Get(TKey id) => data.SingleOrDefault(d => d.Id.Equals(id));
+        public TVal Get(TKey id) => data.Single(d => d.Id.Equals(id));
 
         public void Update(TVal item)
         {
-            if (Get(item.Id) is null)
-            {
-                throw new ArgumentException("Item with this Id does not exist");
-            }
-
-            data[data.FindIndex(d => d.Id.Equals(item.Id))] = item;
+            data[data.IndexOf(Get(item.Id))] = item;
         }
     }
 }

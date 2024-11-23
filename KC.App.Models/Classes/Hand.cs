@@ -1,6 +1,5 @@
 ﻿using KC.App.Models.Structs;
 using KC.App.Models.Enums;
-using LanguageExt;
 
 namespace KC.App.Models.Classes;
 

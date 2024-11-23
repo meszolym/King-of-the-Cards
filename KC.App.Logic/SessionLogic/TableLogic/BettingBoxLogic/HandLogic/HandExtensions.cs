@@ -5,9 +5,6 @@ using KC.App.Logic.SessionLogic.TableLogic.ShoeLogic;
 using KC.App.Models.Classes;
 using KC.App.Models.Enums;
 using KC.App.Models.Structs;
-using LanguageExt;
-using LanguageExt.Common;
-using static LanguageExt.Prelude;
 
 namespace KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
 
@@ -34,50 +31,30 @@ public static class HandExtensions
         return new HandValue(value, isBlackJack, isPair, isSoft);
     }
 
-
-    public static string GetValueString(this Hand hand) => (hand, val: hand.GetValue()) switch
+    public static string GetValueString(this Hand hand)
     {
-        { val.IsBlackJack: true } => "BJ",
-        { val.IsSoft: true, val.IsPair: true, hand.Splittable: true } => "P11", //Pair of Aces
-        { val.IsSoft: true } => $"S{hand.GetValue().Value}",
-        { val.IsPair: true, hand.Splittable: true } => $"P{hand.GetValue().Value / 2}",
-        _ => hand.GetValue().Value.ToString()
-    };
-
-    public static Option<Seq<Move>> GetPossibleActions(this Hand hand)
-    => (hand, val: hand.GetValue(), firstCard: hand.Cards.ElementAtOrDefault(0)) switch
-    {
-        { hand.Cards.Count: < 2 } => Option<Seq<Move>>.None,
-        { hand.Finished: true } => new Seq<Move>(), //no action on finished hands
-        { val.Value: >= 21 } => new Seq<Move>(), //no action on bust hands
-        { firstCard.Face: CardFace.Ace, hand.Splittable: false } => new Seq<Move>(), //no action on split aces (they automatically get only one card)
-        _ => new Seq<Move>()
-            .Add(Move.Stand) //can always stand
-            .Add(Move.Hit) //can hit on any card
-            .AddIf(hand.Cards.Count() == 2, Move.Double) //can double on any two cards
-            .AddIf(hand.Splittable && hand.GetValue().IsPair, Move.Split) //can split if the hand has not been split (splittable) and it is a pair
-    };
-
-    public static Hand Finish(this Hand hand)
-    {
-        hand.Finished = true;
-        return hand;
-    }
-    public static Hand AddCard(this Hand hand, Card card)
-    {
-        hand.Cards.Add(card);
-        return hand;
+        if (hand.GetValue().IsBlackJack) return "BJ";
+        if (hand.GetValue().IsSoft && hand.GetValue().IsPair && hand.Splittable) return "P11"; //Pair of Aces
+        if (hand.GetValue().IsSoft) return $"S{hand.GetValue().Value}";
+        if (hand.GetValue().IsPair && hand.Splittable) return $"P{hand.GetValue().Value / 2}";
+        return hand.GetValue().Value.ToString();
     }
 
-    public static Hand Double(this Hand hand, Card card)
+    public static List<Move> GetPossibleActions(this Hand hand)
     {
-        hand.Bet *= 2;
-        return hand.AddCard(card);
-    }
+        if (hand.Cards.Count < 2) throw new InvalidOperationException("Cannot get actions for incomplete hand");
+        if (hand.Finished) return []; //no action on finished hands
+        if (hand.GetValue().Value >= 21) return []; //no action on bust hands
+        if (hand.Cards[0].Face == CardFace.Ace && !hand.Splittable) return []; //no action on split aces (they automatically get only one card)
 
-    public static Hand SetBet(this Hand hand, double amount)
-    {
-        hand.Bet = amount;
-        return hand;
+        var moves = new List<Move>
+        {
+            Move.Stand, //can always stand
+            Move.Hit //can hit on any card
+        };
+
+        if (hand.Cards.Count() == 2) moves.Add(Move.Double); //can double on any two cards
+        if (hand.Splittable && hand.GetValue().IsPair) moves.Add(Move.Split); //can split if the hand has not been split (splittable) and it is a pair
+        return moves;
     }
 }

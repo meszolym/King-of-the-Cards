@@ -7,6 +7,6 @@ public interface IDataStore<TVal, TKey> where TVal : class, IIdentityBearer<TKey
     IEnumerable<TVal> GetAll();
     void Add(TVal item);
     void Remove(TKey id);
-    TVal? Get(TKey id);
+    TVal Get(TKey id);
     void Update(TVal item);
 }

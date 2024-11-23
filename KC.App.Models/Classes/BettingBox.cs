@@ -1,6 +1,4 @@
-﻿using LanguageExt;
-
-namespace KC.App.Models.Classes;
+﻿namespace KC.App.Models.Classes;
 
 public class BettingBox(int idx, List<Hand> hands, Player? owner)
 {
