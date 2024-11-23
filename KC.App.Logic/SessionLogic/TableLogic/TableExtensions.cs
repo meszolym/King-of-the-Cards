@@ -2,6 +2,7 @@
 using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic;
 using KC.App.Models.Classes;
 using KC.App.Models.Records;
+using KC.App.Models.Structs;
 
 namespace KC.App.Logic.SessionLogic.TableLogic
 {

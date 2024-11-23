@@ -52,14 +52,4 @@ public static class BettingBoxExtensions
         box.Hands.Add(HandService.CreateEmptyHand());
     }
 
-    public static Hand Split(this BettingBox box, int handIdx, Card card)
-    {
-        box.Hands.Insert(handIdx + 1, new Hand([box.Hands[handIdx].Cards[1]], box.Hands[handIdx].Bet, false));
-        box.Hands[handIdx].Cards.RemoveAt(1);
-        box.Hands[handIdx].Splittable = false;
-        box.Hands[handIdx].Cards.Add(card);
-
-        return box.Hands[handIdx];
-    }
-
 }

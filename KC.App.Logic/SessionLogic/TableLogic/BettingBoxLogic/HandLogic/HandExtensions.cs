@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using KC.App.Logic.CardLogic;
-using KC.App.Logic.Other_extensions;
 using KC.App.Logic.SessionLogic.TableLogic.ShoeLogic;
 using KC.App.Models.Classes;
 using KC.App.Models.Enums;
