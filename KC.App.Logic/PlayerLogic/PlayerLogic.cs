@@ -1,10 +1,11 @@
 ﻿using KC.App.Data;
+using KC.App.Logic.Interfaces;
 using KC.App.Models.Classes;
 using LanguageExt;
 
 namespace KC.App.Logic.PlayerLogic
 {
-    public class PlayerLogic(IDataStore<Player,string> dataStore)
+    public class PlayerLogic(IDataStore<Player,string> dataStore) : IPlayerLogic
     {
         public IEnumerable<Player> GetAll() => dataStore.GetAll();
 

@@ -12,10 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KC.App.Data\KC.App.Data.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\KC.App.Logic\KC.App.Logic.csproj" />
   </ItemGroup>
 
 </Project>

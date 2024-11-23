@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reactive.Subjects;
 using System.Reflection.Metadata.Ecma335;
 using KC.App.Data;
+using KC.App.Logic.Interfaces;
 using KC.App.Logic.SessionLogic.TableLogic;
 using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic;
 using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
@@ -19,7 +20,7 @@ using Unit = LanguageExt.Unit;
 
 namespace KC.App.Logic.SessionLogic;
 
-internal class SessionLogic(IDataStore<Session, Guid> dataStore)
+public class SessionLogic(IDataStore<Session, Guid> dataStore) : ISessionLogic
 {
     private readonly Subject<TurnInfo> _turnChangedSubject = new();
     public IObservable<TurnInfo> TurnChangedObservable => _turnChangedSubject;

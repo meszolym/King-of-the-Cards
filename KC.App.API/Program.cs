@@ -1,5 +1,7 @@
-
 using KC.App.Data;
+using KC.App.Logic.Interfaces;
+using KC.App.Logic.SessionLogic;
+using KC.App.Logic.PlayerLogic;
 using KC.App.Models.Classes;
 
 namespace KC.App.API
@@ -17,8 +19,16 @@ namespace KC.App.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddSingleton<IDataStore<Player, string>, DataStore<Player, string>>();
-            builder.Services.AddSingleton<IDataStore<Session, Guid>, DataStore<Session, Guid>>();
+            List<Player> players = [];
+            List<Session> sessions = [];
+
+            builder.Services.AddSingleton(players);
+            builder.Services.AddSingleton(sessions);
+
+            builder.Services.AddTransient<IDataStore<Player, string>, DataStore<Player, string>>();
+            builder.Services.AddTransient<IDataStore<Session, Guid>, DataStore<Session, Guid>>();
+            builder.Services.AddTransient<IPlayerLogic, PlayerLogic>();
+            builder.Services.AddTransient<ISessionLogic, SessionLogic>();
 
             var app = builder.Build();
 
@@ -28,7 +38,7 @@ namespace KC.App.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            
             //app.UseAuthorization();
 
             app.MapControllers();
