@@ -44,10 +44,10 @@ public static class HandExtensions
         _ => hand.GetValue().Value.ToString()
     };
 
-    public static Fin<Seq<Move>> GetPossibleActions(this Hand hand)
+    public static Option<Seq<Move>> GetPossibleActions(this Hand hand)
     => (hand, val: hand.GetValue(), firstCard: hand.Cards.ElementAtOrDefault(0)) switch
     {
-        { hand.Cards.Count: < 2 } => FinFail<Seq<Move>>(Error.New("Can't get actions on incomplete hand")),
+        { hand.Cards.Count: < 2 } => Option<Seq<Move>>.None,
         { hand.Finished: true } => new Seq<Move>(), //no action on finished hands
         { val.Value: >= 21 } => new Seq<Move>(), //no action on bust hands
         { firstCard.Face: CardFace.Ace, hand.Splittable: false } => new Seq<Move>(), //no action on split aces (they automatically get only one card)
@@ -57,4 +57,27 @@ public static class HandExtensions
             .AddIf(hand.Cards.Count() == 2, Move.Double) //can double on any two cards
             .AddIf(hand.Splittable && hand.GetValue().IsPair, Move.Split) //can split if the hand has not been split (splittable) and it is a pair
     };
+
+    public static Hand Finish(this Hand hand)
+    {
+        hand.Finished = true;
+        return hand;
+    }
+    public static Hand AddCard(this Hand hand, Card card)
+    {
+        hand.Cards.Add(card);
+        return hand;
+    }
+
+    public static Hand Double(this Hand hand, Card card)
+    {
+        hand.Bet *= 2;
+        return hand.AddCard(card);
+    }
+
+    public static Hand SetBet(this Hand hand, double amount)
+    {
+        hand.Bet = amount;
+        return hand;
+    }
 }

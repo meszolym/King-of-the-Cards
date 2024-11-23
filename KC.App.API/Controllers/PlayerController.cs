@@ -9,8 +9,8 @@ namespace KC.App.API.Controllers
     {
         [HttpGet]
         public IActionResult GetPlayer(string Id) => logic.Get(Id).Match<IActionResult>(
-            Succ: player => Ok(player),
-            Fail: NotFound
+            Some: player => Ok(player),
+            None: NotFound
         );
 
 

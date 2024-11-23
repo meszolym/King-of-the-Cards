@@ -1,5 +1,6 @@
 using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
 using KC.App.Models.Classes;
+using KC.App.Models.Structs;
 using LanguageExt;
 using LanguageExt.Common;
 using static LanguageExt.Prelude;
@@ -49,6 +50,22 @@ public static class BettingBoxExtensions
         box.Hands.Clear();
         box.Hands.Add(HandService.CreateEmptyHand());
         return unit;
+    }
+
+    public static Option<Hand> Split(this BettingBox box, int handIdx, Card card)
+    {
+        //        case Move.Split:
+        //            tupBS.box.Hands.Insert(handIdx+1, new Hand([tupBS.box.Hands[handIdx].Cards[1]],
+        //                tupBS.box.Hands[handIdx].Bet, false));
+
+        //            tupBS.box.Hands[handIdx].Cards.RemoveAt(1);
+        //            tupBS.box.Hands[handIdx].Cards.Add(tupBS.session.Table.DealingShoe.TakeCard());
+        //            tupBS.box.Hands[handIdx].Splittable = false;
+        //            break;
+        box.Hands.Insert(handIdx + 1, new Hand(new List<Card> { box.Hands[handIdx].Cards[1] }, box.Hands[handIdx].Bet, false));
+        box.Hands[handIdx].Cards.RemoveAt(1);
+        box.Hands[handIdx].Splittable = false;
+        return box.Hands[handIdx].AddCard(card);
     }
 
 }

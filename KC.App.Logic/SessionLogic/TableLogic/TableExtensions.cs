@@ -8,12 +8,12 @@ namespace KC.App.Logic.SessionLogic.TableLogic
 {
     public static class TableExtensions
     {
-        public static Fin<BettingBox> GetBettingBox(this Table table, int boxIdx) =>
-            Try.lift(() => table.Boxes.ElementAt(boxIdx)).Run();
+        public static Option<BettingBox> GetBettingBox(this Table table, int boxIdx) =>
+            table.Boxes.ElementAtOrDefault(boxIdx);
 
         public static Seq<BettingBox> BoxesInPlay(this Table table) => new(table.Boxes.Where(box => box.Hands[0].Bet > 0).OrderBy(b => b.Idx));
 
-        public static Fin<Unit> Reset(this Table table)
+        public static Unit Reset(this Table table)
         {
             table.Boxes.ForEach(b => b.ClearHands());
             return Unit.Default;

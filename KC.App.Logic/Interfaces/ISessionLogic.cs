@@ -20,8 +20,8 @@ public interface ISessionLogic
     /// </summary>
     Fin<BettingBox> PlaceBet(Guid sessionId, int boxIdx, Player player, double amount);
 
-    Fin<double> GetBetOnBox(Guid sessionId, int boxIdx);
-    Fin<double> GetBetOnHand(Guid sessionId, int boxIdx, int handIdx);
+    Option<double> GetBetOnBox(Guid sessionId, int boxIdx);
+    Option<double> GetBetOnHand(Guid sessionId, int boxIdx, int handIdx);
 
     /// <summary>
     /// Starts/stops the timer based on whether there are any bets placed.
@@ -29,9 +29,9 @@ public interface ISessionLogic
     /// <returns>Fin of bool, if the session exists, the bool represents if the timer is running or not.</returns>
     Fin<bool> UpdateTimer(Guid sessionId);
 
-    Fin<(int boxIdx, int handIdx)> GetCurrentTurn(Guid sessionId);
+    Option<(int boxIdx, int handIdx)> GetCurrentTurn(Guid sessionId);
     Fin<Unit> StartDealing(Guid sessionId);
-    Fin<Seq<Move>> GetPossibleActions(Guid sessionId, int boxIdx, int handIdx);
+    Option<Seq<Move>> GetPossibleActions(Guid sessionId, int boxIdx, int handIdx);
 
     /// <summary>
     /// After making a move, make sure to call GetPossibleActions and TransferTurn if there's no more possible actions (except stand) on a hand.
@@ -42,17 +42,17 @@ public interface ISessionLogic
     /// <param name="handIdx"></param>
     /// <param name="player"></param>
     /// <param name="move"></param>
-    void MakeMove(Guid sessionId, int boxIdx, int handIdx, Player player, Move move);
+    Fin<Hand> MakeMove(Guid sessionId, int boxIdx, int handIdx, Player player, Move move);
 
-    Fin<Hand> TransferTurn(Guid sessionId);
-    Fin<Hand> DealerPlayHand(Guid sessionId);
+    Option<Hand> TransferTurn(Guid sessionId);
+    Option<Hand> DealerPlayHand(Guid sessionId);
 
     /// <summary>
     /// Ends the turn, pays out bets to the boxes.
     /// Make sure to handle player balance changes.
     /// 
     /// </summary>
-    Fin<Unit> EndTurn(Guid sessionId);
+    Option<Unit> EndTurn(Guid sessionId);
 
-    Fin<Unit> ResetSession(Guid sessionId);
+    Option<Unit> ResetSession(Guid sessionId);
 }

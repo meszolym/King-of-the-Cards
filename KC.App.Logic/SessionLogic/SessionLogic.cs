@@ -33,16 +33,18 @@ public class SessionLogic(IDataStore<Session, Guid> dataStore) : ISessionLogic
 
     public Fin<BettingBox> ClaimBox(Guid sessionId, int boxIdx, Player player) => dataStore
         .Get(sessionId)
-        .Bind(s => s.CanPlaceBets
-            ? s.Table.GetBettingBox(boxIdx)
-            : FinFail<BettingBox>(Error.New("Can not claim boxes at this time.")))
+        .Bind(s => s.CanPlaceBets 
+            ? s.Table.GetBettingBox(boxIdx) 
+            : Option<BettingBox>.None)
+        .ToFin(Error.New("Can not claim boxes at this time."))
         .Bind(b => b.Claim(player));
 
     public Fin<BettingBox> DisclaimBox(Guid sessionId, int boxIdx, Player player) => dataStore
         .Get(sessionId)
         .Bind(s => s.CanPlaceBets
             ? s.Table.GetBettingBox(boxIdx)
-            : FinFail<BettingBox>(Error.New("Can not disclaim boxes at this time.")))
+            : Option<BettingBox>.None)
+        .ToFin(Error.New("Can not disclaim boxes at this time."))
         .Bind(b => b.Disclaim(player));
 
     /// <summary>
@@ -53,12 +55,13 @@ public class SessionLogic(IDataStore<Session, Guid> dataStore) : ISessionLogic
         .Get(sessionId)
         .Bind(s => s.CanPlaceBets
             ? s.Table.GetBettingBox(boxIdx)
-            : FinFail<BettingBox>(Error.New("Can not place bets at this time.")))
+            : Option<BettingBox>.None)
+        .ToFin(Error.New("Can not place bets at this time."))
         .Bind(b => b.PlaceBet(player, amount));
 
-    public Fin<double> GetBetOnBox(Guid sessionId, int boxIdx) => GetBetOnHand(sessionId, boxIdx, 0);
+    public Option<double> GetBetOnBox(Guid sessionId, int boxIdx) => GetBetOnHand(sessionId, boxIdx, 0);
 
-    public Fin<double> GetBetOnHand(Guid sessionId, int boxIdx, int handIdx) => dataStore
+    public Option<double> GetBetOnHand(Guid sessionId, int boxIdx, int handIdx) => dataStore
         .Get(sessionId)
         .Bind(s => s.Table.GetBettingBox(boxIdx))
         .Bind<Hand>(b => b.Hands.ElementAtOrDefault(handIdx))
@@ -69,7 +72,7 @@ public class SessionLogic(IDataStore<Session, Guid> dataStore) : ISessionLogic
     /// </summary>
     /// <returns>Fin of bool, if the session exists, the bool represents if the timer is running or not.</returns>
     public Fin<bool> UpdateTimer(Guid sessionId) => dataStore
-        .Get(sessionId)
+        .Get(sessionId).ToFin(Error.New("Session does not exist."))
         .Map(s =>
         {
             if (s.Table.Boxes.Any(b => b.Hands[0].Bet > 0) && !s.BetPlacementTimer.Enabled) s.BetPlacementTimer.Start();
@@ -78,13 +81,16 @@ public class SessionLogic(IDataStore<Session, Guid> dataStore) : ISessionLogic
             return s.BetPlacementTimer.Enabled;
         });
 
-    public Fin<(int boxIdx, int handIdx)> GetCurrentTurn(Guid sessionId) => dataStore
+    public Option<(int boxIdx, int handIdx)> GetCurrentTurn(Guid sessionId) => dataStore
         .Get(sessionId)
         .Map(s => (s.CurrentBoxIdx, s.CurrentHandIdx));
 
     
     //TODO: REWRITE LATER
-    public Fin<Unit> StartDealing(Guid sessionId) => dataStore.Get(sessionId).Map(session =>
+    public Fin<Unit> StartDealing(Guid sessionId) => dataStore
+        .Get(sessionId)
+        .ToFin(Error.New("Cannot find session"))
+        .Map(session =>
         {
             //if shoe needs shuffling, shuffle
             if (session.Table.DealingShoe.ShuffleCardIdx <= session.Table.DealingShoe.NextCardIdx)
@@ -95,22 +101,25 @@ public class SessionLogic(IDataStore<Session, Guid> dataStore) : ISessionLogic
             //deal cards
             for (int i = 0; i < 2; i++)
             {
-                session.Table.DealerHand.Cards.Add(session.Table.DealingShoe.TakeCard());
                 foreach (BettingBox box in session.Table.BoxesInPlay())
                 {
                     box.Hands[i].Cards.Add(session.Table.DealingShoe.TakeCard());
                 }
+                session.Table.DealerHand.Cards.Add(session.Table.DealingShoe.TakeCard());
             }
 
             return Unit.Default;
         });
 
-    public Fin<Seq<Move>> GetPossibleActions(Guid sessionId, int boxIdx, int handIdx) => dataStore.Get(sessionId).Bind(s => s.Table.GetBettingBox(boxIdx))
+    public Option<Seq<Move>> GetPossibleActions(Guid sessionId, int boxIdx, int handIdx) => dataStore.Get(sessionId).Bind(s => s.Table.GetBettingBox(boxIdx))
         .Bind<Hand>(b => b.Hands.ElementAtOrDefault(handIdx))
         .Bind(h => h.GetPossibleActions());
 
     private Fin<Hand> GetHandWithOwnerValidation(Guid sessionId, int boxIdx, int handIdx, Player player) => dataStore
-        .Get(sessionId).Bind(s => s.Table.GetBettingBox(boxIdx)).Bind(b => b.CheckOwner(player))
+        .Get(sessionId)
+        .Bind(s => s.Table.GetBettingBox(boxIdx))
+        .ToFin(Error.New("Session cannot be found."))
+        .Bind(b => b.CheckOwner(player))
         .Bind<Hand>(b => b.Hands.ElementAtOrDefault(handIdx));
 
     /// <summary>
@@ -122,84 +131,67 @@ public class SessionLogic(IDataStore<Session, Guid> dataStore) : ISessionLogic
     /// <param name="handIdx"></param>
     /// <param name="player"></param>
     /// <param name="move"></param>
-    public void MakeMove(Guid sessionId, int boxIdx, int handIdx, Player player, Move move) =>
+    public Fin<Hand> MakeMove(Guid sessionId, int boxIdx, int handIdx, Player player, Move move) =>
         GetHandWithOwnerValidation(sessionId, boxIdx, handIdx, player)
-            .Bind(h => h.GetPossibleActions().Bind(possibleMoves => possibleMoves.Any(m => m == move)
-                ? ExecuteMove(sessionId, boxIdx, handIdx, move)
-                : FinFail<Hand>(Error.New("Can not make this move on this hand."))));
+            .Bind(h => h.GetPossibleActions().ToFin(Error.New("No possible actions found")))
+            .Bind(possibleMoves => 
+                possibleMoves.Any(m => m == move)
+                ? ExecuteMove(sessionId, boxIdx, handIdx, move).ToFin(Error.New("Action not possible"))
+                : Error.New("Action not possible"));
 
     //TODO: REWRITE LATER
-    private Fin<Hand> ExecuteMove(Guid sessionId, int boxIdx, int handIdx, Move move) => dataStore.Get(sessionId)
-        .Bind(s => s.Table.GetBettingBox(boxIdx).Map(b => (box: b, session: s))).Bind<Hand>(
-            tupBS =>
+    private Option<Hand> ExecuteMove(Guid sessionId, int boxIdx, int handIdx, Move move) => dataStore.Get(sessionId)
+        
+        .Bind(s => s.Table.GetBettingBox(boxIdx).Map(b => (sess: s, box: b))).Bind(
+            tupSB => move switch
             {
-                switch (move)
-                {
-                    case Move.Stand:
-                        tupBS.box.Hands[handIdx].Finished = true;
-                        break;
-                    case Move.Hit:
-                        tupBS.box.Hands[handIdx].Cards.Add(tupBS.session.Table.DealingShoe.TakeCard());
-                        break;
-                    case Move.Double:
-                        tupBS.box.Hands[handIdx].Bet *= 2;
-                        tupBS.box.Hands[handIdx].Cards.Add(tupBS.session.Table.DealingShoe.TakeCard());
-                        tupBS.box.Hands[handIdx].Finished = true;
-                        break;
-                    case Move.Split:
-                        tupBS.box.Hands.Insert(handIdx+1, new Hand([tupBS.box.Hands[handIdx].Cards[1]],
-                            tupBS.box.Hands[handIdx].Bet, false));
-
-                        tupBS.box.Hands[handIdx].Cards.RemoveAt(1);
-                        tupBS.box.Hands[handIdx].Cards.Add(tupBS.session.Table.DealingShoe.TakeCard());
-                        tupBS.box.Hands[handIdx].Splittable = false;
-                        break;
-                    default:
-                        return Error.New("Illegal move.");
-                }
-
-                return tupBS.box.Hands[handIdx];
+                Move.Stand => tupSB.box.Hands[handIdx].Finish(),
+                Move.Hit => tupSB.box.Hands[handIdx].AddCard(tupSB.sess.Table.DealingShoe.TakeCard()),
+                Move.Double => tupSB.box.Hands[handIdx].Double(tupSB.sess.Table.DealingShoe.TakeCard()),
+                Move.Split => tupSB.box.Split(handIdx, tupSB.sess.Table.DealingShoe.TakeCard()),
+                _ => Option<Hand>.None
             });
 
 
     //transferturn -> if everyone has played, call dealerPlayHand
     //Todo: REWRITE LATER
-    public Fin<Hand> TransferTurn(Guid sessionId) => dataStore.Get(sessionId)
-        .Bind(s => s.Table.GetBettingBox(s.CurrentBoxIdx).Map(b => (sess: s, box: b))).Bind(
-            tupSB =>
+    public Option<Hand> TransferTurn(Guid sessionId) => dataStore.Get(sessionId)
+        .Bind(s => s.Table.GetBettingBox(s.CurrentBoxIdx).Map(b =>
+        {
+            b.Hands[s.CurrentHandIdx].Finish();
+            return (sess: s, box: b);
+        })).Bind(tupSB =>
+        {
+            //if bust, 0 out bet
+            if (tupSB.box.Hands[tupSB.sess.CurrentHandIdx].GetValue().Value > 21)
             {
-                tupSB.box.Hands[tupSB.sess.CurrentHandIdx].Finished = true;
+                tupSB.box.Hands[tupSB.sess.CurrentHandIdx].Bet = 0;
+            }
 
-                //if bust, 0 out bet
-                if (tupSB.box.Hands[tupSB.sess.CurrentHandIdx].GetValue().Value > 21)
+            if (tupSB.box.Hands.Count > tupSB.sess.CurrentHandIdx + 1)
+            {
+                tupSB.sess.CurrentHandIdx++;
+
+                //handling of split hands, so that they get two cards each
+                if (tupSB.box.Hands[tupSB.sess.CurrentHandIdx].Cards.Count == 1)
                 {
-                    tupSB.box.Hands[tupSB.sess.CurrentHandIdx].Bet = 0;
+                    tupSB.box.Hands[tupSB.sess.CurrentHandIdx].Cards.Add(tupSB.sess.Table.DealingShoe.TakeCard());
                 }
 
-                if (tupSB.box.Hands.Count > tupSB.sess.CurrentHandIdx + 1)
+                return tupSB.box.Hands[tupSB.sess.CurrentHandIdx];
+            }
+
+            return ((Option<BettingBox>)tupSB.sess.Table.BoxesInPlay()
+                .FirstOrDefault(b => b.Hands.Any(h => !h.Finished) && b.Idx > tupSB.box.Idx)).Map(b =>
                 {
-                    tupSB.sess.CurrentHandIdx++;
-
-                    //handling of split hands, so that they get two cards each
-                    if (tupSB.box.Hands[tupSB.sess.CurrentHandIdx].Cards.Count == 1)
-                    {
-                        tupSB.box.Hands[tupSB.sess.CurrentHandIdx].Cards.Add(tupSB.sess.Table.DealingShoe.TakeCard());
-                    }
-
-                    return tupSB.box.Hands[tupSB.sess.CurrentHandIdx];
-                }
-
-                return tupSB.sess.Table.BoxesInPlay()
-                    .Find(b => b.Hands.Any(h => !h.Finished) && b.Idx > tupSB.box.Idx).Map(b =>
-                    {
-                        tupSB.sess.CurrentBoxIdx = b.Idx;
-                        tupSB.sess.CurrentHandIdx = 0;
-                        return b.Hands[0];
-                    }).ToFin(Error.New("No hand left to be played"));
-            });
+                    tupSB.sess.CurrentBoxIdx = b.Idx;
+                    tupSB.sess.CurrentHandIdx = 0;
+                    return b.Hands[0];
+                });
+        });
 
     //TODO: Rewrite later
-    public Fin<Hand> DealerPlayHand(Guid sessionId) => dataStore.Get(sessionId).Map(s =>
+    public Option<Hand> DealerPlayHand(Guid sessionId) => dataStore.Get(sessionId).Map(s =>
     {
         //dealer plays
         while (s.Table.DealerHand.GetValue().Value < 17)
@@ -217,9 +209,9 @@ public class SessionLogic(IDataStore<Session, Guid> dataStore) : ISessionLogic
     /// Make sure to handle player balance changes.
     /// 
     /// </summary>
-    public Fin<Unit> EndTurn(Guid sessionId) => dataStore.Get(sessionId).Map(s =>
+    public Option<Unit> EndTurn(Guid sessionId) => dataStore.Get(sessionId).Map(s =>
         (dh: s.Table.DealerHand, boxes: s.Table.BoxesInPlay())).Map(
-        tupDB =>
+        tupDB => //switchify?
         {
             var dhVal = tupDB.dh.GetValue();
             if (dhVal.Value > 21) //dealer bust
@@ -282,5 +274,5 @@ public class SessionLogic(IDataStore<Session, Guid> dataStore) : ISessionLogic
             }));
             return Unit.Default;
         });
-    public Fin<Unit> ResetSession(Guid sessionId) => dataStore.Get(sessionId).Bind(s => s.Table.Reset());
+    public Option<Unit> ResetSession(Guid sessionId) => dataStore.Get(sessionId).Map(s => s.Table.Reset());
 }

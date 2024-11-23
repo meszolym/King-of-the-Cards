@@ -10,8 +10,8 @@ namespace KC.App.Data
         public IEnumerable<TVal> GetAll() => data;
 
         public Fin<Unit> Add(TVal item) => Get(item.Id).Match<Fin<Unit>>(
-            Succ: _ => FinFail<Unit>(Error.New("Item with this Id already exists")),
-            Fail: _ =>
+            Some: _ => FinFail<Unit>(Error.New("Item with this Id already exists")),
+            None: () =>
             {
                 data.Add(item);
                 return Unit.Default;
@@ -19,23 +19,23 @@ namespace KC.App.Data
         );
 
         public Fin<Unit> Remove(TKey id) => Get(id).Match<Fin<Unit>>(
-            Succ: _ =>
+            Some: _ =>
             {
                 data.RemoveAll(item => item.Id.Equals(id));
                 return Unit.Default;
             },
-            Fail: _ => FinFail<Unit>(Error.New("Item with this Id does not exist"))
+            None: () => FinFail<Unit>(Error.New("Item with this Id does not exist"))
         );
 
-        public Fin<TVal> Get(TKey id) => data.SingleOrDefault(d => d.Id.Equals(id)) ?? FinFail<TVal>(Error.New("Item with this Id does not exist"));
+        public Option<TVal> Get(TKey id) => data.SingleOrDefault(d => d.Id.Equals(id));
 
         public Fin<Unit> Update(TVal item) => Get(item.Id).Match<Fin<Unit>>(
-            Succ: _ =>
+            Some: _ =>
             {
                 data[data.FindIndex(d => d.Id.Equals(item.Id))] = item;
                 return Unit.Default;
             },
-            Fail: _ => FinFail<Unit>(Error.New("Item with this Id does not exist"))
+            None: () => FinFail<Unit>(Error.New("Item with this Id does not exist"))
         );
     }
 }

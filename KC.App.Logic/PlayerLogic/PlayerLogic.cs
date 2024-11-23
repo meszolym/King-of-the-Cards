@@ -13,7 +13,7 @@ namespace KC.App.Logic.PlayerLogic
 
         public Fin<Unit> Remove(string id) => dataStore.Remove(id);
 
-        public Fin<Player> Get(string id) => dataStore.Get(id);
+        public Option<Player> Get(string id) => dataStore.Get(id);
 
         public Fin<Unit> Update(Player item) => dataStore.Update(item);
     }
