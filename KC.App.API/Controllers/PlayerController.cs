@@ -11,7 +11,11 @@ namespace KC.App.API.Controllers
         [HttpGet]
         public Player GetPlayer(string Id) => logic.Get(Id);
 
+        [HttpPost]
+        public void AddPlayer(Player player) => logic.Add(player);
 
+        [HttpDelete]
+        public void RemovePlayer(string Id) => logic.Remove(Id);
 
     }
 }
