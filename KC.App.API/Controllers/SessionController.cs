@@ -1,4 +1,5 @@
 ﻿using KC.App.Logic.Interfaces;
+using KC.App.Logic.SessionLogic;
 using KC.App.Models.Classes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -9,7 +10,7 @@ namespace KC.App.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class SessionController(ISessionLogic sessionLogic, IHubContext<SignalRHub> signalRHub) : Controller
+public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLogic, IHubContext<SignalRHub> signalRHub) : Controller
 {
     private const int numberOfBoxes = 6;
     private const int numberOfDecks = 6;
@@ -33,7 +34,12 @@ public class SessionController(ISessionLogic sessionLogic, IHubContext<SignalRHu
         signalRHub.Clients.All.SendAsync("SessionCreated", sess);
         return sess;
     }
-        
-    
 
+    [HttpPost("{sessionId}/{boxIdx}/ClaimBox/{playerId}")]
+    public void ClaimBox(Guid sessionId, int boxIdx, string playerId)
+    {
+        var player = playerLogic.Get(playerId);
+        sessionLogic.Get(sessionId).ClaimBox(boxIdx, player);
+
+    }
 }

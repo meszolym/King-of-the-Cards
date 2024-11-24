@@ -4,6 +4,7 @@ using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic;
 using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
 using KC.App.Logic.SessionLogic.TableLogic.ShoeLogic;
 using KC.App.Models.Classes;
+using KC.App.Models.Classes.Hand;
 using KC.App.Models.Enums;
 using KC.App.Models.Records;
 using KC.App.Models.Structs;
@@ -63,7 +64,7 @@ namespace KC.App.Logic.SessionLogic.TableLogic
                     break;
                 case Move.Split:
                     box.Hands.Insert(handIdx + 1,
-                        new Hand([box.Hands[handIdx].Cards[1]],
+                        new PlayerHand([box.Hands[handIdx].Cards[1]],
                             box.Hands[handIdx].Bet,
                             false));
                     hand.Cards.RemoveAt(1);

@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
 using KC.App.Logic.CardLogic;
 using KC.App.Logic.SessionLogic.TableLogic.ShoeLogic;
-using KC.App.Models.Classes;
+using KC.App.Models.Classes.Hand;
 using KC.App.Models.Enums;
 using KC.App.Models.Structs;
 
@@ -30,16 +30,26 @@ public static class HandExtensions
         return new HandValue(value, isBlackJack, isPair, isSoft);
     }
 
-    public static string GetValueString(this Hand hand)
+    public static string GetValueString(this DealerHand hand)
     {
         if (hand.GetValue().IsBlackJack) return "BJ";
-        if (hand.GetValue().IsSoft && hand.GetValue().IsPair && hand.Splittable) return "P11"; //Pair of Aces
-        if (hand.GetValue().IsSoft) return $"S{hand.GetValue().Value}";
-        if (hand.GetValue().IsPair && hand.Splittable) return $"P{hand.GetValue().Value / 2}";
+        if (hand.GetValue().IsSoft && !hand.Finished) return $"S{hand.GetValue().Value}";
         return hand.GetValue().Value.ToString();
     }
 
-    public static List<Move> GetPossibleActions(this Hand hand)
+    public static string GetValueString(this PlayerHand hand)
+    {
+        if (hand.GetValue().IsBlackJack) return "BJ";
+        if (!hand.Finished)
+        {
+            if (hand.GetValue().IsSoft && hand.GetValue().IsPair && hand.Splittable) return "P11"; //Pair of Aces
+            if (hand.GetValue().IsSoft) return $"S{hand.GetValue().Value}";
+            if (hand.GetValue().IsPair && hand.Splittable) return $"P{hand.GetValue().Value / 2}";
+        }
+        return hand.GetValue().Value.ToString();
+    }
+
+    public static List<Move> GetPossibleActions(this PlayerHand hand)
     {
         if (hand.Cards.Count < 2) throw new InvalidOperationException("Cannot get actions for incomplete hand");
         if (hand.Finished) return []; //no action on finished hands

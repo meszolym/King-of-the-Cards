@@ -49,7 +49,7 @@ public static class BettingBoxExtensions
     public static void ClearHands(this BettingBox box)
     {
         box.Hands.Clear();
-        box.Hands.Add(HandService.CreateEmptyHand());
+        box.Hands.Add(HandService.CreateEmptyPlayerHand());
     }
 
 }

@@ -3,6 +3,7 @@ using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic;
 using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
 using KC.App.Logic.SessionLogic.TableLogic.ShoeLogic;
 using KC.App.Models.Classes;
+using KC.App.Models.Classes.Hand;
 using KC.App.Models.Enums;
 using KC.App.Models.Structs;
 
@@ -72,7 +73,7 @@ public static class SessionExtensions
         if (!session.TurnInfo.PlayersTurn || session.TurnInfo.BoxIdx != boxIdx || session.TurnInfo.HandIdx != handIdx)
             throw new InvalidOperationException("This hand or box is not in turn.");
 
-        session.Table.MakeMove(int boxIdx, int handIdx, player, move);
+        session.Table.MakeMove(boxIdx, handIdx, player, move);
 
         session.LastMoveAt = DateTime.Now;
     }
