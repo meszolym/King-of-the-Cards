@@ -15,7 +15,7 @@ namespace KC.App.API
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddNewtonsoftJson();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -31,6 +31,8 @@ namespace KC.App.API
             builder.Services.AddTransient<IPlayerLogic, PlayerLogic>();
             builder.Services.AddTransient<ISessionLogic, SessionLogic>();
 
+            builder.Services.AddSignalR();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -43,6 +45,7 @@ namespace KC.App.API
             //app.UseAuthorization();
 
             app.MapControllers();
+            app.MapHub<SignalRHub>("/signalR");
 
             app.UseExceptionHandler(c => c.Run(async context =>
             {

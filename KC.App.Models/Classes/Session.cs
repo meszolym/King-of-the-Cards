@@ -12,4 +12,6 @@ public class Session(Guid id, Table table, Timer betPlacementTimer, TurnInfo tur
     public Timer BetPlacementTimer { get; } = betPlacementTimer;
     public bool CanPlaceBets { get; set; } = true;
     public TurnInfo TurnInfo { get; set; } = turnInfo;
+    public DateTime CreatedAt { get; } = DateTime.Now;
+    public DateTime LastMoveAt { get; set; } = DateTime.Now;
 }

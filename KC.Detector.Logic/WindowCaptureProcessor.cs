@@ -21,8 +21,6 @@ public class WindowCaptureProcessor(Either<string, IntPtr> appIdentifier, TimeSp
     }
 
     public void StopProcessing() => subscription.Dispose();
-
-    //VOID
     public void ProcessBitmap(Fin<Bitmap> bitmap) => bitmap.Map(b => b.ToMat()).Map(ImageUtils.GetTopCards); //.Map();
 
 }
