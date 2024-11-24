@@ -1,7 +1,6 @@
 ﻿using KC.App.Logic.Interfaces;
 using KC.App.Logic.SessionLogic;
 using KC.App.Logic.SessionLogic.BettingBoxLogic;
-using KC.App.Logic.SessionLogic.TableLogic;
 using KC.App.Models.Classes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;

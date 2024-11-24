@@ -1,7 +1,6 @@
 using System.Collections.Immutable;
 using KC.App.Logic.SessionLogic.BettingBoxLogic;
 using KC.App.Logic.SessionLogic.ShoeLogic;
-using KC.App.Logic.SessionLogic.TurnInfoLogic;
 using KC.App.Models.Classes;
 using KC.App.Models.Classes.Hand;
 using Timer = System.Timers.Timer;
@@ -16,6 +15,6 @@ internal static class SessionService
             ShoeService.CreateUnshuffledShoe(numberOfBoxes), 
             new DealerHand([]),
             timerAfterFirstBet,
-            TurnInfoService.CreateEmptyTurnInfo());
+            new());
 
 }

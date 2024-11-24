@@ -1,7 +1,6 @@
 ﻿using KC.App.Logic.SessionLogic.BettingBoxLogic;
 using KC.App.Logic.SessionLogic.HandLogic;
 using KC.App.Logic.SessionLogic.ShoeLogic;
-using KC.App.Logic.SessionLogic.TableLogic;
 using KC.App.Models.Classes;
 using KC.App.Models.Classes.Hand;
 using KC.App.Models.Enums;
@@ -132,9 +131,7 @@ public static class SessionExtensions
         //if it's the dealer's turn, transfer to the first player's turn
         if (!session.TurnInfo.PlayersTurn)
         {
-            session.TurnInfo.PlayersTurn = true;
-            session.TurnInfo.BoxIdx = session.BoxesInPlay().First().Idx;
-            session.TurnInfo.HandIdx = 0;
+            session.TurnInfo = new TurnInfo(true, session.BoxesInPlay().First().Idx, 0);
             return session.TurnInfo;
         }
 
@@ -153,7 +150,7 @@ public static class SessionExtensions
         //if there are more hands left in the box, transfer to the next hand
         if (box.Hands.Count > session.TurnInfo.HandIdx + 1)
         {
-            session.TurnInfo.HandIdx++;
+            session.TurnInfo = session.TurnInfo with { HandIdx = session.TurnInfo.HandIdx + 1 };
             hand = box.Hands[session.TurnInfo.HandIdx];
 
             //handling of split hands, so that they get two cards each
@@ -171,17 +168,14 @@ public static class SessionExtensions
         var nextBox = session.BoxesInPlay().FirstOrDefault(b => b.Hands.Any(h => !h.Finished) && b.Idx > box.Idx);
         if (nextBox is not null)
         {
-            session.TurnInfo.BoxIdx = nextBox.Idx;
-            session.TurnInfo.HandIdx = 0;
+            session.TurnInfo = session.TurnInfo with { BoxIdx = nextBox.Idx, HandIdx = 0 };
             return session.TurnInfo;
         }
         #endregion
 
         #region no boxes left handling
         //if there are no more boxes left, transfer to the dealer's turn
-        session.TurnInfo.PlayersTurn = false;
-        session.TurnInfo.BoxIdx = 0;
-        session.TurnInfo.HandIdx = 0;
+        session.TurnInfo = new TurnInfo(); //false, 0, 0 by default
         return session.TurnInfo;
         #endregion
     }
