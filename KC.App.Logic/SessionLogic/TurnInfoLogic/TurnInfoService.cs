@@ -7,8 +7,8 @@ using KC.App.Models.Classes;
 
 namespace KC.App.Logic.SessionLogic.TurnInfoLogic
 {
-    public static class TurnInfoService
+    internal static class TurnInfoService
     {
-        public static TurnInfo CreateEmptyTurnInfo() => new(false, 0, 0);
+        internal static TurnInfo CreateEmptyTurnInfo() => new(false, 0, 0);
     }
 }

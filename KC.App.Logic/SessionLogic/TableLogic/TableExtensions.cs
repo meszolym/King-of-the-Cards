@@ -1,8 +1,8 @@
 ﻿using System.Collections.Immutable;
 using System.Numerics;
-using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic;
-using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
-using KC.App.Logic.SessionLogic.TableLogic.ShoeLogic;
+using KC.App.Logic.SessionLogic.BettingBoxLogic;
+using KC.App.Logic.SessionLogic.HandLogic;
+using KC.App.Logic.SessionLogic.ShoeLogic;
 using KC.App.Models.Classes;
 using KC.App.Models.Classes.Hand;
 using KC.App.Models.Enums;

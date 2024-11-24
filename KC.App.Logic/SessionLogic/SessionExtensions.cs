@@ -1,7 +1,7 @@
-﻿using KC.App.Logic.SessionLogic.TableLogic;
-using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic;
-using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
-using KC.App.Logic.SessionLogic.TableLogic.ShoeLogic;
+﻿using KC.App.Logic.SessionLogic.BettingBoxLogic;
+using KC.App.Logic.SessionLogic.HandLogic;
+using KC.App.Logic.SessionLogic.ShoeLogic;
+using KC.App.Logic.SessionLogic.TableLogic;
 using KC.App.Models.Classes;
 using KC.App.Models.Classes.Hand;
 using KC.App.Models.Enums;
@@ -38,10 +38,10 @@ public static class SessionExtensions
     /// Places a bet on a box. Make sure to call UpdateTimer after this to start/stop the timer.
     /// Make sure to take care of player balance changes.
     /// </summary>
-    public static void PlaceBet(this Session session, int boxIdx, Player player, double amount)
+    public static void UpdateBet(this Session session, int boxIdx, Player player, double amount)
     {
         if (!session.CanPlaceBets) throw new InvalidOperationException("Cannot place bets at this time.");
-        session.Table.Boxes[boxIdx].PlaceBet(player, amount);
+        session.Table.Boxes[boxIdx].UpdateBet(player, amount);
         session.LastMoveAt = DateTime.Now;
     }
 

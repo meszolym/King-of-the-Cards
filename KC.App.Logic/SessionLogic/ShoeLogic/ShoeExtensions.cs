@@ -1,7 +1,7 @@
 ﻿using KC.App.Models.Classes;
 using KC.App.Models.Structs;
 
-namespace KC.App.Logic.SessionLogic.TableLogic.ShoeLogic;
+namespace KC.App.Logic.SessionLogic.ShoeLogic;
 
 public static class ShoeExtensions
 {

@@ -1,8 +1,8 @@
-using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
+using KC.App.Logic.SessionLogic.HandLogic;
 using KC.App.Models.Classes;
 using KC.App.Models.Structs;
 
-namespace KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic;
+namespace KC.App.Logic.SessionLogic.BettingBoxLogic;
 
 public static class BettingBoxExtensions
 {
@@ -27,7 +27,7 @@ public static class BettingBoxExtensions
         box.Owner = null;
     }
 
-    public static void PlaceBet(this BettingBox box, Player player, double amount)
+    public static void UpdateBet(this BettingBox box, Player player, double amount)
     {
         if (!box.CheckOwner(player))
         {

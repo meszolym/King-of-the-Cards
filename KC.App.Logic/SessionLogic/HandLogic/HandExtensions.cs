@@ -1,11 +1,9 @@
-using System.Collections.Immutable;
 using KC.App.Logic.CardLogic;
-using KC.App.Logic.SessionLogic.TableLogic.ShoeLogic;
 using KC.App.Models.Classes.Hand;
 using KC.App.Models.Enums;
 using KC.App.Models.Structs;
 
-namespace KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
+namespace KC.App.Logic.SessionLogic.HandLogic;
 
 public static class HandExtensions
 {

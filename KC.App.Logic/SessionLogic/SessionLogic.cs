@@ -1,15 +1,6 @@
-﻿using System.Collections.Immutable;
-using System.Linq;
-using System.Reactive.Subjects;
-using System.Reflection.Metadata.Ecma335;
-using KC.App.Data;
+﻿using KC.App.Data;
 using KC.App.Logic.Interfaces;
-using KC.App.Logic.SessionLogic.TableLogic;
-using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic;
-using KC.App.Logic.SessionLogic.TableLogic.BettingBoxLogic.HandLogic;
-using KC.App.Logic.SessionLogic.TableLogic.ShoeLogic;
 using KC.App.Models.Classes;
-using KC.App.Models.Enums;
 using Timer = System.Timers.Timer;
 
 
@@ -17,6 +8,14 @@ namespace KC.App.Logic.SessionLogic;
 
 public class SessionLogic(IDataStore<Session, Guid> dataStore) : ISessionLogic
 {
+    /// <summary>
+    /// Creates a new session with the given parameters.
+    /// Make sure to add a CanBetChangeOnTimerElapsed to the session.
+    /// </summary>
+    /// <param name="numberOfBoxes"></param>
+    /// <param name="numberOfDecks"></param>
+    /// <param name="timerAfterFirstBet"></param>
+    /// <returns></returns>
     public Session CreateSession(uint numberOfBoxes, uint numberOfDecks, Timer timerAfterFirstBet)
     {
         var sess = SessionService.CreateEmptySession(numberOfBoxes, numberOfDecks, timerAfterFirstBet)
