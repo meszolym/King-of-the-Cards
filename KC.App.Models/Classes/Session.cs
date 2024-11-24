@@ -1,15 +1,15 @@
 ﻿using KC.App.Models.Interfaces;
-using KC.App.Models.Records;
 using KC.App.Models.Structs;
 using Newtonsoft.Json;
+using System.Collections.Immutable;
+using KC.App.Models.Classes.Hand;
 using Timer = System.Timers.Timer;
 
 namespace KC.App.Models.Classes;
 
-public class Session(Guid id, Table table, Timer betPlacementTimer, TurnInfo turnInfo) : IIdentityBearer<Guid>
+public class Session(Guid id, ImmutableList<BettingBox> boxes, Shoe dealingShoe, DealerHand dealerHand, Timer betPlacementTimer, TurnInfo turnInfo) : IIdentityBearer<Guid>
 {
     public Guid Id { get; } = id;
-    public Table Table { get; } = table;
 
     [JsonIgnore]
     public Timer BetPlacementTimer { get; } = betPlacementTimer;
@@ -17,4 +17,12 @@ public class Session(Guid id, Table table, Timer betPlacementTimer, TurnInfo tur
     public TurnInfo TurnInfo { get; set; } = turnInfo;
     public DateTime CreatedAt { get; } = DateTime.Now;
     public DateTime LastMoveAt { get; set; } = DateTime.Now;
+
+    //properties moved from Table
+    public ImmutableList<BettingBox> Boxes { get; } = boxes;
+
+    [JsonIgnore]
+    public Shoe DealingShoe { get; } = dealingShoe;
+
+    public DealerHand DealerHand { get; } = dealerHand;
 }

@@ -7,7 +7,7 @@ public interface ISessionLogic
 {
     Session CreateSession(uint numberOfBoxes, uint numberOfDecks, Timer timerAfterFirstBet);
     IEnumerable<Session> GetAllSessions();
-    bool PurgeOldSessions();
+    bool PurgeOldSessions(TimeSpan oldTimeSpan);
     Session Get(Guid sessionId);
     void Remove(Guid sessionId);
 }

@@ -1,6 +1,7 @@
 ﻿using KC.App.Logic.Interfaces;
 using KC.App.Logic.SessionLogic;
 using KC.App.Logic.SessionLogic.BettingBoxLogic;
+using KC.App.Logic.SessionLogic.TableLogic;
 using KC.App.Models.Classes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -16,6 +17,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     private const int numberOfBoxes = 6;
     private const int numberOfDecks = 6;
     private const int secondsToPlaceBets = 15;
+    private const int minutesToPurgeOldSessions = 10;
 
     [HttpGet("{Id:guid}")]
     public Session GetSession(Guid Id) => sessionLogic.Get(Id);
@@ -23,16 +25,27 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     [HttpGet]
     public IEnumerable<Session> GetAllSessions()
     {
-        if (sessionLogic.PurgeOldSessions()) 
+        if (sessionLogic.PurgeOldSessions(TimeSpan.FromMinutes(minutesToPurgeOldSessions)))
             signalRHub.Clients.All.SendAsync("PurgeOldSessions");
+
         return sessionLogic.GetAllSessions();
     }
 
     [HttpPost]
     public Session CreateSession()
     {
-        var sess = sessionLogic.CreateSession(numberOfBoxes, numberOfDecks, new Timer(TimeSpan.FromSeconds(secondsToPlaceBets)));
+        var timer = new Timer(TimeSpan.FromSeconds(secondsToPlaceBets+1)); //+1 sec to account for the time it takes to process everything
+
+        var sess = sessionLogic.CreateSession(numberOfBoxes, numberOfDecks, timer);
+
+        timer.Elapsed += (sender, args) =>
+        {
+            //SignalR call to those in the session that the timer has elapsed
+            sess.StartDealing();
+        };
+        
         signalRHub.Clients.All.SendAsync("SessionCreated", sess);
+
         return sess;
     }
 
@@ -56,9 +69,9 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     public void Bet(Guid sessionId, int boxIdx, string playerId, double amount)
     {
         var player = playerLogic.Get(playerId);
-        sessionLogic.Get(sessionId).UpdateBet(boxIdx, player, amount);
-        //SignalR call to those in the session
+        var sess = sessionLogic.Get(sessionId);
+        sess.UpdateBet(boxIdx, player, amount);
+        var timerOn = sess.UpdateTimer();
+        //SignalR call to those in the session that the timer has started/stopped, if started, remaining time is secondsToPlaceBets seconds
     }
-
-
 }

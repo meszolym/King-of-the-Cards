@@ -18,7 +18,7 @@ public class PlayerController(IPlayerLogic logic, ISessionLogic sessionLogic) : 
     public void RemovePlayer(string Id)
     {
         bool removable = sessionLogic.GetAllSessions()
-            .Any(s => s.Table.Boxes.Any(b => b.Owner.Equals(logic.Get(Id))));
+            .Any(s => s.Boxes.Any(b => b.Owner.Equals(logic.Get(Id))));
 
         if (!removable) throw new InvalidOperationException("Player is still in a game.");
 

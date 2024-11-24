@@ -26,10 +26,10 @@ public class SessionLogic(IDataStore<Session, Guid> dataStore) : ISessionLogic
 
     public IEnumerable<Session> GetAllSessions() => dataStore.GetAll();
 
-    public bool PurgeOldSessions()
+    public bool PurgeOldSessions(TimeSpan oldTimeSpan)
     {
         var purgableSessions = GetAllSessions()
-            .Where(s => DateTime.Now - s.LastMoveAt > TimeSpan.FromMinutes(10))
+            .Where(s => DateTime.Now - s.LastMoveAt > oldTimeSpan)
             .Select(s => s.Id);
 
         foreach (var sessionId in purgableSessions)
