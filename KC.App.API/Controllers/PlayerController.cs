@@ -24,4 +24,8 @@ public class PlayerController(IPlayerLogic logic, ISessionLogic sessionLogic) : 
 
         logic.Remove(Id);
     }
+
+    [HttpPut]
+    public void UpdatePlayer([FromBody] Player player) => logic.Update(player);
+
 }

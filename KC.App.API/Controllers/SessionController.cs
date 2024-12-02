@@ -27,7 +27,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     public IEnumerable<Session> GetAllSessions()
     {
         if (sessionLogic.PurgeOldSessions(TimeSpan.FromMinutes(minutesToPurgeOldSessions)))
-            signalRHub.Clients.All.SendAsync("PurgeOldSessions");
+            signalRHub.Clients.Group("NoSession").SendAsync("PurgeOldSessions");
 
         return sessionLogic.GetAllSessions();
     }
@@ -40,54 +40,70 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
         var sess = sessionLogic.CreateSession(numberOfBoxes, numberOfDecks, timer);
 
         timer.Elapsed += (sender, args) => BettingTimerElapsed(sess);
-        timer.Tick += (sender, args) => signalRHub.Clients.Group(sess.Id.ToString()).SendAsync("TimerTick", timer.RemainingSeconds); //or something like that
+        timer.Tick += (sender, args) => signalRHub.Clients.Group(sess.Id.ToString()).SendAsync("TimerTick", timer.RemainingSeconds);
 
-        signalRHub.Clients.All.SendAsync("SessionCreated", sess);
+        signalRHub.Clients.Group("NoSession").SendAsync("SessionCreated", sess);
 
         return sess;
     }
 
     private void BettingTimerElapsed(Session sess)
     {
-        //SignalR call to those in the session that the timer has elapsed
+        signalRHub.Clients.Group(sess.Id.ToString()).SendAsync("TimerElapsed", sess);
         sess.DealStartingCards();
-        //SignalR call to those in the session that the dealing is done
+        signalRHub.Clients.Group(sess.Id.ToString()).SendAsync("CardsDealt", sess);
+
         if (!sess.DealerCheck())
         {
-            //SignalR call to the next player to play
+            var next = sess.TransferTurn();
+            signalRHub.Clients.Group(sess.Id.ToString()).SendAsync("NextTurn", sess, next);
             return;
         }
 
         sess.FinishAllHandsInPlay();
-        //SignalR call to those in the session that the dealer has blackjack
+        signalRHub.Clients.Group(sess.Id.ToString()).SendAsync("DealerBlackJack", sess);
+
         sess.PayOutBets();
-        //SignalR call to those in the session that the payouts are done
+        signalRHub.Clients.Group(sess.Id.ToString()).SendAsync("PayoutDone", sess);
+
         sess.ResetSession();
-        //SignalR call to those in the session that the session has been reset
+        signalRHub.Clients.Group(sess.Id.ToString()).SendAsync("SessionReset", sess);
     }
 
-    [HttpPost("{sessionId:guid}/JoinWatch/{playerId}")]
+    [HttpPost("{sessionId:guid}/Subscribe/{playerId}")]
     public void JoinSession(Guid sessionId, string playerId)
     {
         var player = playerLogic.Get(playerId);
-        //SignalR subscribe to the session
+        var session = sessionLogic.Get(sessionId);
+        signalRHub.Groups.AddToGroupAsync(player.ConnectionId, session.Id.ToString());
+        signalRHub.Groups.RemoveFromGroupAsync(player.ConnectionId, "NoSession");
+    }
+
+    [HttpDelete("{sessionId:guid}/Subscribe/{playerId}")]
+    public void LeaveSession(Guid sessionId, string playerId)
+    {
+        var player = playerLogic.Get(playerId);
+        var session = sessionLogic.Get(sessionId);
+        signalRHub.Groups.RemoveFromGroupAsync(player.ConnectionId, session.Id.ToString());
+        signalRHub.Groups.AddToGroupAsync(player.ConnectionId, "NoSession");
     }
 
     [HttpPost("{sessionId:guid}/{boxIdx:int}/ClaimBox/{playerId}")]
     public void ClaimBox(Guid sessionId, int boxIdx, string playerId)
     {
         var player = playerLogic.Get(playerId);
-        sessionLogic.Get(sessionId).ClaimBox(boxIdx, player);
-        //SignalR subscribe to the box
-        //SignalR call to those in the session
+        var sess = sessionLogic.Get(sessionId);
+        sess.ClaimBox(boxIdx, player);
+        signalRHub.Clients.GroupExcept(sess.Id.ToString(), player.ConnectionId).SendAsync("BoxClaimed", sess);
     }
 
     [HttpDelete("{sessionId:guid}/{boxIdx:int}/ClaimBox/{playerId}")]
     public void DisclaimBox(Guid sessionId, int boxIdx, string playerId)
     {
         var player = playerLogic.Get(playerId);
-        sessionLogic.Get(sessionId).DisclaimBox(boxIdx, player);
-        //SignalR call to those in the session
+        var sess = sessionLogic.Get(sessionId);
+        sess.DisclaimBox(boxIdx, player);
+        signalRHub.Clients.GroupExcept(sess.Id.ToString(), player.ConnectionId).SendAsync("BoxDisclaimed",sess);
     }
 
     [HttpPut("{sessionId:guid}/UpdateBet/{boxIdx:int}/{playerId}/{amount:double}")]
@@ -96,8 +112,9 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
         var player = playerLogic.Get(playerId);
         var sess = sessionLogic.Get(sessionId);
         sess.UpdateBet(boxIdx, player, amount);
+        signalRHub.Clients.GroupExcept(sess.Id.ToString(), player.ConnectionId).SendAsync("BoxBetUpdated", sess);
         var timerOn = sess.UpdateTimer();
-        //SignalR call to those in the session that the timer has started/stopped
+        signalRHub.Clients.Group(sess.Id.ToString()).SendAsync("TimerState", sess, timerOn);
     }
 
 

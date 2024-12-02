@@ -15,6 +15,11 @@ namespace KC.App.Logic.PlayerLogic
 
         public Player Get(string id) => dataStore.Get(id);
 
-        public void Update(Player item) => dataStore.Update(item);
+        public void Update(Player item)
+        {
+            var internalPlayer = Get(item.Id);
+            internalPlayer.Name = item.Name;
+            internalPlayer.ConnectionId = item.ConnectionId;
+        }
     }
 }

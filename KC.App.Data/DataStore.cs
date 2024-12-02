@@ -28,10 +28,5 @@ namespace KC.App.Data
         }
 
         public TVal Get(TKey id) => data.Single(d => d.Id.Equals(id));
-
-        public void Update(TVal item)
-        {
-            data[data.IndexOf(Get(item.Id))] = item;
-        }
     }
 }
