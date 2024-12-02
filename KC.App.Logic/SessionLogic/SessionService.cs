@@ -9,7 +9,7 @@ namespace KC.App.Logic.SessionLogic;
 
 internal static class SessionService
 {
-    internal static Session CreateEmptySession(uint numberOfBoxes, uint numberOfDecks, Timer timerAfterFirstBet) =>
+    internal static Session CreateEmptySession(uint numberOfBoxes, uint numberOfDecks, TickingTimer timerAfterFirstBet) =>
         new Session(Guid.NewGuid(),
             Enumerable.Range(0, (int)numberOfBoxes).Select(BettingBoxService.CreateEmptyBettingBox).ToImmutableList(), 
             ShoeService.CreateUnshuffledShoe(numberOfBoxes), 

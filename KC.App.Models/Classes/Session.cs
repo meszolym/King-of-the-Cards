@@ -7,12 +7,12 @@ using Timer = System.Timers.Timer;
 
 namespace KC.App.Models.Classes;
 
-public class Session(Guid id, ImmutableList<BettingBox> boxes, Shoe dealingShoe, DealerHand dealerHand, Timer betPlacementTimer, TurnInfo turnInfo) : IIdentityBearer<Guid>
+public class Session(Guid id, ImmutableList<BettingBox> boxes, Shoe dealingShoe, DealerHand dealerHand, TickingTimer betPlacementTimer, TurnInfo turnInfo) : IIdentityBearer<Guid>
 {
     public Guid Id { get; } = id;
 
     [JsonIgnore]
-    public Timer BetPlacementTimer { get; } = betPlacementTimer;
+    public TickingTimer BetPlacementTimer { get; } = betPlacementTimer;
     public bool CanPlaceBets { get; set; } = true;
     public TurnInfo TurnInfo { get; set; } = turnInfo;
     public DateTime CreatedAt { get; } = DateTime.Now;

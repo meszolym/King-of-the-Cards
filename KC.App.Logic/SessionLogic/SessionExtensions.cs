@@ -1,4 +1,8 @@
-﻿using KC.App.Logic.SessionLogic.BettingBoxLogic;
+﻿using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.Marshalling;
+using KC.App.Logic.CardLogic;
+using KC.App.Logic.SessionLogic.BettingBoxLogic;
 using KC.App.Logic.SessionLogic.HandLogic;
 using KC.App.Logic.SessionLogic.ShoeLogic;
 using KC.App.Models.Classes;
@@ -237,7 +241,7 @@ public static class SessionExtensions
     public static IEnumerable<BettingBox> BoxesInPlay(this Session sess) =>
         sess.Boxes.Where(box => box.Hands[0].Bet > 0).OrderBy(b => b.Idx);
 
-    public static void StartDealing(this Session session)
+    public static void DealStartingCards(this Session session)
     {
         //if shoe needs shuffling, shuffle
         if (session.DealingShoe.ShuffleCardIdx <= session.DealingShoe.NextCardIdx)
@@ -255,4 +259,24 @@ public static class SessionExtensions
             session.DealerHand.Cards.Add(session.DealingShoe.TakeCard());
         }
     }
+
+    public static bool DealerCheck(this Session session)
+    {
+        if (!session.DealerHand.GetValue().IsBlackJack) return false;
+        session.DealerHand.ShowsCards = true;
+        session.DealerHand.Finished = true;
+        return true;
+    }
+
+    public static void FinishAllHandsInPlay(this Session session)
+    {
+        foreach (var b in session.BoxesInPlay())
+        {
+            foreach (var h in b.Hands)
+            {
+                h.Finished = true;
+            }
+        }
+    }
+
 }

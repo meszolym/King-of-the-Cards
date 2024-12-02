@@ -5,7 +5,7 @@ namespace KC.App.Logic.Interfaces;
 
 public interface ISessionLogic
 {
-    Session CreateSession(uint numberOfBoxes, uint numberOfDecks, Timer timerAfterFirstBet);
+    Session CreateSession(uint numberOfBoxes, uint numberOfDecks, TickingTimer timerAfterFirstBet);
     IEnumerable<Session> GetAllSessions();
     bool PurgeOldSessions(TimeSpan oldTimeSpan);
     Session Get(Guid sessionId);
