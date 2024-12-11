@@ -15,11 +15,15 @@ def getTopCards(img: cv.typing.MatLike) -> list:
 
     img = img[0:height//5*4,0:width]
 
+    # cv.imwrite("C:/Users/Marc/Desktop/vagott.png",img) # -> only for getting the images for the documentation
+
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
+    # cv.imwrite("C:/Users/Marc/Desktop/gray.png",gray) # -> only for getting the images for the documentation
     canny = cv.Canny(gray,200,200)
-
+    # cv.imwrite("C:/Users/Marc/Desktop/canny.png",canny) # -> only for getting the images for the documentation 
     dilate = cv.dilate(canny,cv.getStructuringElement(cv.MORPH_ELLIPSE, (5,5)), iterations = 2)
+    # cv.imwrite("C:/Users/Marc/Desktop/dilate.png",dilate) # -> only for getting the images for the documentation 
 
     contours, hierarchy = cv.findContours(dilate, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
 
@@ -80,6 +84,7 @@ def select_window():
 def record_window(window):
     # Initial window capture
     while True:
+        # time.sleep(2) # -> only for getting the images for the documentation
         # Recheck the window's position and size in case it was moved
         rect = window._rect
         left, top, width, height = rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top
@@ -105,6 +110,7 @@ def record_window(window):
 
         # Wait before checking again to avoid overloading the CPU
         time.sleep(0.1)
+        # break # -> only for getting the images for the documentation
 
     cv.destroyAllWindows()
 
