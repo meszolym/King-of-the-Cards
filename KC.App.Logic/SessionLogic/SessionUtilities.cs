@@ -2,17 +2,21 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.Marshalling;
 using KC.App.Logic.CardLogic;
-using KC.App.Logic.SessionLogic.BettingBoxLogic;
-using KC.App.Logic.SessionLogic.HandLogic;
-using KC.App.Logic.SessionLogic.ShoeLogic;
 using KC.App.Models.Classes;
 using KC.App.Models.Classes.Hand;
 using KC.App.Models.Enums;
 using KC.App.Models.Structs;
 
 namespace KC.App.Logic.SessionLogic;
-public static class SessionExtensions
+public static class SessionUtilities
 {
+    internal static Session CreateEmptySession(uint numberOfBoxes, uint numberOfDecks, TickingTimer timerAfterFirstBet) =>
+        new Session(Guid.NewGuid(),
+            Enumerable.Range(0, (int)numberOfBoxes).Select(BettingBoxUtilities.CreateEmptyBettingBox).ToImmutableList(),
+            ShoeUtilities.CreateUnshuffledShoe(numberOfBoxes),
+            new DealerHand([]),
+            timerAfterFirstBet,
+            new());
     internal static Session AddCanBetChangeOnTimerElapsed(this Session session)
     {
         session.BetPlacementTimer.Elapsed += (sender, args) =>

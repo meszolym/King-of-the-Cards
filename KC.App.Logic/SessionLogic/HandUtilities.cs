@@ -1,12 +1,14 @@
 using KC.App.Logic.CardLogic;
+using KC.App.Logic.SessionLogic;
 using KC.App.Models.Classes.Hand;
 using KC.App.Models.Enums;
 using KC.App.Models.Structs;
 
-namespace KC.App.Logic.SessionLogic.HandLogic;
+namespace KC.App.Logic.SessionLogic;
 
-public static class HandExtensions
+public static class HandUtilities
 {
+    internal static PlayerHand CreateEmptyPlayerHand() => new([], 0, true);
 
     /// <summary>
     /// Gets the value of the hand. Does not take hand.Splittable into account.

@@ -1,14 +1,12 @@
-using KC.App.Logic.SessionLogic.HandLogic;
+using KC.App.Logic.SessionLogic;
 using KC.App.Models.Classes;
 using KC.App.Models.Structs;
 
-namespace KC.App.Logic.SessionLogic.BettingBoxLogic;
-
-public static class BettingBoxExtensions
+namespace KC.App.Logic.SessionLogic;
+public static class BettingBoxUtilities
 {
-    //unnecesary, can be substituted with indexing.
-    //public static Option<Hand> FindHand(this BettingBox box, int Idx) => box.Hands.ElementAtOrDefault(Idx);
-
+    internal static BettingBox CreateEmptyBettingBox(int idx) => new(idx, [HandUtilities.CreateEmptyPlayerHand()], null);
+    
     public static void Claim(this BettingBox box, Player player)
     {
         if (!box.CheckNoOwner())
@@ -49,7 +47,7 @@ public static class BettingBoxExtensions
     public static void ClearHands(this BettingBox box)
     {
         box.Hands.Clear();
-        box.Hands.Add(HandService.CreateEmptyPlayerHand());
+        box.Hands.Add(HandUtilities.CreateEmptyPlayerHand());
     }
 
 }

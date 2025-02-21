@@ -18,7 +18,7 @@ public class SessionLogic(IDataStore<Session, Guid> dataStore) : ISessionLogic
     /// <returns></returns>
     public Session CreateSession(uint numberOfBoxes, uint numberOfDecks, TickingTimer timerAfterFirstBet)
     {
-        var sess = SessionService.CreateEmptySession(numberOfBoxes, numberOfDecks, timerAfterFirstBet)
+        var sess = SessionUtilities.CreateEmptySession(numberOfBoxes, numberOfDecks, timerAfterFirstBet)
             .AddCanBetChangeOnTimerElapsed();
         dataStore.Add(sess);
         return sess;
