@@ -123,7 +123,7 @@ public static class SessionExtensions
         while (session.DealerHand.GetValue().Value < 17)
         {
             session.DealerHand.Cards.Add(session.DealingShoe.TakeCard());
-            //call some event or something to show the card?
+            //call some event or something to show the card? 
         }
         session.DealerHand.Finished = true;
         return session.DealerHand;

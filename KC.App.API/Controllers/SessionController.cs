@@ -27,7 +27,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     public IEnumerable<Session> GetAllSessions()
     {
         if (sessionLogic.PurgeOldSessions(TimeSpan.FromMinutes(minutesToPurgeOldSessions)))
-            signalRHub.Clients.Group("NoSession").SendAsync("PurgeOldSessions");
+            signalRHub.Clients.Group("NoSession").SendAsync("PurgeOldSessions"); //why is this bookmarked?
 
         return sessionLogic.GetAllSessions();
     }
@@ -117,5 +117,8 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
         signalRHub.Clients.Group(sess.Id.ToString()).SendAsync("TimerState", sess, timerOn);
     }
 
+    //make move?
+
+    //how to get data about move and dealer hand?
 
 }
