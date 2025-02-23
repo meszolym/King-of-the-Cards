@@ -13,18 +13,27 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-
+	
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="3*"></ColumnDefinition>
 			<ColumnDefinition Width="*"></ColumnDefinition>
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
-			<RowDefinition></RowDefinition>
-			<RowDefinition></RowDefinition>
+			<RowDefinition Height="*"></RowDefinition>
 		</Grid.RowDefinitions>
-	</Grid>
 
-	<TextBlock Text="asd" Grid.Column="1" Grid.Row="1"></TextBlock>
+		<ListBox ItemsSource="{Binding Sessions}" Grid.Column="0" Grid.Row="0">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Id}"></TextBlock>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+		<StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+			<Button HorizontalAlignment="Center" Padding="10" Margin="5">Join session</Button>
+			<Button HorizontalAlignment="Center" Padding="10" Margin="5">Create session</Button>
+		</StackPanel>
+	</Grid>
 
 </Window>

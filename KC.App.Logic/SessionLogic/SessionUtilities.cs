@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.Marshalling;
 using KC.App.Logic.CardLogic;
+using KC.App.Models.Backend.Classes.Hand;
 using KC.App.Models.Classes;
 using KC.App.Models.Classes.Hand;
 using KC.App.Models.Enums;

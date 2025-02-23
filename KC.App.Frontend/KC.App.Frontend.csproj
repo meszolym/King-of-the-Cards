@@ -26,4 +26,8 @@
     </PackageReference>
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KC.App.Models\KC.App.Models.csproj" />
+  </ItemGroup>
 </Project>

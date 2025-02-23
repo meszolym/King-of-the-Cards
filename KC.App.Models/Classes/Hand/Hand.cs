@@ -1,10 +1,10 @@
-﻿using KC.App.Models.Structs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KC.App.Models.Structs;
 
 namespace KC.App.Models.Classes.Hand
 {

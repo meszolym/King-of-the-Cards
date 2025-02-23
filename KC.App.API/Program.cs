@@ -2,8 +2,8 @@ using KC.App.Data;
 using KC.App.Logic.Interfaces;
 using KC.App.Logic.SessionLogic;
 using KC.App.Logic.PlayerLogic;
-using KC.App.Models.Classes;
 using Microsoft.AspNetCore.Diagnostics;
+using KC.App.Models.Classes;
 
 namespace KC.App.API
 {

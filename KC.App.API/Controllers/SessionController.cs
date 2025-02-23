@@ -1,5 +1,6 @@
 ﻿using KC.App.Logic.Interfaces;
 using KC.App.Logic.SessionLogic;
+using KC.App.Models.Backend.Classes;
 using KC.App.Models.Classes;
 using KC.App.Models.Enums;
 using KC.App.Models.Structs;
