@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KC.App.Logic", "KC.App.Logi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KC.App.Models", "KC.App.Models\KC.App.Models.csproj", "{44B12A8A-1AB0-4B52-B64C-B9E9515D8A4D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KC.App.Frontend", "KC.App.Frontend\KC.App.Frontend.csproj", "{6EAEA7B6-852D-4233-9403-570B97BEB7AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{44B12A8A-1AB0-4B52-B64C-B9E9515D8A4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44B12A8A-1AB0-4B52-B64C-B9E9515D8A4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44B12A8A-1AB0-4B52-B64C-B9E9515D8A4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EAEA7B6-852D-4233-9403-570B97BEB7AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EAEA7B6-852D-4233-9403-570B97BEB7AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EAEA7B6-852D-4233-9403-570B97BEB7AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EAEA7B6-852D-4233-9403-570B97BEB7AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

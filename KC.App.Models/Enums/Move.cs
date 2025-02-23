@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace KC.App.Models.Enums
 {
     /// <summary>
-    /// The possible moves in a game of blackjack. Stand is not included as it's always a possibility.
+    /// The possible moves in a game of blackjack.
     /// </summary>
     public enum Move
     {

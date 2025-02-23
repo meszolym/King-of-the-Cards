@@ -1,7 +1,8 @@
 ﻿using KC.App.Logic.Interfaces;
 using KC.App.Logic.SessionLogic;
-using KC.App.Logic.SessionLogic.BettingBoxLogic;
 using KC.App.Models.Classes;
+using KC.App.Models.Enums;
+using KC.App.Models.Structs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.OpenApi.Validations;
@@ -106,7 +107,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
         signalRHub.Clients.GroupExcept(sess.Id.ToString(), player.ConnectionId).SendAsync("BoxDisclaimed",sess);
     }
 
-    [HttpPut("{sessionId:guid}/UpdateBet/{boxIdx:int}/{playerId}/{amount:double}")]
+    [HttpPut("{sessionId:guid}/{boxIdx:int}/UpdateBet/{playerId}/{amount:double}")]
     public void Bet(Guid sessionId, int boxIdx, string playerId, double amount)
     {
         var player = playerLogic.Get(playerId);
@@ -117,8 +118,34 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
         signalRHub.Clients.Group(sess.Id.ToString()).SendAsync("TimerState", sess, timerOn);
     }
 
-    //make move?
+    [HttpPost("{sessionId:guid}/{boxIdx:int}/{handIdx:int}/MakeMove/{playerId}/{move}")]
+    public TurnInfo MakeMove(Guid sessionId, int boxIdx, int handIdx, string playerId, Move move)
+    {
+        var player = playerLogic.Get(playerId);
+        var sess = sessionLogic.Get(sessionId);
 
-    //how to get data about move and dealer hand?
+        //TODO: check if split or double -> make changes to player balance
+        sess.MakeMove(boxIdx, handIdx, player, move);
+
+        //If only stand left as a possible move, transfer turn
+        if (!sess.Boxes[boxIdx].Hands[handIdx].GetPossibleActions().Any(x => x != Move.Stand)) sess.TurnInfo = sess.TransferTurn();
+
+        signalRHub.Clients.GroupExcept(sess.Id.ToString(), player.ConnectionId).SendAsync("MoveMade", sess);
+
+        return sess.TurnInfo;
+    }
+
+    [HttpGet("{sessionId:guid}/{boxIdx:int}/{handIdx:int}/GetPossibleMoves")]
+    public IEnumerable<Move> GetPossibleMoves(Guid sessionId, int boxIdx, int handIdx)
+    {
+        var sess = sessionLogic.Get(sessionId);
+        return sess.Boxes[boxIdx].Hands[handIdx].GetPossibleActions();
+    }
+
+    public HandValue GetHandValue(Guid sessionId, int boxIdx, int handIdx)
+    {
+        var sess = sessionLogic.Get(sessionId);
+        return sess.Boxes[boxIdx].Hands[handIdx].GetValue();
+    }
 
 }
