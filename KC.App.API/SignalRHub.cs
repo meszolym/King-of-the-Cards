@@ -11,7 +11,7 @@ public class SignalRHub : Hub
         return base.OnConnectedAsync();
     }
 
-    public override Task OnDisconnectedAsync(Exception exception)
+    public override Task OnDisconnectedAsync(Exception? exception)
     {
         Clients.Caller.SendAsync("Disconnected", Context.ConnectionId);
         return base.OnDisconnectedAsync(exception);

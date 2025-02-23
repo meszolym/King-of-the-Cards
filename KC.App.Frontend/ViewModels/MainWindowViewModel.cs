@@ -1,7 +1,9 @@
-﻿namespace KC.App.Frontend.ViewModels
+﻿using System.Collections.Generic;
+
+namespace KC.App.Frontend.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public string Greeting { get; } = "Welcome to Avalonia!";
+        //public List<string> SessionName { get; set; }
     }
 }
