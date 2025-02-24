@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Timer = System.Timers.Timer;
 
-namespace KC.App.Models.Classes
+namespace KC.App.Backend.Models.Classes
 {
     public class TickingTimer
     {

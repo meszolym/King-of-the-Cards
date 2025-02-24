@@ -1,12 +1,12 @@
 ﻿using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.Marshalling;
+using KC.App.Backend.Models.Classes;
+using KC.App.Backend.Models.Classes.Hand;
+using KC.App.Backend.Models.Enums;
+using KC.App.Backend.Models.Structs;
 using KC.App.Logic.CardLogic;
-using KC.App.Models.Backend.Classes.Hand;
-using KC.App.Models.Classes;
-using KC.App.Models.Classes.Hand;
-using KC.App.Models.Enums;
-using KC.App.Models.Structs;
+
 
 namespace KC.App.Logic.SessionLogic;
 public static class SessionUtilities

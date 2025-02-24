@@ -1,4 +1,4 @@
-﻿using KC.App.Models.Classes;
+﻿using KC.App.Backend.Models.Classes;
 using Timer = System.Timers.Timer;
 
 namespace KC.App.Logic.Interfaces;

@@ -6,9 +6,9 @@ using System.Collections.Generic;
 
 namespace KC.App.Frontend;
 
-public partial class ImageStack : UserControl
+public partial class ImageStackView : UserControl
 {
-    public ImageStack()
+    public ImageStackView()
     {
         InitializeComponent();
     }

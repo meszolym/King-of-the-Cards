@@ -1,6 +1,6 @@
-﻿using KC.App.Models.Structs;
+﻿using KC.App.Backend.Models.Structs;
 
-namespace KC.App.Models.Classes;
+namespace KC.App.Backend.Models.Classes;
 
 public class Shoe(List<Card> cards)
 {

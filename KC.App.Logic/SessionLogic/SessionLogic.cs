@@ -1,6 +1,6 @@
-﻿using KC.App.Data;
+﻿using KC.App.Backend.Models.Classes;
+using KC.App.Data;
 using KC.App.Logic.Interfaces;
-using KC.App.Models.Classes;
 using Timer = System.Timers.Timer;
 
 

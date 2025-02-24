@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KC.App.Models.Enums;
+namespace KC.App.Backend.Models.Enums;
 public enum CardFace
 {
     None = 0,

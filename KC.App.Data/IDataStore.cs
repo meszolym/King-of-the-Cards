@@ -1,4 +1,4 @@
-﻿using KC.App.Models.Interfaces;
+﻿using KC.App.Backend.Models.Interfaces;
 
 namespace KC.App.Data;
 

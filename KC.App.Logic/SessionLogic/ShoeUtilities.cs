@@ -1,6 +1,6 @@
-﻿using KC.App.Models.Classes;
-using KC.App.Models.Enums;
-using KC.App.Models.Structs;
+﻿using KC.App.Backend.Models.Classes;
+using KC.App.Backend.Models.Enums;
+using KC.App.Backend.Models.Structs;
 
 namespace KC.App.Logic.SessionLogic;
 

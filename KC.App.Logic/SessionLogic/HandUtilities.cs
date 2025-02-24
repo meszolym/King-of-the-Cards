@@ -1,8 +1,8 @@
+using KC.App.Backend.Models.Classes.Hand;
+using KC.App.Backend.Models.Enums;
+using KC.App.Backend.Models.Structs;
 using KC.App.Logic.CardLogic;
 using KC.App.Logic.SessionLogic;
-using KC.App.Models.Classes.Hand;
-using KC.App.Models.Enums;
-using KC.App.Models.Structs;
 
 namespace KC.App.Logic.SessionLogic;
 

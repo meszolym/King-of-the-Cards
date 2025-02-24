@@ -4,9 +4,9 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using KC.App.Models.Structs;
+using KC.App.Backend.Models.Structs;
 
-namespace KC.App.Models.Classes.Hand
+namespace KC.App.Backend.Models.Classes.Hand
 {
     public class PlayerHand(List<Card> cards, double bet, bool splittable) : Hand(cards)
     {

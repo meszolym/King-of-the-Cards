@@ -1,6 +1,5 @@
+using KC.App.Backend.Models.Classes;
 using KC.App.Logic.SessionLogic;
-using KC.App.Models.Classes;
-using KC.App.Models.Structs;
 
 namespace KC.App.Logic.SessionLogic;
 public static class BettingBoxUtilities

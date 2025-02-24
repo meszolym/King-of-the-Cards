@@ -1,11 +1,11 @@
-﻿using KC.App.Models.Interfaces;
-using KC.App.Models.Structs;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections.Immutable;
-using KC.App.Models.Classes.Hand;
 using Timer = System.Timers.Timer;
+using KC.App.Backend.Models.Classes.Hand;
+using KC.App.Backend.Models.Structs;
+using KC.App.Backend.Models.Interfaces;
 
-namespace KC.App.Models.Classes;
+namespace KC.App.Backend.Models.Classes;
 
 public class Session(Guid id, ImmutableList<BettingBox> boxes, Shoe dealingShoe, DealerHand dealerHand, TickingTimer betPlacementTimer, TurnInfo turnInfo) : IIdentityBearer<Guid>
 {

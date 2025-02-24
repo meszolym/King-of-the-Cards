@@ -1,10 +1,18 @@
-﻿using KC.App.Models.Classes;
+﻿using KC.App.Frontend.Models;
 using System.Collections.Generic;
 
 namespace KC.App.Frontend.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public List<Session> Sessions { get; set; }
+        List<SessionListItem> Sessions = new List<SessionListItem>();
+
+        public MainWindowViewModel()
+        {
+            Sessions.Add(new()
+            {
+                Id = System.Guid.NewGuid()
+            });
+        }
     }
 }

@@ -1,6 +1,6 @@
-﻿using KC.App.Models.Interfaces;
+﻿using KC.App.Backend.Models.Interfaces;
 
-namespace KC.App.Models.Classes;
+namespace KC.App.Backend.Models.Classes;
 
 public class Player(string id, string name, double balance, string connectionId) : IIdentityBearer<string>
 {

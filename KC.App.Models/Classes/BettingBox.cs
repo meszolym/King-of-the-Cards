@@ -1,6 +1,6 @@
-﻿using KC.App.Models.Classes.Hand;
+﻿using KC.App.Backend.Models.Classes.Hand;
 
-namespace KC.App.Models.Classes;
+namespace KC.App.Backend.Models.Classes;
 
 public class BettingBox(int idx, List<PlayerHand> hands, Player? owner)
 {
