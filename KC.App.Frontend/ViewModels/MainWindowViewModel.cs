@@ -1,18 +1,20 @@
 ﻿using KC.App.Frontend.Models;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reactive.Linq;
 
 namespace KC.App.Frontend.ViewModels
 {
-    public class MainWindowViewModel : ViewModelBase
+    public partial class MainWindowViewModel : ReactiveObject, IScreen
     {
-        List<SessionListItem> Sessions = new List<SessionListItem>();
-
         public MainWindowViewModel()
         {
-            Sessions.Add(new()
-            {
-                Id = System.Guid.NewGuid()
-            });
+            Router.Navigate.Execute(new MenuViewModel(this));
         }
+
+        public RoutingState Router { get; } = new();
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KC.App.Frontend.Models
 {
-    class SessionListItem
+    public class SessionListItem
     {
         public Guid Id { get; set; }
         public int MaxOccupancy { get; set; } = 5;

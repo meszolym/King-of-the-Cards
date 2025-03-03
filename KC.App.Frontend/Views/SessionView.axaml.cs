@@ -1,4 +1,6 @@
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using KC.App.Frontend.ViewModels;
 using ReactiveUI;
@@ -6,17 +8,15 @@ using System.Reactive.Disposables;
 
 namespace KC.App.Frontend.Views;
 
-public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
+partial class SessionView : ReactiveUserControl<SessionViewModel>
 {
-    public MainWindow()
+    public SessionView()
     {
         this.WhenActivated(d =>
         {
-            this.Bind(ViewModel, vm => vm.Router, v => v.RoutedViewHost.Router).DisposeWith(d);
+            this.BindCommand(this.ViewModel, vm => vm.GoBackCommand, v => v.NavbackButton).DisposeWith(d);
         });
         InitializeComponent();
+
     }
-
-
-
 }

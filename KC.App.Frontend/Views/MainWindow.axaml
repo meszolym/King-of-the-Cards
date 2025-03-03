@@ -7,9 +7,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:rxui="http://reactiveui.net"
 		xmlns:models="using:KC.App.Frontend.Models"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d"
         x:Class="KC.App.Frontend.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
+		xmlns:app="clr-namespace:KC.App.Frontend"
         Title="KC.App.Frontend">
 
     <Design.DataContext>
@@ -17,38 +18,10 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-	
-	<Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="3*"></ColumnDefinition>
-			<ColumnDefinition Width="*"></ColumnDefinition>
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*"></RowDefinition>
-		</Grid.RowDefinitions>
 
-		<ListBox Grid.Column="0" Grid.Row="0" x:Name="SessionsListBox">
-			<ListBox.ItemTemplate>
-				<DataTemplate DataType="x:Type models:SessionListItem">
-					<Grid>
-						<ColumnDefinitions>
-							<ColumnDefinition Width="*"></ColumnDefinition>
-							<ColumnDefinition Width="*"></ColumnDefinition>
-						</ColumnDefinitions>
-						<RowDefinitions>
-							<RowDefinition Height="*"></RowDefinition>
-						</RowDefinitions>
-						
-						<TextBlock Text="{Binding Id}" Grid.Column="0"></TextBlock>
-						<TextBlock Text="{Binding Occupancy}" Grid.Column="1"></TextBlock>
-					</Grid>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>
-		<StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center">
-			<Button HorizontalAlignment="Center" Padding="10" Margin="5">Join session</Button>
-			<Button HorizontalAlignment="Center" Padding="10" Margin="5">Create session</Button>
-		</StackPanel>
-	</Grid>
-
+	<rxui:RoutedViewHost x:Name="RoutedViewHost">
+		<rxui:RoutedViewHost.ViewLocator>
+			<app:AppViewLocator/>
+		</rxui:RoutedViewHost.ViewLocator>
+	</rxui:RoutedViewHost>
 </rxui:ReactiveWindow>

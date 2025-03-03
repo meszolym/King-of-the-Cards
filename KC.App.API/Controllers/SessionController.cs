@@ -1,9 +1,8 @@
-﻿using KC.App.Logic.Interfaces;
+﻿using KC.App.Backend.Models.Classes;
+using KC.App.Backend.Models.Enums;
+using KC.App.Backend.Models.Structs;
+using KC.App.Logic.Interfaces;
 using KC.App.Logic.SessionLogic;
-using KC.App.Models.Backend.Classes;
-using KC.App.Models.Classes;
-using KC.App.Models.Enums;
-using KC.App.Models.Structs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.OpenApi.Validations;

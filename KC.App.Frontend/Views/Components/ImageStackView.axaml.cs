@@ -4,7 +4,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using System.Collections.Generic;
 
-namespace KC.App.Frontend;
+namespace KC.App.Frontend.Views.Components;
 
 public partial class ImageStackView : UserControl
 {
