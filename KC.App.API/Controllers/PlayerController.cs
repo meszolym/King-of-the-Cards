@@ -1,5 +1,5 @@
-﻿using KC.App.Logic.Interfaces;
-using KC.App.Models.Classes;
+﻿using KC.App.Backend.Models.Classes;
+using KC.App.Logic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KC.App.API.Controllers;
