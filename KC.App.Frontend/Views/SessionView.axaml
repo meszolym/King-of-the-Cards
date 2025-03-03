@@ -7,16 +7,23 @@
 			mc:Ignorable="d"
 			xmlns:rxui="http://reactiveui.net"
 			xmlns:models="using:KC.App.Frontend.Models"
-			x:Class="KC.App.Frontend.Views.SessionView">
+			x:Class="KC.App.Frontend.Views.SessionView"
+			xmlns:comp="using:KC.App.Frontend.Views.Components"
+			>
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="0.3*"/>
-			<RowDefinition Height="0.5*"/>
-			<RowDefinition Height="0.2*"/>
+			<RowDefinition Height="0.6*"/>
+			<RowDefinition Height="0.1*"/>
 		</Grid.RowDefinitions>
-
-				
 		
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="0.25*"/>
+			<ColumnDefinition Width="0.5*"/>
+			<ColumnDefinition Width="0.25*"/>
+		</Grid.ColumnDefinitions>
+		
+		<comp:SessionBoxControlsView Grid.Row="2" Grid.Column="1" />
 		
 	</Grid>
 		

@@ -8,4 +8,23 @@
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+    <Application.Resources>
+       <ControlTheme x:Key="CircleButton" TargetType="Button">
+            <Setter Property="Background" Value="#cccccc"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="Width" Value="{Binding Height, RelativeSource={RelativeSource Self}}"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel>
+                        <Ellipse Fill="{TemplateBinding Background}"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalAlignment="Stretch"/>
+                        <ContentPresenter x:Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          Margin="{TemplateBinding Padding}"/>
+                    </Panel>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+    </Application.Resources>
 </Application>
