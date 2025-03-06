@@ -11,6 +11,7 @@
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
     <Folder Include="Assets\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,5 +30,83 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Assets\Cards\cardBack_blue1.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardBack_blue2.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardBack_blue3.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardBack_blue4.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardBack_blue5.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardBack_green1.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardBack_green2.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardBack_green3.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardBack_green4.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardBack_green5.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardBack_red1.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardBack_red2.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardBack_red3.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardBack_red4.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardBack_red5.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardClubs10.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardClubs2.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardClubs3.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardClubs4.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardClubs5.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardClubs6.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardClubs7.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardClubs8.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardClubs9.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardClubsA.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardClubsJ.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardClubsK.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardClubsQ.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardDiamonds10.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardDiamonds2.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardDiamonds3.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardDiamonds4.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardDiamonds5.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardDiamonds6.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardDiamonds7.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardDiamonds8.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardDiamonds9.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardDiamondsA.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardDiamondsJ.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardDiamondsK.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardDiamondsQ.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardHearts10.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardHearts2.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardHearts3.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardHearts4.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardHearts5.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardHearts6.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardHearts7.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardHearts8.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardHearts9.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardHeartsA.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardHeartsJ.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardHeartsK.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardHeartsQ.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardJoker.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardSpades10.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardSpades2.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardSpades3.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardSpades4.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardSpades5.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardSpades6.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardSpades7.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardSpades8.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardSpades9.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardSpadesA.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardSpadesJ.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardSpadesK.png" />
+    <UpToDateCheckInput Remove="Assets\Cards\cardSpadesQ.png" />
+    <UpToDateCheckInput Remove="Views\Components\BoxView.axaml" />
+    <UpToDateCheckInput Remove="Views\Components\HandView.axaml" />
+    <UpToDateCheckInput Remove="Views\Components\ImageStackView.axaml" />
+    <UpToDateCheckInput Remove="Views\Components\SessionBoxControlsView.axaml" />
+    <UpToDateCheckInput Remove="Views\MainWindow.axaml" />
+    <UpToDateCheckInput Remove="Views\MenuView.axaml" />
+    <UpToDateCheckInput Remove="Views\SessionView.axaml" />
   </ItemGroup>
 </Project>

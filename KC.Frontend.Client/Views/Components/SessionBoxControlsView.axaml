@@ -1,0 +1,52 @@
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+			 x:TypeArguments="vm:SessionBoxControlsViewModel"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+			 xmlns:rxui="http://reactiveui.net"
+             xmlns:vm="clr-namespace:KC.Frontend.Client.ViewModels"
+             x:Class="KC.Frontend.Client.Views.Components.SessionBoxControlsView"
+			 d:DesignHeight="80" d:DesignWidth="400">
+	
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition></RowDefinition>
+			<RowDefinition></RowDefinition>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition></ColumnDefinition>
+			<ColumnDefinition></ColumnDefinition>
+			<ColumnDefinition></ColumnDefinition>
+			<ColumnDefinition></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		
+		<TextBlock 
+			Grid.ColumnSpan="4" 
+			Text="Controls" 
+			TextAlignment="Center" FontSize="24" />
+		<Button x:Name="HitButton" Grid.Row="1"
+		        Grid.Column="0"
+		        HorizontalAlignment="Center"
+		        Width="80"
+		        HorizontalContentAlignment="Center">Hit</Button>
+		<Button x:Name="StandButton" Grid.Row="1"
+		 		Grid.Column="1"
+		 		HorizontalAlignment="Center"
+			    Width="80"
+			    HorizontalContentAlignment="Center">Stand</Button>
+		<Button x:Name="DoubleButton" Grid.Row="1"
+		 		Grid.Column="2"
+		 		HorizontalAlignment="Center"
+			    Width="80"
+			    HorizontalContentAlignment="Center">Double</Button>
+		<Button x:Name="SplitButton" Grid.Row="1"
+		 		Grid.Column="3"
+		 		HorizontalAlignment="Center"
+			    Width="80"
+			    HorizontalContentAlignment="Center">Split</Button>
+	</Grid>
+	
+</rxui:ReactiveUserControl>
+
+

@@ -1,0 +1,31 @@
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+			x:TypeArguments="vm:SessionViewModel"
+			xmlns:vm="using:KC.Frontend.Client.ViewModels"
+			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			mc:Ignorable="d"
+			xmlns:rxui="http://reactiveui.net"
+			xmlns:models="using:KC.Frontend.Client.Models"
+			x:Class="KC.Frontend.Client.Views.SessionView"
+			xmlns:comp="using:KC.Frontend.Client.Views.Components"
+			>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="0.3*"/>
+			<RowDefinition Height="0.6*"/>
+			<RowDefinition Height="0.1*"/>
+		</Grid.RowDefinitions>
+		
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="0.25*"/>
+			<ColumnDefinition Width="0.5*"/>
+			<ColumnDefinition Width="0.25*"/>
+		</Grid.ColumnDefinitions>
+		
+		<comp:SessionBoxControlsView Grid.Row="2" Grid.Column="1" />
+		
+	</Grid>
+		
+		<!--<Button x:Name="NavbackButton">navback</Button>-->
+	</rxui:ReactiveUserControl>
