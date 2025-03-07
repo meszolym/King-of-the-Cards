@@ -1,6 +1,6 @@
 ﻿using Timer = System.Timers.Timer;
 
-namespace KC.Backend.Models.Utils;
+namespace KC.Backend.Models.GameManagement;
 
 public class TickingTimer
 {

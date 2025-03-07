@@ -1,11 +1,10 @@
-﻿using KC.App.Backend.Models.Classes;
-using Timer = System.Timers.Timer;
+﻿using KC.Backend.Models.GameManagement;
 
 namespace KC.Backend.Logic.Interfaces;
 
 public interface ISessionLogic
 {
-    Session CreateSession(uint numberOfBoxes, uint numberOfDecks, TickingTimer timerAfterFirstBet);
+    Session CreateSession(uint numberOfBoxes, uint numberOfDecks, TickingTimer bettingTimer);
     IEnumerable<Session> GetAllSessions();
     bool PurgeOldSessions(TimeSpan oldTimeSpan);
     Session Get(Guid sessionId);
