@@ -1,58 +1,9 @@
-﻿using System.Collections.Immutable;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.Marshalling;
-using KC.App.Backend.Models.Classes;
-using KC.App.Backend.Models.Classes.Hand;
-using KC.App.Backend.Models.Enums;
-using KC.App.Backend.Models.Structs;
-using KC.Backend.Logic.CardLogic;
+﻿using KC.Backend.Models;
+using KC.Backend.Models.GameManagement;
 
-
-namespace KC.Backend.Logic.SessionLogic;
+namespace KC.Backend.Logic;
 public static class SessionUtilities
 {
-    internal static Session CreateEmptySession(uint numberOfBoxes, uint numberOfDecks, TickingTimer timerAfterFirstBet) =>
-        new Session(Guid.NewGuid(),
-            Enumerable.Range(0, (int)numberOfBoxes).Select(BettingBoxUtilities.CreateEmptyBettingBox).ToImmutableList(),
-            ShoeUtilities.CreateUnshuffledShoe(numberOfBoxes),
-            new DealerHand([]),
-            timerAfterFirstBet,
-            new());
-    internal static Session AddCanBetChangeOnTimerElapsed(this Session session)
-    {
-        session.BetPlacementTimer.Elapsed += (sender, args) =>
-        {
-            session.CanPlaceBets = false;
-            session.BetPlacementTimer.Stop();
-        };
-        return session;
-    }
-
-    public static void ClaimBox(this Session session, int boxIdx, Player player)
-    {
-        if (!session.CanPlaceBets) throw new InvalidOperationException("Cannot claim boxes at this time.");
-        session.Boxes[boxIdx].Claim(player);
-        session.LastMoveAt = DateTime.Now;
-    }
-
-    public static void DisclaimBox(this Session session, int boxIdx, Player player)
-    {
-        if (!session.CanPlaceBets) throw new InvalidOperationException("Cannot disclaim boxes at this time.");
-        session.Boxes[boxIdx].Disclaim(player);
-        session.LastMoveAt = DateTime.Now;
-    }
-
-    /// <summary>
-    /// Places a bet on a box. Make sure to call UpdateTimer after this to start/stop the timer.
-    /// Make sure to take care of player balance changes.
-    /// </summary>
-    public static void UpdateBet(this Session session, int boxIdx, Player player, double amount)
-    {
-        if (!session.CanPlaceBets) throw new InvalidOperationException("Cannot place bets at this time.");
-        session.Boxes[boxIdx].UpdateBet(player, amount);
-        session.LastMoveAt = DateTime.Now;
-    }
-
     /// <summary>
     /// Starts/stops the timer based on whether there are any bets placed.
     /// </summary>
