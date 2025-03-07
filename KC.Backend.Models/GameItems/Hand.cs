@@ -4,7 +4,7 @@ public class Hand
 {
     public List<Card> Cards { get; set; } = [];
     public bool DealerOwned { get; init; } = false;
-    public bool CanBeSplit { get; set; } = true;
+    public bool FromSplit { get; set; } = false;
     public double Bet { get; set; } = 0;
     public bool Finished { get; set; } = false;
 }

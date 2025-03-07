@@ -1,10 +1,11 @@
 ﻿using KC.Backend.Logic.GameItemsLogic;
+using KC.Backend.Logic.Interfaces;
 using KC.Backend.Models;
 using KC.Backend.Models.GameManagement;
 
-namespace KC.Backend.Logic.GameLogic;
+namespace KC.Backend.Logic;
 
-public class GameInteractionLogic(SessionLogic sessionLogic, PlayerLogic playerLogic)
+public class GameInteractionLogic(ISessionLogic sessionLogic, IPlayerLogic playerLogic, IRuleBook ruleBook)
 {
     public void ClaimBox(Guid sessionId, int boxIdx, Guid playerId)
     {
@@ -62,7 +63,7 @@ public class GameInteractionLogic(SessionLogic sessionLogic, PlayerLogic playerL
         
         var hand = box.Hands[handIdx];
 
-        var possibleMoves = GetPossibleActionsOnHand(hand);
+        var possibleMoves = ruleBook.GetPossibleActionsOnHand(hand);
 
         if (!possibleMoves.Contains(Move.Double) && !possibleMoves.Contains(Move.Split)) return possibleMoves;
         
@@ -74,23 +75,4 @@ public class GameInteractionLogic(SessionLogic sessionLogic, PlayerLogic playerL
         return possibleMoves;
 
     }
-    
-    private static List<Move> GetPossibleActionsOnHand(Hand hand)
-    {
-        if (hand.Cards.Count < 2) throw new InvalidOperationException("Cannot get actions for incomplete hand");
-        if (hand.Finished) return []; //no action on finished hands
-        if (hand.GetValue().Value >= 21) return []; //no action on bust hands
-        if (hand.Cards[0].Face == Card.CardFace.Ace && !hand.CanBeSplit) return []; //no action on split aces (they automatically get only one card)
-
-        var moves = new List<Move>
-        {
-            Move.Stand, //can always stand
-            Move.Hit //can hit on any card
-        };
-
-        if (hand.Cards.Count == 2) moves.Add(Move.Double); //can double on any two cards
-        if (hand.CanBeSplit && hand.GetValue().IsPair) moves.Add(Move.Split); //can split if the hand has not been split (splittable) and it is a pair
-        return moves;
-    }
-    
 }
