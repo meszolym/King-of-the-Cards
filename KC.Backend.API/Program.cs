@@ -4,6 +4,8 @@ using KC.Backend.Logic.SessionLogic;
 using KC.Backend.Logic.PlayerLogic;
 using Microsoft.AspNetCore.Diagnostics;
 using KC.App.Backend.Models.Classes;
+using KC.Backend.Models;
+using KC.Backend.Models.GameManagement;
 
 
 namespace KC.Backend.API

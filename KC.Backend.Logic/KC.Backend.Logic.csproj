@@ -7,8 +7,4 @@
   <ItemGroup>
     <PackageReference Include="System.Reactive" Version="6.0.1" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\KC.Backend.Data\KC.Backend.Data.csproj" />
-    <ProjectReference Include="..\KC.Backend.Models\KC.Backend.Models.csproj" />
-  </ItemGroup>
 </Project>
