@@ -1,4 +1,4 @@
-﻿namespace KC.Backend.Models;
+﻿namespace KC.Backend.Models.GameItems;
 
 public class Table
 {

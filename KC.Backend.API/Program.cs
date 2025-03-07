@@ -4,6 +4,7 @@ using KC.Backend.Logic.SessionLogic;
 using KC.Backend.Logic.PlayerLogic;
 using Microsoft.AspNetCore.Diagnostics;
 using KC.App.Backend.Models.Classes;
+using KC.Backend.Logic;
 using KC.Backend.Models;
 using KC.Backend.Models.GameManagement;
 
@@ -29,8 +30,8 @@ namespace KC.Backend.API
             builder.Services.AddSingleton(players);
             builder.Services.AddSingleton(sessions);
 
-            builder.Services.AddTransient<IDataStore<Player, string>, DataStore<Player, string>>();
-            builder.Services.AddTransient<IDataStore<Session, Guid>, DataStore<Session, Guid>>();
+            builder.Services.AddTransient<IList<Player>, List<Player>>();
+            builder.Services.AddTransient<IList<Session>, List<Session>>();
             builder.Services.AddTransient<IPlayerLogic, PlayerLogic>();
             builder.Services.AddTransient<ISessionLogic, SessionLogic>();
 

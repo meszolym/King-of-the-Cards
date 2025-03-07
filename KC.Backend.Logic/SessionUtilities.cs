@@ -5,19 +5,6 @@ namespace KC.Backend.Logic;
 public static class SessionUtilities
 {
     /// <summary>
-    /// Starts/stops the timer based on whether there are any bets placed.
-    /// </summary>
-    /// <returns>Bool, if the session exists, the bool represents if the timer is running or not.</returns>
-    public static bool UpdateTimer(this Session session)
-    {
-        if (session.Boxes.Any(b => b.Hands[0].Bet > 0)
-            && !session.BetPlacementTimer.Enabled) session.BetPlacementTimer.Start();
-        else if (session.BetPlacementTimer.Enabled) session.BetPlacementTimer.Stop();
-
-        return session.BetPlacementTimer.Enabled;
-    }
-
-    /// <summary>
     /// After making a move, make sure to call GetPossibleActions and TransferTurn if there's no more possible actions (except stand) on a hand.
     /// Does not handle player balance changes (eg. split, double).
     /// </summary>

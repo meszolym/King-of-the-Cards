@@ -1,11 +1,11 @@
-﻿using KC.Backend.Logic.GameItemsLogic;
-using KC.Backend.Logic.Interfaces;
+﻿using KC.Backend.Logic.Interfaces;
 using KC.Backend.Models;
+using KC.Backend.Models.GameItems;
 using KC.Backend.Models.GameManagement;
 
 namespace KC.Backend.Logic;
 
-public class SessionLogic(IList<Session> dataStore) : ISessionLogic
+public class SessionLogic(IList<Session> dataStore, ICardShoeLogic cardShoeLogic) : ISessionLogic
 {
     /// <summary>
     /// Creates a new session with the given parameters.
@@ -16,7 +16,7 @@ public class SessionLogic(IList<Session> dataStore) : ISessionLogic
     /// <returns></returns>
     public Session CreateSession(uint numberOfBoxes, uint numberOfDecks, TickingTimer bettingTimer)
     {
-        var shoe = CardShoeUtilities.CreateUnshuffledShoe(numberOfDecks);
+        var shoe = cardShoeLogic.CreateUnshuffledShoe(numberOfDecks);
         var table = new Table((int)numberOfBoxes, shoe);
         
         var sess = new Session(table, bettingTimer);
@@ -24,7 +24,7 @@ public class SessionLogic(IList<Session> dataStore) : ISessionLogic
         dataStore.Add(sess);
         return sess;
     }
-
+    
     public IEnumerable<Session> GetAllSessions() => dataStore;
 
     public bool PurgeOldSessions(TimeSpan oldTimeSpan)
@@ -48,4 +48,12 @@ public class SessionLogic(IList<Session> dataStore) : ISessionLogic
 
     public Session Get(Guid sessionId) => dataStore.Single(s => s.Id == sessionId);
     public void Remove(Guid sessionId) => dataStore.Remove(Get(sessionId));
+    
+    public void UpdateTimer(Guid sessionId)
+    {
+        var session = Get(sessionId);
+        if (session.Table.BettingBoxes.Any(b => b.Hands[0].Bet > 0)
+            && !session.BettingTimer.Enabled) session.BettingTimer.Start();
+        else if (session.BettingTimer.Enabled) session.BettingTimer.Stop();
+    }
 }

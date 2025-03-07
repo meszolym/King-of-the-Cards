@@ -1,4 +1,6 @@
-﻿namespace KC.Backend.Models.GameManagement;
+﻿using KC.Backend.Models.GameItems;
+
+namespace KC.Backend.Models.GameManagement;
 
 public class Session(Table table, TickingTimer bettingTimer)
 {

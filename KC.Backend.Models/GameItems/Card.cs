@@ -1,4 +1,4 @@
-﻿namespace KC.Backend.Models;
+﻿namespace KC.Backend.Models.GameItems;
 
 public record struct Card
 {
@@ -30,5 +30,13 @@ public record struct Card
     
     public CardSuit Suit { get; set; }
     public CardFace Face { get; set; }
+    
+    public int GetValue() => this switch
+    {
+        { Face: Card.CardFace.King } => 10,
+        { Face: Card.CardFace.Jack } => 10,
+        { Face: Card.CardFace.Queen } => 10,
+        _ => (int)this.Face
+    };
     
 }
