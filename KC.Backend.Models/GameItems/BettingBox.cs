@@ -2,6 +2,6 @@
 
 public class BettingBox
 {
-    public Player Owner { get; set; } = Player.None;
+    public Guid OwnerId { get; set; } = Guid.Empty;
     public List<Hand> Hands { get; private init; } = [new(), new()];
 }
