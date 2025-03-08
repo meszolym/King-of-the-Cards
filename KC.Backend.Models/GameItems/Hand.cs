@@ -9,4 +9,4 @@ public class Hand
     public bool Finished { get; set; } = false;
 }
 
-public record struct HandValue(int Value, bool IsBlackJack, bool IsPair, bool IsSoft);
+public record struct HandValue(int NumberValue, bool IsBlackJack, bool IsPair, bool IsSoft);

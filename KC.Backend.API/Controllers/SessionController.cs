@@ -75,7 +75,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     public void JoinSession(Guid sessionId, string playerId)
     {
         var player = playerLogic.Get(playerId);
-        var session = sessionLogic.Get(sessionId);
+        var session = sessions.Single(s => s.Id == sessionId)
         signalRHub.Groups.AddToGroupAsync(player.ConnectionId, session.Id.ToString());
         signalRHub.Groups.RemoveFromGroupAsync(player.ConnectionId, "NoSession");
     }
@@ -84,7 +84,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     public void LeaveSession(Guid sessionId, string playerId)
     {
         var player = playerLogic.Get(playerId);
-        var session = sessionLogic.Get(sessionId);
+        var session = sessions.Single(s => s.Id == sessionId)
         signalRHub.Groups.RemoveFromGroupAsync(player.ConnectionId, session.Id.ToString());
         signalRHub.Groups.AddToGroupAsync(player.ConnectionId, "NoSession");
     }
@@ -93,7 +93,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     public void ClaimBox(Guid sessionId, int boxIdx, string playerId)
     {
         var player = playerLogic.Get(playerId);
-        var sess = sessionLogic.Get(sessionId);
+        var sess = sessions.Single(s => s.Id == sessionId)
         sess.ClaimBox(boxIdx, player);
         signalRHub.Clients.GroupExcept(sess.Id.ToString(), player.ConnectionId).SendAsync("BoxClaimed", sess);
     }
@@ -102,7 +102,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     public void DisclaimBox(Guid sessionId, int boxIdx, string playerId)
     {
         var player = playerLogic.Get(playerId);
-        var sess = sessionLogic.Get(sessionId);
+        var sess = sessions.Single(s => s.Id == sessionId)
         sess.DisclaimBox(boxIdx, player);
         signalRHub.Clients.GroupExcept(sess.Id.ToString(), player.ConnectionId).SendAsync("BoxDisclaimed",sess);
     }
@@ -111,7 +111,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     public void Bet(Guid sessionId, int boxIdx, string playerId, double amount)
     {
         var player = playerLogic.Get(playerId);
-        var sess = sessionLogic.Get(sessionId);
+        var sess = sessions.Single(s => s.Id == sessionId)
         sess.UpdateBet(boxIdx, player, amount);
         signalRHub.Clients.GroupExcept(sess.Id.ToString(), player.ConnectionId).SendAsync("BoxBetUpdated", sess);
         var timerOn = sess.UpdateTimer();
@@ -122,7 +122,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     public TurnInfo MakeMove(Guid sessionId, int boxIdx, int handIdx, string playerId, Move move)
     {
         var player = playerLogic.Get(playerId);
-        var sess = sessionLogic.Get(sessionId);
+        var sess = sessions.Single(s => s.Id == sessionId)
 
         //TODO: check if split or double -> make changes to player balance
         sess.MakeMove(boxIdx, handIdx, player, move);
@@ -138,14 +138,14 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     [HttpGet("{sessionId:guid}/{boxIdx:int}/{handIdx:int}/GetPossibleMoves")]
     public IEnumerable<Move> GetPossibleMoves(Guid sessionId, int boxIdx, int handIdx)
     {
-        var sess = sessionLogic.Get(sessionId);
+        var sess = sessions.Single(s => s.Id == sessionId)
         return sess.Boxes[boxIdx].Hands[handIdx].GetPossibleActions();
     }
 
     [HttpGet("{sessionId:guid}/{boxIdx:int}/{handIdx:int}/GetHandValue")]
     public HandValue GetHandValue(Guid sessionId, int boxIdx, int handIdx)
     {
-        var sess = sessionLogic.Get(sessionId);
+        var sess = sessions.Single(s => s.Id == sessionId)
         return sess.Boxes[boxIdx].Hands[handIdx].GetValue();
     }
 

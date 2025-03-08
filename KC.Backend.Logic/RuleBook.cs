@@ -10,7 +10,7 @@ public class RuleBook : IRuleBook
     {
         if (hand.Cards.Count < 2) throw new InvalidOperationException("Cannot get actions for incomplete hand");
         if (hand.Finished) return []; //no action on finished hands
-        if (GetValue(hand).Value >= 21) return []; //no action on bust hands
+        if (GetValue(hand).NumberValue >= 21) return []; //no action on bust hands
         if (hand.Cards[0].Face == Card.CardFace.Ace && !CanBeSplit(hand)) return []; //no action on split aces (they automatically get only one card)
 
         var moves = new List<Move>
@@ -48,14 +48,14 @@ public class RuleBook : IRuleBook
             {
                 if (GetValue(hand).IsSoft && GetValue(hand).IsPair && CanBeSplit(hand)) return "P11"; //Pair of Aces
             }
-            if (GetValue(hand).IsSoft && !hand.Finished) return $"S{GetValue(hand).Value}";
+            if (GetValue(hand).IsSoft && !hand.Finished) return $"S{GetValue(hand).NumberValue}";
             if (!hand.DealerOwned)
             {
-                if (GetValue(hand).IsPair && CanBeSplit(hand)) return $"P{GetValue(hand).Value / 2}";
+                if (GetValue(hand).IsPair && CanBeSplit(hand)) return $"P{GetValue(hand).NumberValue / 2}";
             }
         }
         
-        return GetValue(hand).Value.ToString();
+        return GetValue(hand).NumberValue.ToString();
         
     }
     
@@ -63,7 +63,7 @@ public class RuleBook : IRuleBook
 
     public bool CanDouble(Hand hand) => hand.Cards.Count == 2;
     
-    public bool DealerShouldHit(Hand hand) => GetValue(hand).Value < 17;
+    public bool DealerShouldHit(Hand hand) => GetValue(hand).NumberValue < 17;
 
     public int BlackjackPayout { get; } = 3/2;
     
