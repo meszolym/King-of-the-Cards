@@ -8,36 +8,18 @@ namespace KC.Backend.Logic;
 //TODO: Make the logic more atomic, chaining them together will be handled by the API layer.
 public class PlayerMoveLogic(IList<Session> sessions, IList<Player> players, IRuleBook ruleBook, IDealerLogic dealerLogic) : IPlayerMoveLogic
 {
-    public IEnumerable<Move> GetPossibleMoves(Guid sessionId, int boxIdx, Guid playerId, int handIdx = 0)
-    {
-        var session = sessions.Single(s => s.Id == sessionId);
-        
-        if (!session.CurrentTurnInfo.PlayersTurn 
-            || session.CurrentTurnInfo.BoxIdx != boxIdx 
-            || session.CurrentTurnInfo.HandIdx != handIdx) throw new InvalidOperationException("This hand is not in turn right now.");
-        
-        var box = session.Table.BettingBoxes[boxIdx];
-        
-        if (box.OwnerId != playerId) throw new InvalidOperationException("Box is not owned by player.");
-        
-        var hand = box.Hands[handIdx];
-
-        var possibleMoves = ruleBook.GetPossibleActionsOnHand(hand);
-
-        if (!possibleMoves.Contains(Move.Double) && !possibleMoves.Contains(Move.Split)) return possibleMoves;
-        
-        //check if player has enough money to double or split
-        var player = players.Single(p => p.Id == playerId);
-        if (possibleMoves.Contains(Move.Double) && player.Balance < hand.Bet) possibleMoves.Remove(Move.Double);
-        if (possibleMoves.Contains(Move.Split) && player.Balance < hand.Bet) possibleMoves.Remove(Move.Split);
-
-        return possibleMoves;
-
-    }
-
     /// <summary>
-    /// After making a move, make sure to call GetPossibleMoves and TransferTurn if there's no more possible actions (except stand) on a hand.
+    /// Makes a move on a given hand of a given player on a given box. Does not handle player balance, hand bets or transferring turns.
     /// </summary>
+    /// <param name="sessionId"></param>
+    /// <param name="boxIdx"></param>
+    /// <param name="playerId"></param>
+    /// <param name="move"></param>
+    /// <param name="handIdx"></param>
+    /// <exception cref="InvalidOperationException">"The hand is not in turn."</exception>
+    /// <exception cref="InvalidOperationException">"Box is not owned by player."</exception>
+    /// <exception cref="InvalidOperationException">"Action not possible." if the rulebook states that this action is not possible.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">If move is not handled.</exception>
     public void MakeMove(Guid sessionId, int boxIdx, Guid playerId, Move move, int handIdx = 0)
     {
         var session = sessions.Single(s => s.Id == sessionId);
@@ -48,27 +30,23 @@ public class PlayerMoveLogic(IList<Session> sessions, IList<Player> players, IRu
         if (box.OwnerId != playerId) throw new InvalidOperationException("Box is not owned by player.");
         
         var hand = box.Hands[handIdx];
-        if (!GetPossibleMoves(sessionId, boxIdx, playerId, handIdx).Contains(move)) throw new InvalidOperationException("Action not possible.");
-        Player player; //in case of double or split
+        if (!ruleBook.GetPossibleActionsOnHand(hand).Contains(move)) throw new InvalidOperationException("Action not possible.");
+        
         switch (move)
         {
             case Move.Stand:
                 hand.Finished = true;
                 break;
             case Move.Hit:
-                hand.Cards.Add(dealerLogic.TakeCard(sessionId));
+                hand.Cards.Add(dealerLogic.GiveCard(sessionId));
                 break;
             case Move.Double:
-                hand.Cards.Add(dealerLogic.TakeCard(sessionId));
-                player = players.Single(p => p.Id == playerId);
-                UpdateBetOnBox(sessionId, boxIdx, playerId, box.Hands[handIdx].Bet*2 ,handIdx);
+                hand.Cards.Add(dealerLogic.GiveCard(sessionId));
                 break;
             case Move.Split:
-                player = players.Single(p => p.Id == playerId);
                 box.Hands.Add(new Hand(){Cards = new List<Card>(){hand.Cards[1]}, FromSplit = true});
                 hand.Cards.RemoveAt(1);
-                UpdateBetOnBox(sessionId, boxIdx, playerId, box.Hands[handIdx].Bet ,handIdx+1);
-                hand.Cards.Add(dealerLogic.TakeCard(sessionId));
+                hand.Cards.Add(dealerLogic.GiveCard(sessionId));
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(move), move, null);
@@ -80,45 +58,4 @@ public class PlayerMoveLogic(IList<Session> sessions, IList<Player> players, IRu
 
         session.LastMoveMadeAt = DateTime.Now;
     }
-    
-    public void UpdateBetOnBox(Guid sessionId, int boxIdx, Guid playerId, double amount, int handIdx = 0)
-    {
-        var session = sessions.Single(s => s.Id == sessionId);
-        if (!session.CanPlaceBets) throw new InvalidOperationException("Cannot place bets at this time.");
-        var box = session.Table.BettingBoxes[boxIdx];
-        if (amount < 0) throw new ArgumentException("Bet cannot be less than 0.");
-        
-        if (box.OwnerId != playerId) throw new InvalidOperationException("Box is not owned by player.");
-        
-        var delta = amount - box.Hands[handIdx].Bet;
-        var player = players.Single(p => p.Id == playerId);
-        if (player.Balance < delta) throw new InvalidOperationException("Amount required exceeds player balance.");
-        
-        player.Balance -= delta;
-        box.Hands[handIdx].Bet += delta;
-        
-        session.LastMoveMadeAt = DateTime.Now;
-    }
-    
-    public void ClaimBettingBox(Guid sessionId, int boxIdx, Guid playerId)
-    {
-        var session = sessions.Single(s => s.Id == sessionId);
-        if (!session.CanPlaceBets) throw new InvalidOperationException("Cannot claim boxes at this time.");
-        var box = session.Table.BettingBoxes[boxIdx];
-        if (box.OwnerId != Guid.Empty ) throw new InvalidOperationException("Box already has an owner.");
-        box.OwnerId = playerId;
-        
-        session.LastMoveMadeAt = DateTime.Now;
-    }
-
-    public void DisclaimBettingBox(Guid sessionId, int boxIdx, Guid playerId)
-    {
-        var session = sessions.Single(s => s.Id == sessionId);
-        if (!session.CanPlaceBets) throw new InvalidOperationException("Cannot disclaim boxes at this time.");
-        var box = session.Table.BettingBoxes[boxIdx];
-        if (box.OwnerId != playerId) throw new InvalidOperationException("Box is not owned by player.");
-        box.OwnerId = Guid.Empty;
-        session.LastMoveMadeAt = DateTime.Now;
-    }
-
 }
