@@ -5,7 +5,7 @@ using KC.Backend.Models.GameManagement;
 
 namespace KC.Backend.Logic;
 
-public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessionLogic, ISessionLogic
+public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessionLogic
 {
     private CardShoe CreateUnshuffledShoe(uint numberOfDecks) =>
         new CardShoe([.. Enumerable.Range(0, (int)numberOfDecks).SelectMany(i => GetDeck())]);

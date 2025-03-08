@@ -1,11 +1,8 @@
-using KC.Backend.Data;
 using KC.Backend.Logic.Interfaces;
-using KC.Backend.Logic.SessionLogic;
-using KC.Backend.Logic.PlayerLogic;
 using Microsoft.AspNetCore.Diagnostics;
-using KC.App.Backend.Models.Classes;
 using KC.Backend.Logic;
 using KC.Backend.Models;
+using KC.Backend.Models.GameItems;
 using KC.Backend.Models.GameManagement;
 
 
@@ -30,9 +27,9 @@ namespace KC.Backend.API
             builder.Services.AddSingleton(players);
             builder.Services.AddSingleton(sessions);
 
-            builder.Services.AddTransient<IList<Player>, List<Player>>();
-            builder.Services.AddTransient<IList<Session>, List<Session>>();
-            builder.Services.AddTransient<IPlayerLogic, PlayerLogic>();
+            builder.Services.AddTransient<IDealerLogic, DealerLogic>();
+            builder.Services.AddTransient<IPlayerMoveLogic, PlayerMoveLogic>();
+            builder.Services.AddTransient<IRuleBook, RuleBook>();
             builder.Services.AddTransient<ISessionLogic, SessionLogic>();
 
             builder.Services.AddSignalR();
