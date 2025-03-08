@@ -60,14 +60,13 @@ public class PlayerMoveLogic(IList<Session> sessions, IList<Player> players, IRu
             case Move.Double:
                 hand.Cards.Add(dealerLogic.TakeCard(sessionId));
                 player = players.Single(p => p.Id == playerId);
-                player.Balance -= hand.Bet;
-                hand.Bet *= 2;
+                UpdateBetOnBox(sessionId, boxIdx, playerId, box.Hands[handIdx].Bet*2 ,handIdx);
                 break;
             case Move.Split:
                 player = players.Single(p => p.Id == playerId);
-                player.Balance -= hand.Bet;
-                box.Hands.Add(new Hand(){Cards = new List<Card>(){hand.Cards[1]}, Bet = hand.Bet, FromSplit = true});
+                box.Hands.Add(new Hand(){Cards = new List<Card>(){hand.Cards[1]}, FromSplit = true});
                 hand.Cards.RemoveAt(1);
+                UpdateBetOnBox(sessionId, boxIdx, playerId, box.Hands[handIdx].Bet ,handIdx+1);
                 hand.Cards.Add(dealerLogic.TakeCard(sessionId));
                 break;
             default:
