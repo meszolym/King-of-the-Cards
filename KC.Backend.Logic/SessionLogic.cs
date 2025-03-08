@@ -144,25 +144,26 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
 
                 if (ruleBook.GetValue(dealerHand).NumberValue > 21) //dealer bust
                 {
-                    if (ruleBook.GetValue(hand).IsBlackJack) hand.Bet += hand.Bet * ruleBook.BlackjackPayout; //if player has blackjack, pay out 1.5x bet
-                    else hand.Bet += hand.Bet * ruleBook.StandardPayout; //pay out bet
+                    if (ruleBook.GetValue(hand).IsBlackJack) hand.Bet += hand.Bet * ruleBook.BlackjackPayoutMultiplier; //if player has blackjack, pay out 1.5x bet
+                    else hand.Bet += hand.Bet * ruleBook.StandardPayoutMultiplier; //pay out bet
                     continue;
                 }
 
                 if (ruleBook.GetValue(dealerHand).IsBlackJack) //dealer has blackjack
                 {
                     if (!ruleBook.GetValue(hand).IsBlackJack) hand.Bet = 0; //if player doesn't have blackjack, lose bet, else bet stays the same
+                    if (!ruleBook.GetValue(hand).IsBlackJack) hand.Bet += hand.Bet * ruleBook.BjVsBjPayoutMultiplier;
                     continue;
                 }
 
                 if (ruleBook.GetValue(hand).IsBlackJack) //player has blackjack
                 {
-                    hand.Bet += hand.Bet * ruleBook.BlackjackPayout; //if player has blackjack, pay out 1.5x bet
+                    hand.Bet += hand.Bet * ruleBook.BlackjackPayoutMultiplier; //if player has blackjack, pay out 1.5x bet
                 }
 
                 if (ruleBook.GetValue(hand).NumberValue > ruleBook.GetValue(dealerHand).NumberValue) //player has stronger hand
                 {
-                    hand.Bet += hand.Bet * ruleBook.StandardPayout; //pay out bet
+                    hand.Bet += hand.Bet * ruleBook.StandardPayoutMultiplier; //pay out bet
                     continue;
                 }
 

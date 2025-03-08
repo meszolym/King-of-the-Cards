@@ -66,11 +66,11 @@ public class RuleBook : IRuleBook
     
     public bool DealerShouldHit(Hand hand) => GetValue(hand).NumberValue < 17;
 
-    public int BlackjackPayout { get; } = 3/2;
+    public int BlackjackPayoutMultiplier { get; } = 3/2;
     
-    public int StandardPayout { get; } = 1;
+    public int StandardPayoutMultiplier { get; } = 1;
     
-    public int BjVsBjPayout { get; } = 1;
+    public int BjVsBjPayoutMultiplier { get; } = 0;
     
     
 }

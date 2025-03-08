@@ -10,7 +10,7 @@ public interface IRuleBook
     bool CanBeSplit(Hand hand);
     bool CanDouble(Hand hand);
     bool DealerShouldHit(Hand hand);
-    int BlackjackPayout { get; }
-    int StandardPayout { get; }
-    int BjVsBjPayout { get; }
+    int BlackjackPayoutMultiplier { get; }
+    int StandardPayoutMultiplier { get; }
+    int BjVsBjPayoutMultiplier { get; }
 }
