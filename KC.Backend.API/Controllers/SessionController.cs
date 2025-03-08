@@ -1,11 +1,17 @@
+using KC.Backend.API.Utilities;
 using KC.Backend.Logic.Interfaces;
-using Microsoft.AspNetCore.Http;
+using KC.Backend.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KC.Backend.API.Controllers
+namespace KC.Backend.API.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class SessionController(ISessionLogic sessionLogic) : Controller
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class SessionController(ISessionLogic sessionLogic) : ControllerBase
-    { }
+    [HttpGet]
+    public IEnumerable<SessionDto> GetAllSessions() => sessionLogic.GetAll().Select(s => s.ToDto());
+
+    [HttpGet("{id:guid}")]
+    public SessionDto GetSession(Guid id) => sessionLogic.Get(id).ToDto();
 }

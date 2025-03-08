@@ -15,8 +15,9 @@ namespace KC.Backend.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
-            builder.Services.AddControllers().AddNewtonsoftJson();
+            builder.Services.AddControllers()
+                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -27,6 +28,8 @@ namespace KC.Backend.API
             builder.Services.AddSingleton(players);
             builder.Services.AddSingleton(sessions);
 
+            builder.Services.AddTransient<IList<Player>, List<Player>>();
+            builder.Services.AddTransient<IList<Session>, List<Session>>();
             builder.Services.AddTransient<IBettingBoxLogic, BettingBoxLogic>();
             builder.Services.AddTransient<IGamePlayLogic, GamePlayLogic>();
             builder.Services.AddTransient<IPlayerLogic, PlayerLogic>();

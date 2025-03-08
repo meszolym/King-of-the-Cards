@@ -1,12 +1,10 @@
-using KC.Backend.Logic.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KC.Backend.API.Controllers
+namespace KC.Backend.API.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class PlayerController : Controller
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class PlayerController(IPlayerLogic playerLogic) : ControllerBase
-    {
-    }
+    
 }
