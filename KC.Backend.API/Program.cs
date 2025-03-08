@@ -27,7 +27,7 @@ namespace KC.Backend.API
             builder.Services.AddSingleton(players);
             builder.Services.AddSingleton(sessions);
 
-            builder.Services.AddTransient<IDealerLogic, DealerLogic>();
+            builder.Services.AddTransient<IDealerLogic, GamePlayLogic>();
             builder.Services.AddTransient<IPlayerMoveLogic, PlayerMoveLogic>();
             builder.Services.AddTransient<IRuleBook, RuleBook>();
             builder.Services.AddTransient<ISessionLogic, SessionLogic>();
