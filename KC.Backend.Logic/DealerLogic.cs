@@ -7,6 +7,11 @@ namespace KC.Backend.Logic;
 //TODO: Make the logic more atomic, chaining them together will be handled by the API layer.
 public class DealerLogic(IList<Session> sessions, IRuleBook ruleBook) : IDealerLogic
 {
+    /// <summary>
+    /// Shuffles the shoe of the table in the session.
+    /// </summary>
+    /// <param name="sessionId"></param>
+    /// <param name="random"></param>
     public void Shuffle(Guid sessionId, Random? random = null)
     {
         random ??= Random.Shared;
@@ -21,12 +26,23 @@ public class DealerLogic(IList<Session> sessions, IRuleBook ruleBook) : IDealerL
         shoe.NextCardIdx = 0;
     }
 
+    /// <summary>
+    /// Gives a card from the shoe of the session.
+    /// </summary>
+    /// <param name="sessionId"></param>
+    /// <returns></returns>
     public Card GiveCard(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         return session.Table.Shoe.Cards[session.Table.Shoe.NextCardIdx++];
     }
 
+    /// <summary>
+    /// Plays dealer's hand according to the rules.
+    /// </summary>
+    /// <param name="sessionId"></param>
+    /// <exception cref="InvalidOperationException">"It's not the dealer's turn."</exception>
+    /// <exception cref="InvalidOperationException">"Dealer's hand is already finished."</exception>
     public void DealerPlayHand(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
@@ -45,6 +61,10 @@ public class DealerLogic(IList<Session> sessions, IRuleBook ruleBook) : IDealerL
         
     }
     
+    /// <summary>
+    /// Deals cards to the players and the dealer at the start of a round.
+    /// </summary>
+    /// <param name="sessionId"></param>
     public void DealStartingCards(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
@@ -65,6 +85,11 @@ public class DealerLogic(IList<Session> sessions, IRuleBook ruleBook) : IDealerL
         }
     }
 
+    /// <summary>
+    /// Checks for dealer blackjack.
+    /// </summary>
+    /// <param name="sessionId"></param>
+    /// <returns>True if the dealer has blackjack</returns>
     public bool DealerCheck(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);

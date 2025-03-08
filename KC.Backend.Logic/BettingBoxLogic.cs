@@ -4,7 +4,8 @@ using KC.Backend.Models.GameManagement;
 
 namespace KC.Backend.Logic;
 
-public class BettingBoxLogic(IList<Session> sessions)
+//This seems done.
+public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic
 {
     /// <summary>
     /// Claims box for a given player.

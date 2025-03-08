@@ -4,7 +4,7 @@ using KC.Backend.Models.GameItems;
 
 namespace KC.Backend.Logic;
 
-//TODO: Make the logic more atomic, chaining them together will be handled by the API layer.
+//This seems done.
 public class RuleBook : IRuleBook
 {
     public List<Move> GetPossibleActionsOnHand(Hand hand)

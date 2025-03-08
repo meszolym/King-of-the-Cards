@@ -5,8 +5,9 @@ using KC.Backend.Models.GameManagement;
 
 namespace KC.Backend.Logic;
 
-//TODO: Make the logic more atomic, chaining them together will be handled by the API layer.
-public class PlayerMoveLogic(IList<Session> sessions, IList<Player> players, IRuleBook ruleBook, IDealerLogic dealerLogic) : IPlayerMoveLogic
+//This seems done.
+//TODO: Maybe I could somehow extract the logic for getting a card from the dealer.
+public class PlayerMoveLogic(IList<Session> sessions, IRuleBook ruleBook, IDealerLogic dealerLogic) : IPlayerMoveLogic
 {
     /// <summary>
     /// Makes a move on a given hand of a given player on a given box. Does not handle player balance, hand bets or transferring turns.
