@@ -4,7 +4,7 @@ using KC.Backend.Models.GameItems;
 
 namespace KC.Backend.Logic;
 
-//This seems done.
+//This is done.
 public class RuleBook : IRuleBook
 {
     public List<Move> GetPossibleActionsOnHand(Hand hand)

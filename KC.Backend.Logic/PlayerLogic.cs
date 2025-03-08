@@ -3,8 +3,8 @@ using KC.Backend.Models.GameItems;
 
 namespace KC.Backend.Logic;
 
-//This seems done.
-public class PlayerLogic(IList<Player> players) : IPlayerLogic
+//This is done.
+public class PlayerLogic(IList<Player> players):IPlayerLogic
 {
     public void AddPlayer(Player player) => players.Add(player);
     

@@ -6,6 +6,7 @@ namespace KC.Backend.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class SessionController(ISessionLogic sessionLogic) : ControllerBase
-    { }
+    public class GamePlayController(IGamePlayLogic gamePlayLogic) : ControllerBase
+    {
+    }
 }

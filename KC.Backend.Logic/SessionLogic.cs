@@ -13,7 +13,18 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
 
     private IEnumerable<Card> GetDeck() => Enum.GetValues<Card.CardSuit>().Where(s => s != Card.CardSuit.None)
         .SelectMany(suit => Enum.GetValues<Card.CardFace>().Select(face => new Card {Face = face, Suit = suit}));
-    public Session CreateSession(uint numberOfBoxes, uint numberOfDecks, int shuffleCardPlacement, int shuffleCardRange, TickingTimer bettingTimer, Random? random = null)
+    
+    /// <summary>
+    /// Creates an empty session. Make sure to subscribe to events of the timer.
+    /// </summary>
+    /// <param name="numberOfBoxes"></param>
+    /// <param name="numberOfDecks"></param>
+    /// <param name="shuffleCardPlacement"></param>
+    /// <param name="shuffleCardRange"></param>
+    /// <param name="bettingTimerSeconds"></param>
+    /// <param name="random"></param>
+    /// <returns></returns>
+    public Session CreateSession(uint numberOfBoxes, uint numberOfDecks, int shuffleCardPlacement, int shuffleCardRange, int bettingTimerSeconds, Random? random = null)
     {
         random ??= Random.Shared;
         var shoe = CreateUnshuffledShoe(numberOfDecks);
@@ -22,13 +33,17 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
         
         var table = new Table((int)numberOfBoxes, shoe);
         
-        var sess = new Session(table, bettingTimer);
+        var sess = new Session(table);
+
+        sess.BettingTimer = new TickingTimer(TimeSpan.FromSeconds(bettingTimerSeconds));
         
         sessions.Add(sess);
         return sess;
     }
     
     public Session Get(Guid sessionId) => sessions.Single(s => s.Id == sessionId);
+    
+    public IEnumerable<Session> GetAll() => sessions;
 
     public bool PurgeOldSessions(TimeSpan oldTimeSpan)
     {
@@ -124,7 +139,7 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
     }
     
     /// <summary>
-    /// Ends the turn, pays out bets to the boxes.
+    /// Ends the turn, pays out bets TO THE BOXES.
     /// Make sure to handle player balance changes.
     /// </summary>
     public void PayOutBets(Guid sessionId)

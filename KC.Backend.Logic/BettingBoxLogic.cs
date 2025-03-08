@@ -4,7 +4,7 @@ using KC.Backend.Models.GameManagement;
 
 namespace KC.Backend.Logic;
 
-//This seems done.
+//This is done.
 public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic
 {
     /// <summary>
