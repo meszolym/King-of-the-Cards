@@ -4,6 +4,7 @@ using KC.Backend.Models.GameManagement;
 
 namespace KC.Backend.Logic;
 
+//TODO: Make the logic more atomic, chaining them together will be handled by the API layer.
 public class DealerLogic(IList<Session> sessions, IRuleBook ruleBook) : IDealerLogic
 {
     public void Shuffle(Guid sessionId, Random? random = null)

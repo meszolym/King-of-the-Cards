@@ -5,6 +5,7 @@ using KC.Backend.Models.GameManagement;
 
 namespace KC.Backend.Logic;
 
+//TODO: Make the logic more atomic, chaining them together will be handled by the API layer.
 public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessionLogic
 {
     private CardShoe CreateUnshuffledShoe(uint numberOfDecks) =>

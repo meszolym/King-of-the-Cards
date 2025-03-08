@@ -5,6 +5,7 @@ using KC.Backend.Models.GameManagement;
 
 namespace KC.Backend.Logic;
 
+//TODO: Make the logic more atomic, chaining them together will be handled by the API layer.
 public class PlayerMoveLogic(IList<Session> sessions, IList<Player> players, IRuleBook ruleBook, IDealerLogic dealerLogic) : IPlayerMoveLogic
 {
     public IEnumerable<Move> GetPossibleMoves(Guid sessionId, int boxIdx, Guid playerId, int handIdx = 0)
