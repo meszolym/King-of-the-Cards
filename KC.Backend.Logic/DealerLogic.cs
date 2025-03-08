@@ -21,7 +21,7 @@ public class DealerLogic(IList<Session> sessions, IRuleBook ruleBook) : IDealerL
         shoe.NextCardIdx = 0;
     }
 
-    public Card TakeCard(Guid sessionId)
+    public Card GiveCard(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         return session.Table.Shoe.Cards[session.Table.Shoe.NextCardIdx++];
@@ -38,7 +38,7 @@ public class DealerLogic(IList<Session> sessions, IRuleBook ruleBook) : IDealerL
 
         while (ruleBook.DealerShouldHit(dealerHand))
         {
-            dealerHand.Cards.Add(TakeCard(sessionId));
+            dealerHand.Cards.Add(GiveCard(sessionId));
         }
         
         dealerHand.Finished = true;
@@ -59,9 +59,9 @@ public class DealerLogic(IList<Session> sessions, IRuleBook ruleBook) : IDealerL
         {
             foreach (BettingBox box in session.Table.BettingBoxes.Where(b => b.Hands[0].Bet > 0))
             {
-                box.Hands[0].Cards.Add(TakeCard(sessionId));
+                box.Hands[0].Cards.Add(GiveCard(sessionId));
             }
-            session.Table.Dealer.DealerHand.Cards.Add(TakeCard(sessionId));
+            session.Table.Dealer.DealerHand.Cards.Add(GiveCard(sessionId));
         }
     }
 

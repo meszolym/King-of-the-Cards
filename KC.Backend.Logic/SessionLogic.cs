@@ -27,6 +27,8 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
         sessions.Add(sess);
         return sess;
     }
+    
+    public Session Get(Guid sessionId) => sessions.Single(s => s.Id == sessionId);
 
     public bool PurgeOldSessions(TimeSpan oldTimeSpan)
     {
