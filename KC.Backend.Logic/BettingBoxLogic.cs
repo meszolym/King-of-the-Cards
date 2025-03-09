@@ -1,3 +1,4 @@
+using System.Net.NetworkInformation;
 using KC.Backend.Logic.Interfaces;
 using KC.Backend.Models.GameItems;
 using KC.Backend.Models.GameManagement;
@@ -15,12 +16,12 @@ public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic
     /// <param name="playerId"></param>
     /// <exception cref="InvalidOperationException">"Cannot claim boxes at this time." if the round is already going.</exception>
     /// <exception cref="InvalidOperationException">"Box already has an owner." if the box has an owner.</exception>
-    public void ClaimBettingBox(Guid sessionId, int boxIdx, Guid playerId)
+    public void ClaimBettingBox(Guid sessionId, int boxIdx, PhysicalAddress playerId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         if (!session.CanPlaceBets) throw new InvalidOperationException("Cannot claim boxes at this time.");
         var box = session.Table.BettingBoxes[boxIdx];
-        if (box.OwnerId != Guid.Empty ) throw new InvalidOperationException("Box already has an owner.");
+        if (box.OwnerId != PhysicalAddress.None ) throw new InvalidOperationException("Box already has an owner.");
         box.OwnerId = playerId;
         
         session.LastMoveMadeAt = DateTime.Now;
@@ -34,13 +35,13 @@ public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic
     /// <param name="playerId"></param>
     /// <exception cref="InvalidOperationException">"Cannot disclaim boxes at this time." if the round is already going.</exception>
     /// <exception cref="InvalidOperationException">"Box is not owned by player." if the box has an owner that is not the given player.</exception>
-    public void DisclaimBettingBox(Guid sessionId, int boxIdx, Guid playerId)
+    public void DisclaimBettingBox(Guid sessionId, int boxIdx, PhysicalAddress playerId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         if (!session.CanPlaceBets) throw new InvalidOperationException("Cannot disclaim boxes at this time.");
         var box = session.Table.BettingBoxes[boxIdx];
         if (box.OwnerId != playerId) throw new InvalidOperationException("Box is not owned by player.");
-        box.OwnerId = Guid.Empty;
+        box.OwnerId = PhysicalAddress.None;
         session.LastMoveMadeAt = DateTime.Now;
     }
     
@@ -56,7 +57,7 @@ public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic
     /// <exception cref="InvalidOperationException">"Cannot place bets at this time." if the round is already going.</exception>
     /// <exception cref="InvalidOperationException">"Box is not owned by player." if the box is nt owned by the player.</exception>
     /// <exception cref="ArgumentException">"Bet cannot be less than 0." if the amount is less than 0.</exception>
-    public void UpdateBetOnBox(Guid sessionId, int boxIdx, Guid playerId, double amount, int handIdx = 0)
+    public void UpdateBetOnBox(Guid sessionId, int boxIdx, PhysicalAddress playerId, double amount, int handIdx = 0)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         if (!session.CanPlaceBets) throw new InvalidOperationException("Cannot place bets at this time.");

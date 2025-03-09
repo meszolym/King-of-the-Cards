@@ -1,8 +1,10 @@
-﻿namespace KC.Backend.Models.GameItems;
+﻿using System.Net.NetworkInformation;
 
-public class Player( string name, double balance, string connectionId)
+namespace KC.Backend.Models.GameItems;
+
+public class Player(PhysicalAddress macAddress, string name, double balance, string connectionId)
 {
-    public Guid Id { get; private init; } = Guid.NewGuid();
+    public PhysicalAddress Id { get; private init; } = macAddress;
     public string ConnectionId { get; set; } = connectionId;
     public string Name { get; set; } = name;
     public double Balance { get; set; } = balance;

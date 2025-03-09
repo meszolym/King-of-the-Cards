@@ -1,6 +1,6 @@
 using KC.Backend.API.Utilities;
 using KC.Backend.Logic.Interfaces;
-using KC.Backend.Models.Dtos;
+using KC.Shared.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KC.Backend.API.Controllers;
