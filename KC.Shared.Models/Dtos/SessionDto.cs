@@ -1,6 +1,6 @@
-using KC.Backend.Models.GameManagement;
+using KC.Shared.Models.GameManagement;
 
-namespace KC.Backend.Models.Dtos;
+namespace KC.Shared.Models.Dtos;
 
 public class SessionDto
 {

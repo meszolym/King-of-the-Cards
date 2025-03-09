@@ -1,4 +1,6 @@
-﻿namespace KC.Backend.Models.GameItems;
+﻿using KC.Shared.Models.GameItems;
+
+namespace KC.Backend.Models.GameItems;
 
 public class CardShoe(List<Card> cards)
 {

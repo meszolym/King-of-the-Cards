@@ -1,4 +1,4 @@
-﻿namespace KC.Backend.Models.GameItems;
+﻿namespace KC.Shared.Models.GameItems;
 
 public record struct Card
 {

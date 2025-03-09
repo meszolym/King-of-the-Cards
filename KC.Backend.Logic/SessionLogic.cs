@@ -2,6 +2,8 @@
 using KC.Backend.Models;
 using KC.Backend.Models.GameItems;
 using KC.Backend.Models.GameManagement;
+using KC.Shared.Models.GameItems;
+using KC.Shared.Models.GameManagement;
 
 namespace KC.Backend.Logic;
 

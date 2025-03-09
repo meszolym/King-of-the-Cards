@@ -1,4 +1,4 @@
-namespace KC.Backend.Models.Dtos;
+namespace KC.Shared.Models.Dtos;
 
 public class BettingBoxDto
 {

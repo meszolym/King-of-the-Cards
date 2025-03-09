@@ -1,3 +1,3 @@
-﻿namespace KC.Backend.Models.GameManagement;
+﻿namespace KC.Shared.Models.GameManagement;
 
 public record struct TurnInfo(bool PlayersTurn, int BoxIdx, int HandIdx);

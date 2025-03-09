@@ -1,6 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.ReactiveUI;
 using System;
+using KC.Frontend.Client.Services;
+using Splat;
 
 namespace KC.Frontend.Client;
 
@@ -20,4 +22,9 @@ sealed class Program
             .WithInterFont()
             .LogToTrace()
             .UseReactiveUI();
+    
+    private static void RegisterServices(AppBuilder builder)
+    {
+        Locator.CurrentMutable.RegisterConstant(new ExternalCommunicatorService());
+    }
 }

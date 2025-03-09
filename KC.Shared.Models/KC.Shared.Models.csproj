@@ -6,8 +6,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\KC.Shared.Models\KC.Shared.Models.csproj" />
-    </ItemGroup>
-
 </Project>

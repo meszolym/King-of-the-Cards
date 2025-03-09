@@ -1,6 +1,4 @@
-﻿using KC.Backend.Models.Dtos;
-
-namespace KC.Backend.Models.GameItems;
+﻿namespace KC.Backend.Models.GameItems;
 
 public class Table
 {

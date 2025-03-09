@@ -1,6 +1,6 @@
-using KC.Backend.Models.Dtos;
 using KC.Backend.Models.GameItems;
 using KC.Backend.Models.GameManagement;
+using KC.Shared.Models.Dtos;
 
 namespace KC.Backend.API.Utilities;
 

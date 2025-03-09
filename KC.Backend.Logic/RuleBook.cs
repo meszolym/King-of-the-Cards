@@ -1,6 +1,7 @@
 ﻿using KC.Backend.Logic.Interfaces;
 using KC.Backend.Models;
 using KC.Backend.Models.GameItems;
+using KC.Shared.Models.GameItems;
 
 namespace KC.Backend.Logic;
 

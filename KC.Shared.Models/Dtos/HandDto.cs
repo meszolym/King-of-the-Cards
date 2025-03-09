@@ -1,6 +1,6 @@
-using KC.Backend.Models.GameItems;
+using KC.Shared.Models.GameItems;
 
-namespace KC.Backend.Models.Dtos;
+namespace KC.Shared.Models.Dtos;
 
 public class HandDto
 {

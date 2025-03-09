@@ -1,4 +1,5 @@
 ﻿using KC.Backend.Models.GameItems;
+using KC.Shared.Models.GameManagement;
 
 namespace KC.Backend.Models.GameManagement;
 
