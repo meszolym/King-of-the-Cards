@@ -18,10 +18,10 @@ partial class MenuView : ReactiveUserControl<MenuViewModel>
             this.BindCommand(ViewModel, vm => vm.JoinSessionCommand, v => v.JoinSessionButton).DisposeWith(d);
             this.BindCommand(ViewModel, vm => vm.CreateSessionCommand, v => v.CreateSessionButton).DisposeWith(d);
             this.Bind(ViewModel, vm => vm.SelectedItem, v => v.SessionsListBox.SelectedItem).DisposeWith(d);
-            ViewModel.LoadSessionsCommand.ThrownExceptions.Subscribe<Exception>(x =>
-            {
-                Debug.WriteLine(x.Message);
-            });
+            // ViewModel.LoadSessionsCommand.ThrownExceptions.Subscribe<Exception>(x =>
+            // {
+            //     Debug.WriteLine(x.Message);
+            // });
             await ViewModel.LoadSessionsCommand.Execute().ObserveOn(RxApp.MainThreadScheduler);
 
         });

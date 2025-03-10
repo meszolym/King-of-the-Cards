@@ -35,9 +35,7 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
         
         var table = new Table((int)numberOfBoxes, shoe);
         
-        var sess = new Session(table);
-
-        sess.BettingTimer = new TickingTimer(TimeSpan.FromSeconds(bettingTimerSeconds));
+        var sess = new Session(table, new TickingTimer(TimeSpan.FromSeconds(bettingTimerSeconds)));
         
         sessions.Add(sess);
         return sess;

@@ -107,9 +107,7 @@ namespace KC.Backend.API
         
                 var table = new Table((int)numberOfBoxes, shoe);
         
-                var sess = new Session(table);
-
-                sess.BettingTimer = new TickingTimer(TimeSpan.FromSeconds(bettingTimerSeconds));
+                var sess = new Session(table, new TickingTimer(TimeSpan.FromSeconds(bettingTimerSeconds)));
             
                 return sess;
             }

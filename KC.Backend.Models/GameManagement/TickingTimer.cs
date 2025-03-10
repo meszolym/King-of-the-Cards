@@ -12,8 +12,8 @@ public class TickingTimer
     public int RemainingSeconds => totalSeconds - ElapsedSeconds;
 
     public bool Enabled => timer.Enabled;
-    public event EventHandler Tick;
-    public event EventHandler Elapsed;
+    public event EventHandler? Tick;
+    public event EventHandler? Elapsed;
     
 
     public class TickEventArgs(int elapsedSeconds, int remainingSeconds) : EventArgs
