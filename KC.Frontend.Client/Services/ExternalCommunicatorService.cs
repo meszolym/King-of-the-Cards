@@ -6,6 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using KC.Frontend.Client.Models;
 using KC.Shared.Models.Dtos;
+using KC.Shared.Models.Misc;
 using RestSharp;
 
 namespace KC.Frontend.Client.Services;
@@ -20,13 +21,12 @@ public class ExternalCommunicatorService
     {
         var request = new RestRequest(Endpoints.GetAllSessions);
         var response = await _client.GetAsync<List<SessionDto>>(request);
-
         return response is null
             ? throw new ExternalCommunicationException("Could not get sessions")
             : response.Select(s => new SessionListItem()
             {
                 Id = s.Id,
-                CurrentOccupancy = s.Table.BettingBoxes.Count(b => b.OwnerId != PhysicalAddress.None),
+                CurrentOccupancy = s.Table.BettingBoxes.Count(b => b.OwnerId != MacAddress.None),
                 MaxOccupancy = s.Table.BettingBoxes.Count()
             }).ToList();
     }

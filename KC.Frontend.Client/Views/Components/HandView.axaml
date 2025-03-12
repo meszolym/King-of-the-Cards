@@ -1,13 +1,34 @@
 ﻿<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
-             xmlns:rxui="http://reactiveui.net"
-             x:TypeArguments="vm:HandViewModel"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="KC.Frontend.Client.Views.Components.HandView"
-             xmlns:vm="clr-namespace:KC.Frontend.Client.ViewModels">
-    
+                          xmlns:rxui="http://reactiveui.net"
+                          x:TypeArguments="vm:HandViewModel"
+                          xmlns:models="clr-namespace:KC.Frontend.Client.Models"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                          x:Class="KC.Frontend.Client.Views.Components.HandView"
+                          xmlns:vm="clr-namespace:KC.Frontend.Client.ViewModels">
+    <Grid>
+        <ItemsControl x:Name="CardImageList">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid></Grid>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:ImageWithRect}">
+                    <Image Source="{Binding Image}"
+                           Width="{Binding Bounds.Width}" Height="{Binding Bounds.Height}">
+                        <Image.RenderTransform>
+                            <TranslateTransform X="{Binding Bounds.X}" Y="{Binding Bounds.Y}" />
+                        </Image.RenderTransform>
+                        <!-- Canvas.Left="{Binding Bounds.X}" -->
+                        <!-- Canvas.Top="{Binding Bounds.Y}" -->
+                    </Image>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+
+
 </rxui:ReactiveUserControl>
-
-

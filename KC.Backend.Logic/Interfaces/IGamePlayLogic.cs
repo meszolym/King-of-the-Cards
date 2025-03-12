@@ -1,6 +1,7 @@
 ﻿using System.Net.NetworkInformation;
 using KC.Backend.Models.GameItems;
 using KC.Shared.Models.GameItems;
+using KC.Shared.Models.Misc;
 
 namespace KC.Backend.Logic.Interfaces;
 
@@ -53,5 +54,5 @@ public interface IGamePlayLogic
     /// <exception cref="InvalidOperationException">"Box is not owned by player."</exception>
     /// <exception cref="InvalidOperationException">"Action not possible." if the rulebook states that this action is not possible.</exception>
     /// <exception cref="ArgumentOutOfRangeException">If move is not handled.</exception>
-    void MakeMove(Guid sessionId, int boxIdx, PhysicalAddress playerId, Move move, int handIdx = 0);
+    void MakeMove(Guid sessionId, int boxIdx, MacAddress playerId, Move move, int handIdx = 0);
 }

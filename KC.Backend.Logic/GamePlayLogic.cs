@@ -3,6 +3,7 @@ using KC.Backend.Logic.Interfaces;
 using KC.Backend.Models.GameItems;
 using KC.Backend.Models.GameManagement;
 using KC.Shared.Models.GameItems;
+using KC.Shared.Models.Misc;
 
 namespace KC.Backend.Logic;
 
@@ -113,7 +114,7 @@ public class GamePlayLogic(IList<Session> sessions, IRuleBook ruleBook) : IGameP
     /// <exception cref="InvalidOperationException">"Box is not owned by player."</exception>
     /// <exception cref="InvalidOperationException">"Action not possible." if the rulebook states that this action is not possible.</exception>
     /// <exception cref="ArgumentOutOfRangeException">If move is not handled.</exception>
-    public void MakeMove(Guid sessionId, int boxIdx, PhysicalAddress playerId, Move move, int handIdx = 0)
+    public void MakeMove(Guid sessionId, int boxIdx, MacAddress playerId, Move move, int handIdx = 0)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         if (!session.CurrentTurnInfo.PlayersTurn || session.CurrentTurnInfo.BoxIdx != boxIdx || session.CurrentTurnInfo.HandIdx != handIdx)

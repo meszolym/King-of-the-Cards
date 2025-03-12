@@ -2,6 +2,8 @@
 
 public record struct Card
 {
+    public static Card WithSuitAndFace(CardSuit suit, CardFace face) => new Card {Suit = suit, Face = face};
+    
     public enum CardSuit
     {
         None,
@@ -27,7 +29,7 @@ public record struct Card
         Queen = 12,
         King = 13
     }
-    
+
     public CardSuit Suit { get; set; }
     public CardFace Face { get; set; }
     

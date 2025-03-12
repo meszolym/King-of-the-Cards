@@ -9,7 +9,7 @@
 			xmlns:models="using:KC.Frontend.Client.Models"
 			x:Class="KC.Frontend.Client.Views.SessionView"
 			xmlns:comp="using:KC.Frontend.Client.Views.Components"
-			>
+			d:DesignHeight="1080" d:DesignWidth="1920">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="0.3*"/>
@@ -23,8 +23,9 @@
 			<ColumnDefinition Width="0.25*"/>
 		</Grid.ColumnDefinitions>
 		
-		<comp:SessionBoxControlsView Grid.Row="2" Grid.Column="1" />
 		
+		<comp:SessionBoxControlsView Grid.Row="2" Grid.Column="1" />
+		<comp:HandView Grid.ColumnSpan="3" Grid.Row="1"/>
 	</Grid>
 		
 		<!--<Button x:Name="NavbackButton">navback</Button>-->

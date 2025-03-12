@@ -1,4 +1,5 @@
 using System.Net.NetworkInformation;
+using KC.Shared.Models.Misc;
 
 namespace KC.Shared.Models.Dtos;
-public record BettingBoxDto(PhysicalAddress OwnerId, IEnumerable<HandDto> Hands);
+public record BettingBoxDto(MacAddress OwnerId, IEnumerable<HandDto> Hands);
