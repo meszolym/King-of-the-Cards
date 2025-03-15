@@ -39,7 +39,6 @@
     <ItemGroup>
       <AdditionalFiles Include="Views\Components\BoxView.axaml" />
       <AdditionalFiles Include="Views\Components\HandView.axaml" />
-      <AdditionalFiles Include="Views\Components\ImageStackView.axaml" />
       <AdditionalFiles Include="Views\Components\SessionBoxControlsView.axaml" />
       <AdditionalFiles Include="Views\MainWindow.axaml" />
       <AdditionalFiles Include="Views\MenuView.axaml" />
