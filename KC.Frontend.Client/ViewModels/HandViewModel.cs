@@ -49,6 +49,5 @@ public partial class HandViewModel : ReactiveObject
         
         _cardsInHand.Add(Card.WithSuitAndFace(Card.CardSuit.Spades, Card.CardFace.Ace));
         _cardsInHand.Add(Card.WithSuitAndFace(Card.CardSuit.Spades, Card.CardFace.Two));
-        
     }
 }

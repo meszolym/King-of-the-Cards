@@ -1,9 +1,28 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" Width="210"
-             x:Class="KC.Frontend.Client.Views.Components.BoxView">
+             mc:Ignorable="d"
+             x:Class="KC.Frontend.Client.Views.Components.BoxView"
+             xmlns:rxui="http://reactiveui.net"
+             xmlns:models="clr-namespace:KC.Frontend.Client.Models"
+             xmlns:vm="clr-namespace:KC.Frontend.Client.ViewModels"
+             xmlns:comp="using:KC.Frontend.Client.Views.Components"
+             x:TypeArguments="vm:HandViewModel">
 	
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<Border BorderBrush="Blue" BorderThickness="1">
+			<comp:HandView x:Name="LeftHandView" Grid.Column="0"/>
+		</Border>
+		<Border Grid.Column="1" BorderBrush="Blue" BorderThickness="1">
+			<comp:HandView x:Name="RightHandView" Grid.Column="1"/>
+		</Border>
+
+		
+	</Grid>
 	
-</UserControl>
+</rxui:ReactiveUserControl>
