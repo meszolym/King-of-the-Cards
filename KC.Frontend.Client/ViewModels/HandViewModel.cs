@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using DynamicData;
 using KC.Frontend.Client.Extensions;
 using KC.Frontend.Client.Models;
@@ -15,39 +18,67 @@ using ReactiveUI.SourceGenerators;
 
 namespace KC.Frontend.Client.ViewModels;
 
-public partial class HandViewModel : ReactiveObject
-{
-    [Reactive]
-    private double _bet;
-
-    private readonly SourceList<Card> _cardsInHand = new SourceList<Card>();
-    
-    [Reactive]
-    private List<ImageWithRect> _cardImageWithRects = [];
-    
-    public void AddCard(Card card) => _cardsInHand.Add(card);
-    public void RemoveLastCard() => _cardsInHand.RemoveAt(_cardsInHand.Count - 1);
-    
-    public HandViewModel()
+ public class HandViewModel : ReactiveObject
     {
-        _cardsInHand.Connect()
-            .OnItemAdded(c =>
-            {
-                Rect lastImageRect;
-                lastImageRect = CardImageWithRects.Count > 0 ? CardImageWithRects.Last().Bounds : new Rect(-10, -10, 140, 190);
-                var newBounds = new Rect(lastImageRect.X + 50, lastImageRect.Y - 50, lastImageRect.Width, lastImageRect.Height);
-                var newItem = new ImageWithRect(c.ImagePath(), newBounds);
-                CardImageWithRects.Add(newItem);
-                
-            })
-            .OnItemRemoved(_ =>
-            {
-                // Remove the last item from the list (this is only used with splits)
-                CardImageWithRects.RemoveAt(CardImageWithRects.Count - 1);
-            })
-            .Subscribe();
+        private ObservableCollection<CardModel> _cards;
+        public ObservableCollection<CardModel> Cards
+        {
+            get => _cards;
+            set => this.RaiseAndSetIfChanged(ref _cards, value);
+        }
         
-        _cardsInHand.Add(Card.WithSuitAndFace(Card.CardSuit.Spades, Card.CardFace.Ace));
-        _cardsInHand.Add(Card.WithSuitAndFace(Card.CardSuit.Spades, Card.CardFace.Two));
+        private decimal _betAmount;
+        public decimal BetAmount
+        {
+            get => _betAmount;
+            set => this.RaiseAndSetIfChanged(ref _betAmount, value);
+        }
+        
+        private bool _isActive;
+        public bool IsActive
+        {
+            get => _isActive;
+            set => this.RaiseAndSetIfChanged(ref _isActive, value);
+        }
+
+        public HandViewModel()
+        {
+            Cards = new ObservableCollection<CardModel>();
+            BetAmount = 0;
+            IsActive = false;
+            Cards.Add(new CardModel(Card.WithSuitAndFace(Card.CardSuit.Clubs, Card.CardFace.Ace)));
+            Cards.Add(new CardModel(Card.WithSuitAndFace(Card.CardSuit.Diamonds, Card.CardFace.Seven)));
+            Cards.Add(new CardModel(Card.WithSuitAndFace(Card.CardSuit.Hearts, Card.CardFace.Two)));
+        }
+        
+        public void AddCard(CardModel card)
+        {
+            Cards.Add(card);
+        }
     }
-}
+
+ public partial class CardModel : ReactiveObject
+ {
+     [Reactive]
+     private Bitmap _imageSource;
+
+     [Reactive] private Card _card;
+     public CardModel(Card card)
+     {
+         Card = card;
+         LoadImage();
+     }
+        
+     private void LoadImage()
+     {
+         try
+         {
+             Uri imagePath = Card.ImagePath();
+             ImageSource = new Bitmap(AssetLoader.Open(imagePath));
+         }
+         catch (Exception ex)
+         {
+             Console.WriteLine($"Error loading card image: {ex.Message}");
+         }
+     }
+ }

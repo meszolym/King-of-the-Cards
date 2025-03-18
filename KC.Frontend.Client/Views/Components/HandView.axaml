@@ -1,6 +1,7 @@
 ﻿<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
                           xmlns:rxui="http://reactiveui.net"
                           x:TypeArguments="vm:HandViewModel"
+                          x:CompileBindings="True"
                           xmlns:models="clr-namespace:KC.Frontend.Client.Models"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,27 +9,34 @@
                           mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                           x:Class="KC.Frontend.Client.Views.Components.HandView"
                           xmlns:vm="clr-namespace:KC.Frontend.Client.ViewModels">
-    <Grid>
-        <ItemsControl x:Name="CardImageList">
+    <Design.DataContext>    
+        <vm:HandViewModel/>
+    </Design.DataContext>
+    <Grid HorizontalAlignment="Stretch" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Cards will be displayed here -->
+        <ItemsControl Grid.Row="0" x:Name="CardsItemsControl" HorizontalAlignment="Stretch">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <Grid></Grid>
+                    <Canvas MinHeight="150" HorizontalAlignment="Stretch"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type models:ImageWithRect}">
-                    <Image Source="{Binding Image}"
-                           Width="{Binding Bounds.Width}" Height="{Binding Bounds.Height}">
-                        <Image.RenderTransform>
-                            <TranslateTransform X="{Binding Bounds.X}" Y="{Binding Bounds.Y}" />
-                        </Image.RenderTransform>
-                        <!-- Canvas.Left="{Binding Bounds.X}" -->
-                        <!-- Canvas.Top="{Binding Bounds.Y}" -->
-                    </Image>
+                <DataTemplate x:DataType="vm:CardModel">
+                    <Image Source="{Binding ImageSource}" Width="105"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+        <!-- Bet display -->
+        <Border Grid.Row="2" Background="#2A4494" CornerRadius="5" Padding="5" HorizontalAlignment="Stretch">
+            <TextBlock x:DataType="vm:HandViewModel" Text="{Binding BetAmount, StringFormat='Bet: ${0}'}" 
+                       Foreground="White" 
+                       HorizontalAlignment="Center"/>
+        </Border>
     </Grid>
-
-
 </rxui:ReactiveUserControl>

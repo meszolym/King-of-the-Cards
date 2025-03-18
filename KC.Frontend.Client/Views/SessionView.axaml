@@ -23,24 +23,21 @@
 			<ColumnDefinition Width="0.25*"/>
 		</Grid.ColumnDefinitions>
 		
-		
+		<Button x:Name="TestSplitButton" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Top">SPLIT TEST BUTTON</Button>
 		<comp:SessionBoxControlsView Grid.Row="2" Grid.Column="1" />
-
-		<Grid Grid.Row="1" Grid.ColumnSpan="3">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-			<comp:BoxView Grid.Column="0" />
-			<comp:BoxView Grid.Column="1" />
-			<comp:BoxView Grid.Column="2" />
-			<comp:BoxView Grid.Column="3" />
-			<comp:BoxView Grid.Column="4" />
-		</Grid>
-		
+		<ItemsControl x:Name="BoxesItemsControl" Grid.Row="1" Grid.ColumnSpan="3"
+		              HorizontalAlignment="Stretch">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<UniformGrid Columns="5" Rows="1" HorizontalAlignment="Stretch"/>
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<comp:BoxView DataContext="{Binding}" HorizontalAlignment="Stretch"/>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
 	</Grid>
 		
 		<!--<Button x:Name="NavbackButton">navback</Button>-->
