@@ -18,14 +18,9 @@ using ReactiveUI.SourceGenerators;
 
 namespace KC.Frontend.Client.ViewModels;
 
- public class HandViewModel : ReactiveObject
+ public partial class HandViewModel : ReactiveObject
     {
-        private ObservableCollection<CardModel> _cards;
-        public ObservableCollection<CardModel> Cards
-        {
-            get => _cards;
-            set => this.RaiseAndSetIfChanged(ref _cards, value);
-        }
+        public ObservableCollection<CardViewModel> Cards { get; set; }
         
         private decimal _betAmount;
         public decimal BetAmount
@@ -40,45 +35,48 @@ namespace KC.Frontend.Client.ViewModels;
             get => _isActive;
             set => this.RaiseAndSetIfChanged(ref _isActive, value);
         }
-
+        
+        private double _height = 648; //gombócból is sok :)
+        
         public HandViewModel()
         {
-            Cards = new ObservableCollection<CardModel>();
+            Cards = new ObservableCollection<CardViewModel>();
             BetAmount = 0;
             IsActive = false;
-            Cards.Add(new CardModel(Card.WithSuitAndFace(Card.CardSuit.Clubs, Card.CardFace.Ace)));
-            Cards.Add(new CardModel(Card.WithSuitAndFace(Card.CardSuit.Diamonds, Card.CardFace.Seven)));
-            Cards.Add(new CardModel(Card.WithSuitAndFace(Card.CardSuit.Hearts, Card.CardFace.Two)));
+            AddCard(Card.WithSuitAndFace(Card.CardSuit.Clubs, Card.CardFace.Ace));
+            AddCard(Card.WithSuitAndFace(Card.CardSuit.Diamonds, Card.CardFace.Seven));
+            AddCard(Card.WithSuitAndFace(Card.CardSuit.Hearts, Card.CardFace.Two));
         }
         
-        public void AddCard(CardModel card)
+        private const int CardOffsetX = 23; // Horizontal offset for each card
+        private const int CardOffsetY = -23; // Negative offset for each card
+        
+        public void AddCard(Card card)
         {
-            Cards.Add(card);
+            var idx = Cards.Count; 
+            Cards.Add(new CardViewModel(card,idx*CardOffsetX, _height*0.75+ idx*CardOffsetY, idx));
         }
-    }
-
- public partial class CardModel : ReactiveObject
- {
-     [Reactive]
-     private Bitmap _imageSource;
-
-     [Reactive] private Card _card;
-     public CardModel(Card card)
-     {
-         Card = card;
-         LoadImage();
-     }
         
-     private void LoadImage()
-     {
-         try
-         {
-             Uri imagePath = Card.ImagePath();
-             ImageSource = new Bitmap(AssetLoader.Open(imagePath));
-         }
-         catch (Exception ex)
-         {
-             Console.WriteLine($"Error loading card image: {ex.Message}");
-         }
-     }
- }
+
+        // private void UpdateCardPositions()
+        // {
+        //     if (_cardsItemsControl?.Items == null) return;
+        //
+        //     var itemCount = _cardsItemsControl.Items.Cast<object>().Count();
+        //
+        //     // Reverse the loop to set proper Z-index (first card on top)
+        //     for (var i = 0; i < itemCount; i++)
+        //     {
+        //         var container = _cardsItemsControl.ContainerFromIndex(i); //as ContentPresenter;
+        //         if (container != null)
+        //         {
+        //             // Position cards starting from bottom left
+        //             Canvas.SetLeft(container, i * CardOffsetX);
+        //             Canvas.SetBottom(container, i * CardOffsetY); // Use bottom instead of top
+        //     
+        //             // First card (index 0) should have highest Z-index
+        //             container.ZIndex = i; //itemCount - i;
+        //         }
+        //     }
+        // }
+    }

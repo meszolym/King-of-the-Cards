@@ -36,6 +36,7 @@ public class ExternalCommunicatorService
 
 public static class Endpoints
 {
-    public static readonly Uri baseUri = new Uri("http://localhost:5238");
+    //public static readonly Uri baseUri = new Uri("http://localhost:5238");
+    public static readonly Uri baseUri = new Uri("http://localhost:5000");
     public static readonly string GetAllSessions = "session";
 }

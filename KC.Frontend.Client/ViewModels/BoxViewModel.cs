@@ -17,8 +17,8 @@ public partial class BoxViewModel : ReactiveObject
         
     public BoxViewModel()
     {
-        LeftHand = new HandViewModel { IsActive = true };
-        RightHand = new HandViewModel { IsActive = false };
+        LeftHand = new HandViewModel() { IsActive = true };
+        RightHand = new HandViewModel() { IsActive = false };
         IsPlayerControlled = false;
         IsSplit = false;
     }
@@ -38,8 +38,9 @@ public partial class BoxViewModel : ReactiveObject
             RightHand.Cards.Clear();
             RightHand.IsActive = true;
             IsSplit = true;
-            RightHand.AddCard(new(Card.WithSuitAndFace(Card.CardSuit.Clubs, Card.CardFace.Ace)));
-            RightHand.AddCard(new(Card.WithSuitAndFace(Card.CardSuit.Hearts, Card.CardFace.Jack)));
+
+            RightHand.AddCard(Card.WithSuitAndFace(Card.CardSuit.Clubs, Card.CardFace.Ace));
+            RightHand.AddCard(Card.WithSuitAndFace(Card.CardSuit.Hearts, Card.CardFace.Jack));
             
         }
     }

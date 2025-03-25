@@ -12,7 +12,8 @@
         x:DataType="vm:MainWindowViewModel"
 		xmlns:app="clr-namespace:KC.Frontend.Client"
         Title="KC.Frontend.Client"
-		MinHeight="600" MinWidth="1200">
+		MinHeight="1080" MinWidth="1920"
+		MaxHeight="1080" MaxWidth="1920">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,

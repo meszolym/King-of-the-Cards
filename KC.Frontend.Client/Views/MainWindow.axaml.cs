@@ -15,6 +15,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             this.Bind(ViewModel, vm => vm.Router, v => v.RoutedViewHost.Router).DisposeWith(d);
         });
         InitializeComponent();
+        
     }
 
 

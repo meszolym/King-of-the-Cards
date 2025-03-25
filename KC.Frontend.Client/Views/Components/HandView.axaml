@@ -20,23 +20,27 @@
         </Grid.RowDefinitions>
         
         <!-- Cards will be displayed here -->
-        <ItemsControl Grid.Row="0" x:Name="CardsItemsControl" HorizontalAlignment="Stretch">
+        <ItemsControl Grid.Row="0" x:Name="CardsItemsControl" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <Canvas MinHeight="150" HorizontalAlignment="Stretch"/>
+                    <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
-                <DataTemplate x:DataType="vm:CardModel">
-                    <Image Source="{Binding ImageSource}" Width="105"/>
+                <DataTemplate x:DataType="vm:CardViewModel">
+                    <Image Source="{Binding ImageSource}" Width="90">
+                        <Image.RenderTransform>
+                            <TranslateTransform X="{Binding X}" Y="{Binding Y}" />
+                        </Image.RenderTransform>
+                    </Image>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
         <!-- Bet display -->
-        <Border Grid.Row="2" Background="#2A4494" CornerRadius="5" Padding="5" HorizontalAlignment="Stretch">
-            <TextBlock x:DataType="vm:HandViewModel" Text="{Binding BetAmount, StringFormat='Bet: ${0}'}" 
-                       Foreground="White" 
-                       HorizontalAlignment="Center"/>
-        </Border>
+        <!-- <Border Grid.Row="2" Background="#2A4494" CornerRadius="5" Padding="5" HorizontalAlignment="Stretch"> -->
+        <!--     <TextBlock x:DataType="vm:HandViewModel" Text="{Binding BetAmount, StringFormat='Bet: ${0}'}" -->
+        <!--                Foreground="White" -->
+        <!--                HorizontalAlignment="Center"/> -->
+        <!-- </Border> -->
     </Grid>
 </rxui:ReactiveUserControl>
