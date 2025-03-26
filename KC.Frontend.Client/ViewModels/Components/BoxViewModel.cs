@@ -2,7 +2,7 @@
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 
-namespace KC.Frontend.Client.ViewModels;
+namespace KC.Frontend.Client.ViewModels.Components;
 
 public partial class BoxViewModel : ReactiveObject
 {

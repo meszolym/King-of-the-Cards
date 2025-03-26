@@ -9,6 +9,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.ReactiveUI;
 using KC.Frontend.Client.ViewModels;
+using KC.Frontend.Client.ViewModels.Components;
 using ReactiveUI;
 
 namespace KC.Frontend.Client.Views.Components;

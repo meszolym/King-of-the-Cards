@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using KC.Frontend.Client.ViewModels.Components;
 
 namespace KC.Frontend.Client.ViewModels
 {

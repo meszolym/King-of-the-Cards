@@ -1,6 +1,6 @@
 ﻿<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
                           xmlns:rxui="http://reactiveui.net"
-                          x:TypeArguments="vm:HandViewModel"
+                          x:TypeArguments="vm:Components.HandViewModel"
                           x:CompileBindings="True"
                           xmlns:models="clr-namespace:KC.Frontend.Client.Models"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,9 +9,6 @@
                           mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                           x:Class="KC.Frontend.Client.Views.Components.HandView"
                           xmlns:vm="clr-namespace:KC.Frontend.Client.ViewModels">
-    <Design.DataContext>    
-        <vm:HandViewModel/>
-    </Design.DataContext>
     <Grid HorizontalAlignment="Stretch" >
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

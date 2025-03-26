@@ -1,4 +1,5 @@
 using System.Net.NetworkInformation;
+using KC.Backend.API.Utilities;
 using KC.Backend.Logic;
 using KC.Backend.Models.GameItems;
 using KC.Shared.Models.Dtos;
@@ -16,4 +17,7 @@ public class PlayerController(PlayerLogic playerLogic) : Controller
     
     // [HttpPost]
     // public void AddPlayer([FromBody] PlayerDto playerDto) => playerLogic.AddPlayer(playerDto.ToModel());
+
+    [HttpPost]
+    public void AddPlayer([FromBody] PlayerRegisterDto dto) => playerLogic.AddPlayer(dto.ToModel());
 }

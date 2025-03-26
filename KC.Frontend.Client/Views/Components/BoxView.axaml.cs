@@ -7,6 +7,7 @@ using System;
 using System.Reactive.Disposables;
 using Avalonia.ReactiveUI;
 using KC.Frontend.Client.ViewModels;
+using KC.Frontend.Client.ViewModels.Components;
 
 namespace KC.Frontend.Client.Views.Components
 {

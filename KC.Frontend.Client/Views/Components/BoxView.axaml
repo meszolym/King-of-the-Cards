@@ -1,6 +1,6 @@
 <!-- BoxView.axaml -->
 <rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
-                          x:TypeArguments="vm:BoxViewModel"
+                          x:TypeArguments="vm:Components.BoxViewModel"
                           xmlns:vm="using:KC.Frontend.Client.ViewModels"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

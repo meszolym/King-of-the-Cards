@@ -1,22 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Reactive;
-using System.Reactive.Linq;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
-using DynamicData;
-using KC.Frontend.Client.Extensions;
-using KC.Frontend.Client.Models;
+﻿using System.Collections.ObjectModel;
 using KC.Shared.Models.GameItems;
 using ReactiveUI;
-using ReactiveUI.SourceGenerators;
 
-namespace KC.Frontend.Client.ViewModels;
+namespace KC.Frontend.Client.ViewModels.Components;
 
  public partial class HandViewModel : ReactiveObject
     {
@@ -56,27 +42,4 @@ namespace KC.Frontend.Client.ViewModels;
             var idx = Cards.Count; 
             Cards.Add(new CardViewModel(card,idx*CardOffsetX, _height*0.75+ idx*CardOffsetY, idx));
         }
-        
-
-        // private void UpdateCardPositions()
-        // {
-        //     if (_cardsItemsControl?.Items == null) return;
-        //
-        //     var itemCount = _cardsItemsControl.Items.Cast<object>().Count();
-        //
-        //     // Reverse the loop to set proper Z-index (first card on top)
-        //     for (var i = 0; i < itemCount; i++)
-        //     {
-        //         var container = _cardsItemsControl.ContainerFromIndex(i); //as ContentPresenter;
-        //         if (container != null)
-        //         {
-        //             // Position cards starting from bottom left
-        //             Canvas.SetLeft(container, i * CardOffsetX);
-        //             Canvas.SetBottom(container, i * CardOffsetY); // Use bottom instead of top
-        //     
-        //             // First card (index 0) should have highest Z-index
-        //             container.ZIndex = i; //itemCount - i;
-        //         }
-        //     }
-        // }
     }

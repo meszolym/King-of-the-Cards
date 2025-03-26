@@ -17,5 +17,7 @@ public static class DtoConverter
         new BettingBoxDto(bettingBox.OwnerId, bettingBox.Hands.Select(h => h.ToDto()));
 
     public static HandDto ToDto(this Hand hand) => new HandDto(hand.Cards, hand.Bet);
-    
+
+    public static Player ToModel(this PlayerRegisterDto dto) => new Player(dto.MacAddress, dto.Name, 500, string.Empty);
+
 }
