@@ -20,10 +20,16 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
+	<Grid RowDefinitions="*, Auto">
+		<rxui:RoutedViewHost Grid.Row="0" x:Name="RoutedViewHost">
+			<rxui:RoutedViewHost.ViewLocator>
+				<app:AppViewLocator/>
+			</rxui:RoutedViewHost.ViewLocator>
+		</rxui:RoutedViewHost>
+		<StackPanel Grid.Row="1" Orientation="Horizontal">
+			<TextBlock Text="MAC"/>
+			<TextBlock Text="Player balance"/>
+		</StackPanel>
+	</Grid>
 
-	<rxui:RoutedViewHost x:Name="RoutedViewHost">
-		<rxui:RoutedViewHost.ViewLocator>
-			<app:AppViewLocator/>
-		</rxui:RoutedViewHost.ViewLocator>
-	</rxui:RoutedViewHost>
 </rxui:ReactiveWindow>

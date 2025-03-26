@@ -35,10 +35,10 @@
 			</ListBox.ItemTemplate>
 		</ListBox>
 		<StackPanel x:Name="NoConnStackPanel" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Background="IndianRed">
-			<TextBlock Text="No connection to the server" HorizontalAlignment="Center" FontSize="50" Margin="0,20,0,0"/>
+			<TextBlock Text="Could not get sessions from the server" HorizontalAlignment="Center" FontSize="50" Margin="0,20,0,0"/>
 			<Button HorizontalAlignment="Center"
 			        Padding="10" Margin="0,5,0,20"
-			        x:Name="ConnTryAgainButton"
+			        x:Name="GetSessionsTryAgainButton"
 			        FontSize="30"
 			        CornerRadius="8">Try again</Button>
 		</StackPanel>

@@ -18,7 +18,7 @@ namespace KC.Frontend.Client.ViewModels
         private readonly ExternalCommunicatorService _externalCommunicator;
 
         [Reactive]
-        private bool _noConnection = true;
+        private bool _sessionGetErrored = true;
         public MenuViewModel(IScreen host)
         {
             HostScreen = host;
@@ -42,18 +42,18 @@ namespace KC.Frontend.Client.ViewModels
         {
             Debug.WriteLine("Creating session");
         }
-
+        
         [ReactiveCommand]
-        private async Task TryConn()
+        private async Task TryGetSessions()
         {
             try
             {
                 Sessions = await _externalCommunicator.GetSessions();
-                NoConnection = false;
+                SessionGetErrored = false;
             }
             catch (Exception e)
             {
-                NoConnection = true;
+                SessionGetErrored = true;
             }
         }
 

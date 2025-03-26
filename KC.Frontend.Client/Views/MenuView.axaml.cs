@@ -19,13 +19,13 @@ partial class MenuView : ReactiveUserControl<MenuViewModel>
             this.BindCommand(ViewModel, vm => vm.JoinSessionCommand, v => v.JoinSessionButton).DisposeWith(d);
             this.BindCommand(ViewModel, vm => vm.CreateSessionCommand, v => v.CreateSessionButton).DisposeWith(d);
             this.Bind(ViewModel, vm => vm.SelectedItem, v => v.SessionsListBox.SelectedItem).DisposeWith(d);
-            this.OneWayBind(ViewModel, vm => vm.NoConnection, v => v.NoConnStackPanel.IsVisible).DisposeWith(d);
-            this.OneWayBind(ViewModel, vm => vm.NoConnection, v => v.NoSessionsTextBorder.IsVisible,
+            this.OneWayBind(ViewModel, vm => vm.SessionGetErrored, v => v.NoConnStackPanel.IsVisible).DisposeWith(d);
+            this.OneWayBind(ViewModel, vm => vm.SessionGetErrored, v => v.NoSessionsTextBorder.IsVisible,
                 b => !b && ViewModel!.Sessions.Count == 0).DisposeWith(d);
-            this.BindCommand(ViewModel, vm => vm.TryConnCommand, v => v.ConnTryAgainButton).DisposeWith(d);
+            this.BindCommand(ViewModel, vm => vm.TryGetSessionsCommand, v => v.GetSessionsTryAgainButton).DisposeWith(d);
             if (!Design.IsDesignMode)
             {
-                await ViewModel!.TryConnCommand.Execute().ObserveOn(RxApp.MainThreadScheduler);
+                await ViewModel!.TryGetSessionsCommand.Execute().ObserveOn(RxApp.MainThreadScheduler);
             }
             
         });
