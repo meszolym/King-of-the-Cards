@@ -31,6 +31,7 @@ public class ExternalCommunicatorService
 
     private readonly Subject<bool> _connectionStatusSubject = new Subject<bool>();
 
+    //TODO: Implement connection status handling
     #region  Deprecated request handling
     
     // private bool _lastConnectionStatus = false;
