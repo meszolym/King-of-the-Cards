@@ -16,6 +16,9 @@ namespace KC.Frontend.Client.ViewModels
     {
         private IObservable<bool> _joinCanExecute;
         private readonly ExternalCommunicatorService _externalCommunicator;
+
+        [Reactive]
+        private bool _noConnection = true;
         public MenuViewModel(IScreen host)
         {
             HostScreen = host;
@@ -39,11 +42,19 @@ namespace KC.Frontend.Client.ViewModels
         {
             Debug.WriteLine("Creating session");
         }
-        
+
         [ReactiveCommand]
-        public async Task LoadSessions()
+        private async Task TryConn()
         {
-            Sessions = await _externalCommunicator.GetSessions();
+            try
+            {
+                Sessions = await _externalCommunicator.GetSessions();
+                NoConnection = false;
+            }
+            catch (Exception e)
+            {
+                NoConnection = true;
+            }
         }
 
         [Reactive]

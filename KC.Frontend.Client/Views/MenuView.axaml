@@ -5,7 +5,7 @@
 			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			xmlns:vm="using:KC.Frontend.Client.ViewModels"
-			mc:Ignorable="d"
+			mc:Ignorable="d" d:DesignHeight="1080" d:DesignWidth="1920"
 			x:Class="KC.Frontend.Client.Views.MenuView"
 			xmlns:rxui="http://reactiveui.net"
 			xmlns:models="using:KC.Frontend.Client.Models">
@@ -15,9 +15,6 @@
 			<ColumnDefinition Width="3*"></ColumnDefinition>
 			<ColumnDefinition Width="*"></ColumnDefinition>
 		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*"></RowDefinition>
-		</Grid.RowDefinitions>
 
 		<ListBox Grid.Column="0" Grid.Row="0" x:Name="SessionsListBox">
 			<ListBox.ItemTemplate>
@@ -37,9 +34,22 @@
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
+		<StackPanel x:Name="NoConnStackPanel" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Background="IndianRed">
+			<TextBlock Text="No connection to the server" HorizontalAlignment="Center" FontSize="50" Margin="0,20,0,0"/>
+			<Button HorizontalAlignment="Center"
+			        Padding="10" Margin="0,5,0,20"
+			        x:Name="ConnTryAgainButton"
+			        FontSize="30"
+			        CornerRadius="8">Try again</Button>
+		</StackPanel>
+		<Border x:Name="NoSessionsTextBorder" VerticalAlignment="Center" Background="LightGray">
+			<TextBlock Text="No sessions yet. Start by creating one yourself! →" HorizontalAlignment="Center" FontSize="50" Margin="0,20,0,20"/>
+		</Border>
+
+
 		<StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center">
-			<Button HorizontalAlignment="Center" Padding="10" Margin="5" x:Name="JoinSessionButton">Join session</Button>
-			<Button HorizontalAlignment="Center" Padding="10" Margin="5" x:Name="CreateSessionButton">Create session</Button>
+			<Button HorizontalAlignment="Center" Padding="10" Margin="5" x:Name="JoinSessionButton" CornerRadius="8">Join session</Button>
+			<Button HorizontalAlignment="Center" Padding="10" Margin="5" x:Name="CreateSessionButton" CornerRadius="8">Create session</Button>
 		</StackPanel>
 	</Grid>
 	
