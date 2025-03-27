@@ -15,6 +15,7 @@ namespace KC.Frontend.Client.Views.Components
     {
         private HandView _leftHandView;
         private HandView _rightHandView;
+        private TextBlock _playerNameTextBlock;
         
         public BoxView()
         {
@@ -22,15 +23,16 @@ namespace KC.Frontend.Client.Views.Components
             ViewModel = new BoxViewModel();
             _leftHandView = this.FindControl<HandView>("LeftHandView");
             _rightHandView = this.FindControl<HandView>("RightHandView");
+            _playerNameTextBlock = this.FindControl<TextBlock>("PlayerNameTextBlock");
             
-            this.WhenActivated(disposables =>
+            this.WhenActivated(d =>
             {
-                ViewModel.WhenAnyValue(vm => vm.IsSplit).Subscribe(UpdateColumnDefinitions).DisposeWith(disposables);
+                ViewModel.WhenAnyValue(vm => vm.IsSplit).Subscribe(UpdateColumnDefinitions).DisposeWith(d);
                 // Bind the left hand view model
                 this.OneWayBind(ViewModel, 
                     vm => vm.LeftHand, 
                     view => view._leftHandView.ViewModel)
-                    .DisposeWith(disposables);
+                    .DisposeWith(d);
                 //_rightHandView.IsVisible = false;
                 this.OneWayBind(ViewModel,
                     vm => vm.IsSplit,
@@ -39,17 +41,23 @@ namespace KC.Frontend.Client.Views.Components
                 this.OneWayBind(ViewModel, 
                     vm => vm.RightHand, 
                     view => view._rightHandView.ViewModel)
-                    .DisposeWith(disposables);
+                    .DisposeWith(d);
+
+                // Bind player name
+                this.Bind(ViewModel, 
+                        vm => vm.PlayerName, 
+                        v => v._playerNameTextBlock.Text)
+                    .DisposeWith(d);
                 
                 // Update appearance when player controlled
                 this.WhenAnyValue(x => x.ViewModel.IsPlayerControlled)
                     .Subscribe(isPlayerControlled => UpdatePlayerControlledState(isPlayerControlled))
-                    .DisposeWith(disposables);
+                    .DisposeWith(d);
                 
                 // Update visibility of right hand based on split state
                 this.WhenAnyValue(x => x.ViewModel.IsSplit)
                     .Subscribe(isSplit => _rightHandView.IsVisible = isSplit)
-                    .DisposeWith(disposables);
+                    .DisposeWith(d);
             });
         }
 

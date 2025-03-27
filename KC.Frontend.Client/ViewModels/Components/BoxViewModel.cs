@@ -8,21 +8,29 @@ public partial class BoxViewModel : ReactiveObject
 {
     [Reactive]
     private HandViewModel _leftHand;
+    
     [Reactive]
     private HandViewModel _rightHand;
+    
     [Reactive]
     private bool _isPlayerControlled;
+    
     [Reactive]
     private bool _isSplit;
-        
+
+    [Reactive]
+    private string _playerName;
+
     public BoxViewModel()
     {
         LeftHand = new HandViewModel() { IsActive = true };
         RightHand = new HandViewModel() { IsActive = false };
         IsPlayerControlled = false;
         IsSplit = false;
+        PlayerName = "Teszt Játékos";
     }
-        
+
+    //TODO: Take a look, this is more complex and needs to involve the server probably.
     public void SplitHands()
     {
         if (LeftHand.Cards.Count >= 2 && !IsSplit)
@@ -41,7 +49,6 @@ public partial class BoxViewModel : ReactiveObject
 
             RightHand.AddCard(Card.WithSuitAndFace(Card.CardSuit.Clubs, Card.CardFace.Ace));
             RightHand.AddCard(Card.WithSuitAndFace(Card.CardSuit.Hearts, Card.CardFace.Jack));
-            
         }
     }
 }

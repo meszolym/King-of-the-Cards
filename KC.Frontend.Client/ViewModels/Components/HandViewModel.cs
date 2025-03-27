@@ -40,6 +40,6 @@ namespace KC.Frontend.Client.ViewModels.Components;
         public void AddCard(Card card)
         {
             var idx = Cards.Count; 
-            Cards.Add(new CardViewModel(card,idx*CardOffsetX, _height*0.75+ idx*CardOffsetY, idx));
+            Cards.Add(new CardViewModel(card,idx*CardOffsetX, _height*0.65+ idx*CardOffsetY, idx));
         }
     }
