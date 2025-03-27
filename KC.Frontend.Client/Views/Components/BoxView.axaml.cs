@@ -13,17 +13,14 @@ namespace KC.Frontend.Client.Views.Components
 {
     public partial class BoxView : ReactiveUserControl<BoxViewModel>
     {
-        private HandView _leftHandView;
-        private HandView _rightHandView;
-        private TextBlock _playerNameTextBlock;
+        private HandView _leftHandView => this.FindControl<HandView>("LeftHandView");
+        private HandView _rightHandView => this.FindControl<HandView>("RightHandView");
+        private TextBlock _playerNameTextBlock => this.FindControl<TextBlock>("PlayerNameTextBlock");
         
         public BoxView()
         {
             InitializeComponent();
             ViewModel = new BoxViewModel();
-            _leftHandView = this.FindControl<HandView>("LeftHandView");
-            _rightHandView = this.FindControl<HandView>("RightHandView");
-            _playerNameTextBlock = this.FindControl<TextBlock>("PlayerNameTextBlock");
             
             this.WhenActivated(d =>
             {
