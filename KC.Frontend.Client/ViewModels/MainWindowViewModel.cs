@@ -55,7 +55,7 @@ namespace KC.Frontend.Client.ViewModels
         {
             try
             {
-                await _externalCommunicator.GetPlayerByMac(ClientMacAddressHandler.GetMacAddress());
+                await _externalCommunicator.GetPlayerByMac(ClientMacAddressHandler.PrimaryMacAddress);
                 _isRegistered = true;
             }
             catch (Exception e)

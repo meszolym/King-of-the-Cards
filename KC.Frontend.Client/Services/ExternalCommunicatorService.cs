@@ -12,6 +12,7 @@ using KC.Shared.Models.Dtos;
 using KC.Shared.Models.Misc;
 using ReactiveUI;
 using RestSharp;
+using RestSharp.Serializers.NewtonsoftJson;
 
 namespace KC.Frontend.Client.Services;
 
@@ -20,14 +21,17 @@ public static class Endpoints
     public static readonly Uri baseUri = new Uri("http://localhost:5238");
 
     //public static readonly Uri baseUri = new Uri("http://localhost:5000");
-    public static readonly string Sessions = "session";
-    public static readonly string Player = "player";
+    public static readonly RestRequest GetSessions = new RestRequest(baseUri + "session", Method.Get);
+    public static readonly RestRequest GetPlayerByMac = new RestRequest(baseUri + "player/{macAddress}", Method.Get);
+    public static readonly RestRequest RegisterPlayer = new RestRequest(baseUri + "player", Method.Post);
 }
 public class ExternalCommunicationException(string message) : Exception(message);
 
 public class ExternalCommunicatorService
 {
-    private readonly RestClient _client = new RestClient(Endpoints.baseUri);
+    private readonly RestClient _client = new RestClient(Endpoints.baseUri,
+        configureSerialization: s => s.UseNewtonsoftJson());
+
 
     private readonly Subject<bool> _connectionStatusSubject = new Subject<bool>();
 
@@ -78,35 +82,20 @@ public class ExternalCommunicatorService
     // }
     
     #endregion
-    
 
-    //TODO: Check this, it is not working for some reason
-    public async Task<List<SessionListItem>> GetSessions()
-    {
-        var request = new RestRequest(Endpoints.Sessions);
-        
-        var sessions = await _client.GetAsync<List<SessionDto>>(request);
-        
-        return sessions is null
-            ? throw new ExternalCommunicationException("Could not get sessions")
-            : sessions.Select(s => new SessionListItem()
-            {
-                Id = s.Id, CurrentOccupancy = s.Table.BettingBoxes.Count(b => b.OwnerId != MacAddress.None), MaxOccupancy = s.Table.BettingBoxes.Count()
-            }).ToList();
-    }
 
-    public async Task RegisterPlayer(string name)
-    {
-        var macAddress = ClientMacAddressHandler.GetMacAddress();
-        var request = new RestRequest(Endpoints.Player).AddBody(new PlayerRegisterDto(name, macAddress));
-        await _client.PostAsync(request);
-    }
+    public async Task<IEnumerable<SessionListItem>> GetSessions()
+        => (await _client.GetAsync<List<SessionDto>>(Endpoints.GetSessions)
+            ?? throw new ExternalCommunicationException("Could not get sessions"))
+           .Select(s => new SessionListItem()
+           {
+               Id = s.Id, CurrentOccupancy = s.Table.BettingBoxes.Count(b => b.OwnerId != MacAddress.None), MaxOccupancy = s.Table.BettingBoxes.Count()
+           });
 
-    public async Task<PlayerDto> GetPlayerByMac(MacAddress macAddress)
-    {
-        var request = new RestRequest(Endpoints.Player).AddParameter("Address", macAddress.Address);
-        var p = await _client.GetAsync<PlayerDto>(request);
-        return p ?? throw new ExternalCommunicationException("Player not found");
-    }
+    public async Task RegisterPlayer(string name) => await _client.PostAsync(Endpoints.RegisterPlayer.AddBody(new PlayerRegisterDto(name, ClientMacAddressHandler.PrimaryMacAddress)));
+
+    public async Task<PlayerDto> GetPlayerByMac(MacAddress macAddress) 
+        => await _client.GetAsync<PlayerDto>(Endpoints.GetPlayerByMac.AddUrlSegment("macAddress", macAddress.Address)) 
+           ?? throw new ExternalCommunicationException("Player not found");
 }
 

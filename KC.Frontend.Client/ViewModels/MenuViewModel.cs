@@ -3,26 +3,27 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using ReactiveUI.SourceGenerators;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using KC.Frontend.Client.Extensions;
 using KC.Frontend.Client.Services;
 using Splat;
-
 namespace KC.Frontend.Client.ViewModels
 {
     partial class MenuViewModel : ReactiveObject, IRoutableViewModel
     {
         private IObservable<bool> _joinCanExecute;
         private readonly ExternalCommunicatorService _externalCommunicator;
-
+        
         [Reactive]
         private bool _sessionGetErrored = true;
         public MenuViewModel(IScreen host)
         {
             HostScreen = host;
             _joinCanExecute = this.WhenAnyValue(x => x.SelectedItem).Select(x => x != null!);
+            
             _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
         }
 
@@ -48,7 +49,7 @@ namespace KC.Frontend.Client.ViewModels
         {
             try
             {
-                Sessions = await _externalCommunicator.GetSessions();
+                Sessions = (await _externalCommunicator.GetSessions()).ToList();
                 SessionGetErrored = false;
             }
             catch (Exception e)
