@@ -27,7 +27,7 @@ public partial class BoxViewModel : ReactiveObject
         RightHand = new HandViewModel() { IsActive = false };
         IsPlayerControlled = false;
         IsSplit = false;
-        PlayerName = "Teszt Játékos";
+        PlayerName = "Unclaimed";
     }
 
     //TODO: Take a look, this is more complex and needs to involve the server probably.

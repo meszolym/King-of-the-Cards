@@ -8,7 +8,7 @@ public partial struct MacAddress
     {
         Address = MacAddressRegex().IsMatch(address) ? address : throw new ArgumentException("Address is not standard", nameof(address));
     }
-    public string Address { get; set; }
+    public readonly string Address { get; }
 
     [GeneratedRegex("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]
     private static partial Regex MacAddressRegex();
@@ -17,4 +17,7 @@ public partial struct MacAddress
     
     public static bool operator ==(MacAddress left, MacAddress right) => left.Address.Equals(right.Address, StringComparison.OrdinalIgnoreCase);
     public static bool operator !=(MacAddress left, MacAddress right) => !(left == right);
+    
+    public override bool Equals(object? obj) => obj is MacAddress address && address == this;
+    public override int GetHashCode() => Address.GetHashCode();
 }

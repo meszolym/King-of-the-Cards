@@ -80,6 +80,7 @@ public class ExternalCommunicatorService
     #endregion
     
 
+    //TODO: Check this, it is not working for some reason
     public async Task<List<SessionListItem>> GetSessions()
     {
         var request = new RestRequest(Endpoints.Sessions);
@@ -103,7 +104,7 @@ public class ExternalCommunicatorService
 
     public async Task<PlayerDto> GetPlayerByMac(MacAddress macAddress)
     {
-        var request = new RestRequest(Endpoints.Player).AddBody(macAddress);
+        var request = new RestRequest(Endpoints.Player).AddParameter("Address", macAddress.Address);
         var p = await _client.GetAsync<PlayerDto>(request);
         return p ?? throw new ExternalCommunicationException("Player not found");
     }

@@ -28,6 +28,7 @@ namespace KC.Frontend.Client.ViewModels
 
         public Interaction<string?, string?> PlayerNameInteraction { get; } = new Interaction<string?, string?>();
         
+        //TODO: Check this, it is still showing when player is registered. Also, check player registration, it might have some issues too.
         [ReactiveCommand]
         private async Task Register()
         {
@@ -60,6 +61,7 @@ namespace KC.Frontend.Client.ViewModels
             catch (Exception e)
             {
                 _isRegistered = false;
+                //throw;
             }
         }
         public RoutingState Router { get; } = new();

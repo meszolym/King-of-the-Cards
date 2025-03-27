@@ -1,6 +1,7 @@
 using System.Net.NetworkInformation;
 using KC.Backend.API.Utilities;
 using KC.Backend.Logic;
+using KC.Backend.Logic.Interfaces;
 using KC.Backend.Models.GameItems;
 using KC.Shared.Models.Dtos;
 using KC.Shared.Models.Misc;
@@ -10,10 +11,10 @@ namespace KC.Backend.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PlayerController(PlayerLogic playerLogic) : Controller
+public class PlayerController(IPlayerLogic playerLogic) : Controller
 {
-    [HttpGet]
-    public Player GetPlayer([FromBody] MacAddress id) => playerLogic.Get(id);
+    [HttpGet("{address}")]
+    public PlayerDto GetPlayer(string address) => playerLogic.Get(new MacAddress(address)).ToDto();
     
     // [HttpPost]
     // public void AddPlayer([FromBody] PlayerDto playerDto) => playerLogic.AddPlayer(playerDto.ToModel());
