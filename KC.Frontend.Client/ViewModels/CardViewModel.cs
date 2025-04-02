@@ -28,7 +28,7 @@ public partial class CardViewModel : ReactiveObject
     [Reactive]
     private Card _card;
 
-    public CardViewModel(Card card, double x, double y, double z)
+    public CardViewModel(Card card, double x=0, double y=0, double z=0)
     {
         Card = card;
         X = x;

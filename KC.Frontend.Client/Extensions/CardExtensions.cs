@@ -10,16 +10,24 @@ public static class CardExtensions
     {
         var sb = new StringBuilder();
         sb.Append("avares://KC.Frontend.Client/Assets/Cards/card");
-        sb.Append(card.Suit.ToString());
-        string face = card.Face switch
+
+        if (card.Face == Card.CardFace.None)
         {
-            Card.CardFace.King => "K",
-            Card.CardFace.Queen => "Q",
-            Card.CardFace.Jack => "J",
-            Card.CardFace.Ace => "A",
-            _ => ((int)card.Face).ToString()
-        };
-        sb.Append(face);
+            sb.Append("Back_blue5");
+        }
+        else
+        {
+            sb.Append(card.Suit.ToString());
+            string face = card.Face switch
+            {
+                Card.CardFace.King => "K",
+                Card.CardFace.Queen => "Q",
+                Card.CardFace.Jack => "J",
+                Card.CardFace.Ace => "A",
+                _ => ((int)card.Face).ToString()
+            };
+            sb.Append(face);
+        }
         sb.Append(".png");
         return new Uri(sb.ToString());
     }

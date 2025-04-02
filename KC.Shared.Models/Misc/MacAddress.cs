@@ -20,4 +20,6 @@ public partial struct MacAddress
     
     public override bool Equals(object? obj) => obj is MacAddress address && address == this;
     public override int GetHashCode() => Address.GetHashCode();
+    
+    public override string ToString() => Address;
 }

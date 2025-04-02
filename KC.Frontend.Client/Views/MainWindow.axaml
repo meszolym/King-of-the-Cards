@@ -26,10 +26,11 @@
 				<app:AppViewLocator/>
 			</rxui:RoutedViewHost.ViewLocator>
 		</rxui:RoutedViewHost>
-		<StackPanel Grid.Row="1" Orientation="Horizontal">
-			<TextBlock Text="MAC"/>
-			<TextBlock Text="Player balance"/>
+		<StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Stretch" Margin="5">
+			<TextBlock x:Name="PlayerNameTextBlock" FontSize="16"/>
+			<TextBlock x:Name="PlayerBalanceTextBlock" FontSize="16"/>
 		</StackPanel>
+		<TextBlock Grid.Row="1" x:Name="PlayerMacTextBlock" HorizontalAlignment="Right" Margin="5" FontSize="16"/>
 	</Grid>
 
 </rxui:ReactiveWindow>

@@ -21,10 +21,11 @@ public partial class BoxViewModel : ReactiveObject
     [Reactive]
     private string _playerName;
 
+    //TODO: Claim box button command + canexecute + server comm
     public BoxViewModel()
     {
-        LeftHand = new HandViewModel() { IsActive = true };
-        RightHand = new HandViewModel() { IsActive = false };
+        LeftHand = new HandViewModel();
+        RightHand = new HandViewModel();
         IsPlayerControlled = false;
         IsSplit = false;
         PlayerName = "Unclaimed";
@@ -44,7 +45,6 @@ public partial class BoxViewModel : ReactiveObject
             // RightHand.BetAmount = LeftHand.BetAmount;
             // Activate right hand
             RightHand.Cards.Clear();
-            RightHand.IsActive = true;
             IsSplit = true;
 
             RightHand.AddCard(Card.WithSuitAndFace(Card.CardSuit.Clubs, Card.CardFace.Ace));

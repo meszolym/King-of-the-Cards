@@ -2,6 +2,7 @@
 using Avalonia.ReactiveUI;
 using System;
 using KC.Frontend.Client.Services;
+using KC.Frontend.Client.ViewModels;
 using Splat;
 
 namespace KC.Frontend.Client;
@@ -26,5 +27,6 @@ sealed class Program
     private static void RegisterServices(AppBuilder builder)
     {
         Locator.CurrentMutable.RegisterConstant(new ExternalCommunicatorService());
+        Locator.CurrentMutable.RegisterConstant(new PlayerViewModel());
     }
 }

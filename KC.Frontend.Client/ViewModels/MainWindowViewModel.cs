@@ -19,13 +19,20 @@ namespace KC.Frontend.Client.ViewModels
         private bool _isConnected = true;
         
         private readonly ExternalCommunicatorService _externalCommunicator;
+        
+        public readonly PlayerViewModel PlayerViewModel;
         public MainWindowViewModel()
         {
             Router.Navigate.Execute(new MenuViewModel(this));
             _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
+            PlayerViewModel = Locator.Current.GetRequiredService<PlayerViewModel>();
             //_externalCommunicator.ConnectionStatus.ObserveOn(RxApp.MainThreadScheduler).Subscribe(b => IsConnected = b);
+            ClientMacAddress = ClientMacAddressHandler.PrimaryMacAddress.ToString();
         }
-
+        
+        [Reactive]
+        private string _clientMacAddress;
+        
         public Interaction<string?, string?> PlayerNameInteraction { get; } = new Interaction<string?, string?>();
         
         //TODO: Check this, it is still showing when player is registered. Also, check player registration, it might have some issues too.
@@ -43,6 +50,7 @@ namespace KC.Frontend.Client.ViewModels
             try
             {
                 await _externalCommunicator.RegisterPlayer(name!);
+                await CheckIfRegistered();
             }
             catch (Exception e)
             {
@@ -55,13 +63,15 @@ namespace KC.Frontend.Client.ViewModels
         {
             try
             {
-                await _externalCommunicator.GetPlayerByMac(ClientMacAddressHandler.PrimaryMacAddress);
+                var player = await _externalCommunicator.GetPlayerByMac(ClientMacAddressHandler.PrimaryMacAddress);
+                PlayerViewModel.PlayerName = player.Name;
+                PlayerViewModel.PlayerBalance = player.Balance;
                 _isRegistered = true;
             }
             catch (Exception e)
             {
                 _isRegistered = false;
-                //throw;
+                //TODO: Show dialog
             }
         }
         public RoutingState Router { get; } = new();

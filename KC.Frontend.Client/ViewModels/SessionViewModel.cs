@@ -17,6 +17,9 @@ namespace KC.Frontend.Client.ViewModels
         private BoxViewModel _userControlledBox;
         [Reactive]
         private ObservableCollection<BoxViewModel> _boxes;
+        
+        [Reactive]
+        private DealerViewModel _dealer;
 
         [ReactiveCommand]
         private void TestSplit()
@@ -28,6 +31,7 @@ namespace KC.Frontend.Client.ViewModels
             this.HostScreen = hostScreen;
             this.selectedItem = selectedItem;
             Boxes = new ObservableCollection<BoxViewModel>();
+            Dealer = new DealerViewModel();
             InitializeBoxes();
         }
 
