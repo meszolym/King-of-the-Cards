@@ -85,7 +85,7 @@ public class ExternalCommunicatorService
 
 
     public async Task<IEnumerable<SessionListItem>> GetSessions()
-        => (await _client.GetAsync<List<SessionDto>>(Endpoints.GetSessions)
+        => (await _client.GetAsync<List<SessionReadDto>>(Endpoints.GetSessions)
             ?? throw new ExternalCommunicationException("Could not get sessions"))
            .Select(s => new SessionListItem()
            {
@@ -94,8 +94,8 @@ public class ExternalCommunicatorService
 
     public async Task RegisterPlayer(string name) => await _client.PostAsync(Endpoints.RegisterPlayer.AddBody(new PlayerRegisterDto(name, ClientMacAddressHandler.PrimaryMacAddress)));
 
-    public async Task<PlayerDto> GetPlayerByMac(MacAddress macAddress) 
-        => await _client.GetAsync<PlayerDto>(Endpoints.GetPlayerByMac.AddUrlSegment("macAddress", macAddress.Address)) 
+    public async Task<PlayerReadDto> GetPlayerByMac(MacAddress macAddress) 
+        => await _client.GetAsync<PlayerReadDto>(Endpoints.GetPlayerByMac.AddUrlSegment("macAddress", macAddress.Address)) 
            ?? throw new ExternalCommunicationException("Player not found");
 }
 

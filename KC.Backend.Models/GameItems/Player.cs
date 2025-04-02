@@ -3,10 +3,20 @@ using KC.Shared.Models.Misc;
 
 namespace KC.Backend.Models.GameItems;
 
-public class Player(MacAddress macAddress, string name, double balance, string connectionId)
+public class Player
 {
-    public MacAddress Id { get; private init; } = macAddress;
-    public string ConnectionId { get; set; } = connectionId;
-    public string Name { get; set; } = name;
-    public double Balance { get; set; } = balance;
+    public Player(MacAddress macAddress, string name, double balance, string connectionId)
+    {
+        Id = macAddress;
+        Name = name;
+        Balance = balance;
+        ConnectionId = connectionId;
+    }
+    
+    public Player() { }
+    
+    public MacAddress Id { get; private init; }
+    public string ConnectionId { get; set; } 
+    public string Name { get; set; }
+    public double Balance { get; set; }
 }

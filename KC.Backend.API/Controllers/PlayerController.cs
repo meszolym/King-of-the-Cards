@@ -1,5 +1,5 @@
 using System.Net.NetworkInformation;
-using KC.Backend.API.Utilities;
+using AutoMapper;
 using KC.Backend.Logic;
 using KC.Backend.Logic.Interfaces;
 using KC.Backend.Models.GameItems;
@@ -11,14 +11,14 @@ namespace KC.Backend.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PlayerController(IPlayerLogic playerLogic) : Controller
+public class PlayerController(IPlayerLogic playerLogic, Mapper mapper) : Controller
 {
     [HttpGet("{address}")]
-    public PlayerDto GetPlayer(string address) => playerLogic.Get(new MacAddress(address)).ToDto();
+    public PlayerReadDto GetPlayer(string address) => mapper.Map<PlayerReadDto>(playerLogic.Get(new MacAddress(address)));
     
     // [HttpPost]
     // public void AddPlayer([FromBody] PlayerDto playerDto) => playerLogic.AddPlayer(playerDto.ToModel());
 
     [HttpPost]
-    public void AddPlayer([FromBody] PlayerRegisterDto dto) => playerLogic.AddPlayer(dto.ToModel());
+    public void AddPlayer([FromBody] PlayerRegisterDto dto) => playerLogic.AddPlayer(mapper.Map<Player>(dto));
 }

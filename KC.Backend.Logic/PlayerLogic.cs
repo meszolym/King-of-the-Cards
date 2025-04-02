@@ -1,4 +1,5 @@
 using System.Net.NetworkInformation;
+using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Interfaces;
 using KC.Backend.Models.GameItems;
 using KC.Shared.Models.Misc;
@@ -8,7 +9,8 @@ namespace KC.Backend.Logic;
 //This is done.
 public class PlayerLogic(IList<Player> players) : IPlayerLogic
 {
-    public void AddPlayer(Player player) => players.Add(player);
+    public static double DefaultBalance { get; set; } = 500;
+    public void AddPlayer(Player player) => players.Add(player.WithBalance(DefaultBalance));
     
     public void RemovePlayer(MacAddress playerId) => players.Remove(players.Single(p => p.Id == playerId));
     

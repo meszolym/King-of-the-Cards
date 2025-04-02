@@ -1,9 +1,11 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Diagnostics;
 using KC.Backend.Logic;
 using KC.Backend.Logic.Interfaces;
 using KC.Backend.Models;
 using KC.Backend.Models.GameItems;
 using KC.Backend.Models.GameManagement;
+using KC.Shared.Models.Dtos;
 using KC.Shared.Models.GameItems;
 using KC.Shared.Models.Misc;
 using Scalar.AspNetCore;
@@ -40,6 +42,19 @@ namespace KC.Backend.API
 
 
             builder.Services.AddSignalR();
+
+            builder.Services.AddTransient<Mapper>(_ =>
+            {
+                return new Mapper(new MapperConfiguration(cfg =>
+                {
+                    cfg.CreateMap<BettingBox, BettingBoxReadDto>();
+                    cfg.CreateMap<Hand, HandReadDto>();
+                    cfg.CreateMap<Player, PlayerReadDto>();
+                    cfg.CreateMap<PlayerRegisterDto, Player>();
+                    cfg.CreateMap<Session, SessionReadDto>();
+                    cfg.CreateMap<Table,TableReadDto>().AfterMap((orig, dto) => dto.DealerVisibleCards = orig.Dealer.DealerVisibleCards);
+                })); 
+            });
 
             var app = builder.Build();
             
@@ -78,6 +93,7 @@ namespace KC.Backend.API
             app.Run();
         }
 
+        //TODO: Remove
         private static class GenerateSeed
         {
             #region Generate seed for session

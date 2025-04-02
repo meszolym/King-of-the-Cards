@@ -27,5 +27,8 @@ public partial class HandView : ReactiveUserControl<HandViewModel>
         {
             this.OneWayBind(ViewModel, vm => vm.Cards, v => v._cardsItemsControl.ItemsSource).DisposeWith(disposables);
         });
+        
+        //TODO: Bet display + bet setting
+        //TODO: Display something to show that hand is in turn
     }
 }
