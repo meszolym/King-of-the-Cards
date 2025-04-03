@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Diagnostics;
 using KC.Backend.Logic;
 using KC.Backend.Logic.Interfaces;
@@ -42,19 +41,6 @@ namespace KC.Backend.API
 
 
             builder.Services.AddSignalR();
-
-            builder.Services.AddTransient<Mapper>(_ =>
-            {
-                return new Mapper(new MapperConfiguration(cfg =>
-                {
-                    cfg.CreateMap<BettingBox, BettingBoxReadDto>();
-                    cfg.CreateMap<Hand, HandReadDto>();
-                    cfg.CreateMap<Player, PlayerReadDto>();
-                    cfg.CreateMap<PlayerRegisterDto, Player>();
-                    cfg.CreateMap<Session, SessionReadDto>();
-                    cfg.CreateMap<Table,TableReadDto>().AfterMap((orig, dto) => dto.DealerVisibleCards = orig.Dealer.DealerVisibleCards);
-                })); 
-            });
 
             var app = builder.Build();
             

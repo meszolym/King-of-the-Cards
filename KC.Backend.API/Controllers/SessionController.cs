@@ -1,4 +1,4 @@
-using AutoMapper;
+using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Interfaces;
 using KC.Shared.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
@@ -7,13 +7,13 @@ namespace KC.Backend.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class SessionController(ISessionLogic sessionLogic, Mapper mapper) : Controller
+public class SessionController(ISessionLogic sessionLogic) : Controller
 {
     [HttpGet]
-    public IEnumerable<SessionReadDto> GetAllSessions() => sessionLogic.GetAll().Select(mapper.Map<SessionReadDto>);
+    public IEnumerable<SessionReadDto> GetAllSessions() => sessionLogic.GetAll().Select(s => s.ToDto());
 
     [HttpGet("{id:guid}")]
-    public SessionReadDto GetSession(Guid id) => mapper.Map<SessionReadDto>(sessionLogic.Get(id));
-    
-    
+    public SessionReadDto GetSession(Guid id) => sessionLogic.Get(id).ToDto();
+
+
 }
