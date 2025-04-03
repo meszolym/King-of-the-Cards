@@ -11,12 +11,12 @@ namespace KC.Frontend.Client.Views;
 
 partial class SessionView : ReactiveUserControl<SessionViewModel>
 {
-    private Button _testSplitButton => this.FindControl<Button>("TestSplitButton");
+    // private Button _testSplitButton => this.FindControl<Button>("TestSplitButton");
     public SessionView()
     {
         this.WhenActivated(d =>
         {
-            this.BindCommand(ViewModel, vm => vm.TestSplitCommand, v => v._testSplitButton).DisposeWith(d);
+            // this.BindCommand(ViewModel, vm => vm.TestSplitCommand, v => v._testSplitButton).DisposeWith(d);
           // Observer.Create<double>(d => BoxesItemsControl.Width = d);
             // this.GetObservable(WidthProperty).Subscribe(Observer.Create<double>(d =>
             // {
