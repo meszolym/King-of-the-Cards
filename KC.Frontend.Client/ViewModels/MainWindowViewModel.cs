@@ -26,17 +26,23 @@ namespace KC.Frontend.Client.ViewModels
             Router.Navigate.Execute(new MenuViewModel(this));
             _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
             PlayerViewModel = Locator.Current.GetRequiredService<PlayerViewModel>();
-            //_externalCommunicator.ConnectionStatus.ObserveOn(RxApp.MainThreadScheduler).Subscribe(b => IsConnected = b);
+            _externalCommunicator.ConnectionStatus.ObserveOn(RxApp.MainThreadScheduler).Subscribe(b => IsConnected = b);
             ClientMacAddress = ClientMacAddressHandler.PrimaryMacAddress.ToString();
         }
         
         [Reactive]
         private string _clientMacAddress;
+
+        public async Task InitAsync()
+        {
+            await _externalCommunicator.ConnectToSignalR();
+            await Register();
+            await _externalCommunicator.UpdatePlayerConnectionId();
+        }
         
         public Interaction<string?, string?> PlayerNameInteraction { get; } = new Interaction<string?, string?>();
         
-        //TODO: Check this, it is still showing when player is registered. Also, check player registration, it might have some issues too.
-        [ReactiveCommand]
+        //[ReactiveCommand]
         private async Task Register()
         {
             if (!_isConnected)

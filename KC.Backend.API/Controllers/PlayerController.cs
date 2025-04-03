@@ -21,4 +21,7 @@ public class PlayerController(IPlayerLogic playerLogic) : Controller
 
     [HttpPost] 
     public void AddPlayer([FromBody] PlayerRegisterDto dto) => playerLogic.AddPlayer(dto.ToDomain());
+
+    [HttpPut]
+    public void UpdatePlayerConnectionId([FromBody] PlayerConnectionIdUpdateDto dto) => playerLogic.UpdatePlayerConnectionId(dto.Id, dto.ConnectionId);
 }

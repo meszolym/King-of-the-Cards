@@ -24,6 +24,7 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.1" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.14" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="ReactiveUI" Version="20.1.63" />
         <PackageReference Include="ReactiveUI.SourceGenerators" Version="2.1.8">

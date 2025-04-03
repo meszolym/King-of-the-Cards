@@ -12,7 +12,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
 {
     public MainWindow()
     {
-        this.WhenActivated(d =>
+        this.WhenActivated(async d =>
         {
             this.Bind(ViewModel, vm => vm.Router, v => v.RoutedViewHost.Router).DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.IsConnected, v => v.RoutedViewHost.IsEnabled).DisposeWith(d);
@@ -21,7 +21,9 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             this.OneWayBind(ViewModel, vm => vm.PlayerViewModel.PlayerBalance, v => v.PlayerBalanceTextBlock.Text, bt => $"Balance: ${bt}" ).DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.ClientMacAddress, v => v.PlayerMacTextBlock.Text, mac => $"(MAC: {mac})").DisposeWith(d);
             
-            ViewModel!.RegisterCommand.Execute().ObserveOn(RxApp.MainThreadScheduler); //TODO: Do on first connect to SignalR
+            //ViewModel!.RegisterCommand.Execute().ObserveOn(RxApp.MainThreadScheduler); //TODO: Do on first connect to SignalR
+
+            await ViewModel.InitAsync();
         });
         InitializeComponent();
         

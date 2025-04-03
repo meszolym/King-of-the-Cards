@@ -11,4 +11,5 @@ public interface IPlayerLogic
     Player Get(MacAddress playerId);
     void UpdateName(MacAddress playerId, string name);
     void UpdateBalance(MacAddress playerId, int balance);
+    void UpdatePlayerConnectionId(MacAddress playerId, string connectionId);
 }
