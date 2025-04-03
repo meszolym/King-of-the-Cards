@@ -98,10 +98,23 @@ public class ExternalCommunicatorService
             return Task.CompletedTask;
         };
     }
+
+    public bool SignalRInitialized { get; private set; } = false;
     
     public async Task ConnectToSignalR()
     {
-        await SignalRHubConnection.StartAsync();
+        try
+        {
+            await SignalRHubConnection.StartAsync();
+            SignalRInitialized = true;
+            
+        }
+        catch (Exception e)
+        {
+            _connectionStatusSubject.OnNext(false);
+            throw;
+        }
+        
         if (SignalRHubConnection.State == HubConnectionState.Connected)
         {
             _connectionStatusSubject.OnNext(true);

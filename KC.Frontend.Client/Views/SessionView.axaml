@@ -11,7 +11,9 @@
 			xmlns:comp="using:KC.Frontend.Client.Views.Components"
 			d:DesignHeight="1080" d:DesignWidth="1920" Background="#529848">
 	<Grid ColumnDefinitions="0.25*,0.5*,0.25*" RowDefinitions="0.3*,0.6*,0.1*">
-		
+		<Button x:Name="NavBackButton" VerticalAlignment="Top" Padding="30" Foreground="White">
+				<PathIcon Data="{StaticResource arrow_left_regular}" Foreground="White" Width="30" Height="30"/>
+		</Button>
 		<comp:DealerView x:Name="DealerView" Grid.Column="1" />
 		
 		<ItemsControl x:Name="BoxesItemsControl" Grid.Row="1" Grid.ColumnSpan="3"

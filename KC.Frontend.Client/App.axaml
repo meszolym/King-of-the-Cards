@@ -7,6 +7,7 @@
   
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://KC.Frontend.Client/Assets/Icons.axaml" />
     </Application.Styles>
     <Application.Resources>
        <ControlTheme x:Key="CircleButton" TargetType="Button">

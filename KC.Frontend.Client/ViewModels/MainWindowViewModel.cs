@@ -23,7 +23,6 @@ namespace KC.Frontend.Client.ViewModels
         public readonly PlayerViewModel PlayerViewModel;
         public MainWindowViewModel()
         {
-            Router.Navigate.Execute(new MenuViewModel(this));
             _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
             PlayerViewModel = Locator.Current.GetRequiredService<PlayerViewModel>();
             _externalCommunicator.ConnectionStatus.ObserveOn(RxApp.MainThreadScheduler).Subscribe(b => IsConnected = b);
@@ -32,12 +31,25 @@ namespace KC.Frontend.Client.ViewModels
         
         [Reactive]
         private string _clientMacAddress;
-
+        
         public async Task InitAsync()
         {
-            await _externalCommunicator.ConnectToSignalR();
+            while (!_externalCommunicator.SignalRInitialized)
+            {
+                try
+                {
+                    await _externalCommunicator.ConnectToSignalR();
+                }
+                catch (Exception e)
+                {
+                    //TODO: Show dialog
+                    await Task.Delay(3000);
+                }
+            }
+
             await Register();
             await _externalCommunicator.UpdatePlayerConnectionId();
+            Router.Navigate.Execute(new MenuViewModel(this));
         }
         
         public Interaction<string?, string?> PlayerNameInteraction { get; } = new Interaction<string?, string?>();

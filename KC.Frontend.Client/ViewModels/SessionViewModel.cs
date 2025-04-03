@@ -20,12 +20,13 @@ namespace KC.Frontend.Client.ViewModels
         
         [Reactive]
         private DealerViewModel _dealer;
+        
+        [ReactiveCommand]
+        private void NavBack() => HostScreen.Router.NavigateBack.Execute();
+        
 
         [ReactiveCommand]
-        private void TestSplit()
-        {
-            _userControlledBox.SplitHands();
-        }
+        private void TestSplit() => _userControlledBox.SplitHands();
         public SessionViewModel(IScreen hostScreen, SessionListItem selectedItem)
         {
             this.HostScreen = hostScreen;

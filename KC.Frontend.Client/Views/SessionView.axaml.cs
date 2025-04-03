@@ -26,6 +26,7 @@ partial class SessionView : ReactiveUserControl<SessionViewModel>
             //this.BindCommand(this.ViewModel, vm => vm.GoBackCommand, v => v.NavbackButton).DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.Boxes, v => v.BoxesItemsControl.ItemsSource).DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.Dealer, v => v.DealerView.ViewModel).DisposeWith(d);
+            this.BindCommand(ViewModel, vm => vm.NavBackCommand, v => v.NavBackButton).DisposeWith(d);
         });
         InitializeComponent();
 

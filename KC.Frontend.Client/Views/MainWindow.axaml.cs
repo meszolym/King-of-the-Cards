@@ -22,8 +22,10 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             this.OneWayBind(ViewModel, vm => vm.ClientMacAddress, v => v.PlayerMacTextBlock.Text, mac => $"(MAC: {mac})").DisposeWith(d);
             
             //ViewModel!.RegisterCommand.Execute().ObserveOn(RxApp.MainThreadScheduler); //TODO: Do on first connect to SignalR
-
+            this.BeforeFirstConnStackPanel.IsVisible = true;
             await ViewModel.InitAsync();
+            this.BeforeFirstConnStackPanel.IsVisible = false;
+            
         });
         InitializeComponent();
         
