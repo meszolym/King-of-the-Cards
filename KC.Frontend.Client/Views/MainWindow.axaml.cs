@@ -14,6 +14,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     {
         this.WhenActivated(async d =>
         {
+            this.OneWayBind(ViewModel, vm=> vm.WindowState, v=> v.WindowState).DisposeWith(d);
             this.Bind(ViewModel, vm => vm.Router, v => v.RoutedViewHost.Router).DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.IsConnected, v => v.RoutedViewHost.IsEnabled).DisposeWith(d);
             this.BindInteraction(ViewModel, vm => vm.PlayerNameInteraction, HandleNameChange).DisposeWith(d);
@@ -25,6 +26,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             this.BeforeFirstConnStackPanel.IsVisible = true;
             await ViewModel.InitAsync();
             this.BeforeFirstConnStackPanel.IsVisible = false;
+            
             
         });
         InitializeComponent();

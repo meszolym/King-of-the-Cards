@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using KC.Frontend.Client.Extensions;
 using KC.Frontend.Client.Services;
 using KC.Frontend.Client.Utilities;
+using Microsoft.AspNetCore.Connections.Features;
 using Splat;
 
 namespace KC.Frontend.Client.ViewModels
@@ -17,6 +20,9 @@ namespace KC.Frontend.Client.ViewModels
         
         [Reactive]
         private bool _isConnected = true;
+        
+        [Reactive]
+        private WindowState _windowState = WindowState.Maximized;
         
         private readonly ExternalCommunicatorService _externalCommunicator;
         
