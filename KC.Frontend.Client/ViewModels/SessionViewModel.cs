@@ -47,15 +47,9 @@ namespace KC.Frontend.Client.ViewModels
         }
         private void InitializeBoxes()
         {
-            // Create 5 boxes, one for each player
             for (int i = 0; i < 5; i++)
             {
                 var box = new BoxViewModel();
-                if (i == 2) // Middle box is player-controlled
-                {
-                    box.IsPlayerControlled = true;
-                    _userControlledBox = box;
-                }
                 Boxes.Add(box);
             }
         }

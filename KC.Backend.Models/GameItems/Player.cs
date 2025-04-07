@@ -7,7 +7,7 @@ public class Player
 {
     public Player(MacAddress macAddress, string name, double balance, string connectionId)
     {
-        Id = macAddress;
+        Mac = macAddress;
         Name = name;
         Balance = balance;
         ConnectionId = connectionId;
@@ -15,7 +15,8 @@ public class Player
     
     public Player() { }
     
-    public MacAddress Id { get; private init; }
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public MacAddress Mac { get; private init; }
     public string ConnectionId { get; set; } 
     public string Name { get; set; }
     public double Balance { get; set; }

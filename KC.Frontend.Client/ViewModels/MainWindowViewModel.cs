@@ -53,19 +53,19 @@ namespace KC.Frontend.Client.ViewModels
                 }
                 catch (Exception e)
                 {
-                    //TODO: Show dialog
                     await Task.Delay(3000);
                 }
             }
 
+            //TODO: Loop until registered?
             await Register();
+            
             await _externalCommunicator.UpdatePlayerConnectionId();
             Router.Navigate.Execute(new MenuViewModel(this));
         }
         
         public Interaction<string?, string?> PlayerNameInteraction { get; } = new Interaction<string?, string?>();
         
-        //[ReactiveCommand]
         private async Task Register()
         {
             if (!_isConnected)
@@ -93,6 +93,7 @@ namespace KC.Frontend.Client.ViewModels
             try
             {
                 var player = await _externalCommunicator.GetPlayerByMac(ClientMacAddressHandler.PrimaryMacAddress);
+                PlayerViewModel.Id = player.Id;
                 PlayerViewModel.PlayerName = player.Name;
                 PlayerViewModel.PlayerBalance = player.Balance;
                 _isRegistered = true;

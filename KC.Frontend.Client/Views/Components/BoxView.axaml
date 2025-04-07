@@ -17,6 +17,7 @@
             <TextBlock Text="asd" x:Name="PlayerNameTextBlock" Grid.Row="1" Grid.ColumnSpan="2"
                        HorizontalAlignment="Center" Foreground="White" Margin="5"/>
             <Button x:Name="ClaimBoxButton" Grid.Row="2" HorizontalAlignment="Center" Foreground="White" Grid.ColumnSpan="2">Claim box</Button>
+            <Button x:Name="UnclaimBoxButton" Grid.Row="2" HorizontalAlignment="Center" Foreground="White" Grid.ColumnSpan="2">Unclaim box</Button>
         </Grid>
     </Border>
 </rxui:ReactiveUserControl>

@@ -27,6 +27,6 @@ sealed class Program
     private static void RegisterServices(AppBuilder builder)
     {
         Locator.CurrentMutable.RegisterConstant(new ExternalCommunicatorService());
-        Locator.CurrentMutable.RegisterConstant(new PlayerViewModel());
+        Locator.CurrentMutable.RegisterConstant(new PlayerViewModel()); //local player
     }
 }
