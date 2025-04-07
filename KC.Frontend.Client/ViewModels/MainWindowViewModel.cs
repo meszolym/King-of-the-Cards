@@ -36,7 +36,7 @@ namespace KC.Frontend.Client.ViewModels
             ClientMacAddress = ClientMacAddressHandler.PrimaryMacAddress.ToString();
             Router.NavigationChanged.ObserveOn(RxApp.MainThreadScheduler).Subscribe(_ =>
             {
-                _isFullScreen = Router.GetCurrentViewModel() is SessionViewModel;
+                IsFullScreen = Router.GetCurrentViewModel() is SessionViewModel;
             });
         }
         
