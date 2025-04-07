@@ -20,19 +20,24 @@ namespace KC.Frontend.Client.ViewModels
         
         [Reactive]
         private bool _isConnected = true;
-        
-        [Reactive]
-        private WindowState _windowState = WindowState.Maximized;
+
+        [Reactive] 
+        private bool _isFullScreen = true;
         
         private readonly ExternalCommunicatorService _externalCommunicator;
         
         public readonly PlayerViewModel PlayerViewModel;
+
         public MainWindowViewModel()
         {
             _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
             PlayerViewModel = Locator.Current.GetRequiredService<PlayerViewModel>();
             _externalCommunicator.ConnectionStatus.ObserveOn(RxApp.MainThreadScheduler).Subscribe(b => IsConnected = b);
             ClientMacAddress = ClientMacAddressHandler.PrimaryMacAddress.ToString();
+            Router.NavigationChanged.ObserveOn(RxApp.MainThreadScheduler).Subscribe(_ =>
+            {
+                _isFullScreen = Router.GetCurrentViewModel() is SessionViewModel;
+            });
         }
         
         [Reactive]
