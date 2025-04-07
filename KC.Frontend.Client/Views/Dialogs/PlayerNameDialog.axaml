@@ -26,7 +26,7 @@
                         <Button Grid.Column="0"
                                 Content="Cancel"
                                 x:Name="CancelButton" HorizontalAlignment="Stretch" CornerRadius="8" HorizontalContentAlignment="Center" Padding="15,8"/>
-                        <Button Grid.Column="2"
+                        <Button IsDefault="True" Grid.Column="2"
                                 Content="Set name"
                                 x:Name="SaveButton" HorizontalAlignment="Stretch" CornerRadius="8" HorizontalContentAlignment="Center" Padding="15,8"/>
                 </Grid>
