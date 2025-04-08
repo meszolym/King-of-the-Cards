@@ -14,7 +14,7 @@ namespace KC.Frontend.Client.ViewModels
 {
     partial class SessionViewModel : ReactiveObject, IRoutableViewModel
     {
-        private BoxViewModel _userControlledBox;
+        
         [Reactive]
         private ObservableCollection<BoxViewModel> _boxes;
         
