@@ -22,6 +22,8 @@ public static class Endpoints
     public static readonly RestRequest GetPlayerByMac = new RestRequest(BaseUri + "player/{macAddress}");
     public static readonly RestRequest RegisterPlayer = new RestRequest(BaseUri + "player", Method.Post);
     public static readonly RestRequest UpdatePlayerConnectionId = new RestRequest(BaseUri + "player", Method.Put);
+    public static readonly RestRequest ClaimBox = new RestRequest(BaseUri + "bettingbox", Method.Post);
+    public static readonly RestRequest DisclaimBox = new RestRequest(BaseUri + "bettingbox", Method.Delete);
     
     public static readonly string SignalRHub = BaseUri + "signalR";
 }
@@ -145,5 +147,13 @@ public class ExternalCommunicatorService
     public async Task<PlayerReadDto> GetPlayerByMac(MacAddress macAddress) 
         => await _client.GetAsync<PlayerReadDto>(Endpoints.GetPlayerByMac.AddUrlSegment("macAddress", macAddress.Address)) 
            ?? throw new ExternalCommunicationException("Player not found");
+
+    public async Task ClaimBox(Guid sessionId, int boxIdx, MacAddress primaryMacAddress) =>
+        await _client.PostAsync(
+            Endpoints.ClaimBox.AddBody(new BoxOwnerUpdateDto(sessionId, boxIdx, primaryMacAddress)));
+
+    public async Task DisclaimBox(Guid sessionId, int boxIdx, MacAddress primaryMacAddress) =>
+        await _client.DeleteAsync(
+            Endpoints.ClaimBox.AddBody(new BoxOwnerUpdateDto(sessionId, boxIdx, primaryMacAddress)));
 }
 

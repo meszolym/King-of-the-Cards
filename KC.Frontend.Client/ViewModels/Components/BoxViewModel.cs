@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using KC.Frontend.Client.Extensions;
+using KC.Frontend.Client.Services;
+using KC.Frontend.Client.Utilities;
 using KC.Shared.Models.GameItems;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
@@ -29,40 +32,58 @@ public partial class BoxViewModel : ReactiveObject
     [Reactive]
     private bool _isClaimed;
 
-    //TODO: This should reflect if the game is in progress or not (you cannot unclaim a box that is in use)
-    private IObservable<bool> CanClaimUnclaimBox => Observable.Return(true);
+    private readonly ExternalCommunicatorService _externalCommunicator;
+    private readonly int _boxIdx;
 
-    [ReactiveCommand(CanExecute = nameof(CanClaimUnclaimBox))]
-    private void ClaimBox()
+    //TODO: This should reflect if the game is in progress or not (you cannot unclaim a box that is in use)
+    private IObservable<bool> CanClaimDisclaimBox => Observable.Return(true);
+
+    [ReactiveCommand(CanExecute = nameof(CanClaimDisclaimBox))]
+    private async Task ClaimBox()
     {
-        var localPlayer = Locator.Current.GetRequiredService<PlayerViewModel>();
-        PlayerName = localPlayer.PlayerName;
-        OwnerId = localPlayer.Id;
-        IsClaimed = true;
+        try
+        {
+            await _externalCommunicator.ClaimBox(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress);
+            var localPlayer = Locator.Current.GetRequiredService<PlayerViewModel>();
+            PlayerName = localPlayer.PlayerName;
+            OwnerId = localPlayer.Id;
+            IsClaimed = true;
+        }
+        catch (Exception e)
+        {
+            //TODO: Show dialog
+        }
     }   
 
-    [ReactiveCommand(CanExecute = nameof(CanClaimUnclaimBox))]
-    private void UnclaimBox()
+    [ReactiveCommand(CanExecute = nameof(CanClaimDisclaimBox))]
+    private async Task DisclaimBox()
     {
-        PlayerName = "Unclaimed";
-        OwnerId = Guid.Empty;
-        IsClaimed = false;
+        try
+        {
+            await _externalCommunicator.DisclaimBox(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress);
+            PlayerName = "Unclaimed";
+            OwnerId = Guid.Empty;
+            IsClaimed = false;
+        }
+        catch (Exception e)
+        {
+            //TODO: Show dialog
+        }
     }
     
     //TODO: Claim box button command (done) + canexecute (skeleton done) + server comm
     public BoxViewModel(Guid sessionId, int boxIdx)
     {
-        SessionId = sessionId;
-        BoxIdx = boxIdx;
+        _sessionId = sessionId;
+        _boxIdx = boxIdx;
         LeftHand = new HandViewModel();
         RightHand = new HandViewModel();
         IsSplit = false;
         PlayerName = "Unclaimed";
+        _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
     }
 
-    public int BoxIdx { get; init; }
-
-    public Guid SessionId { get; init; }
+    private readonly Guid _sessionId;
 
 
     //TODO: Take a look, this is more complex and needs to involve the server probably.
