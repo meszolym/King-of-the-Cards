@@ -2,4 +2,4 @@
 
 namespace KC.Shared.Models.Dtos;
 
-public record PlayerReadDto(Guid Id, string Name, double Balance);
+public record struct PlayerReadDto(Guid Id, string Name, double Balance);

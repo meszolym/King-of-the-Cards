@@ -2,4 +2,4 @@ using KC.Shared.Models.Misc;
 
 namespace KC.Shared.Models.Dtos;
 
-public record PlayerConnectionIdUpdateDto(MacAddress Id, string ConnectionId);
+public record struct PlayerConnectionIdUpdateDto(MacAddress Id, string ConnectionId);
