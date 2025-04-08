@@ -24,7 +24,7 @@ namespace KC.Frontend.Client.Views.Components
         public BoxView()
         {
             InitializeComponent();
-            ViewModel = new BoxViewModel();
+            //ViewModel = new BoxViewModel();
             
             this.WhenActivated(d =>
             {
@@ -94,20 +94,21 @@ namespace KC.Frontend.Client.Views.Components
                 grid.ColumnDefinitions[1].Width = GridLength.Auto;
             }
         }
-        private void UpdatePlayerControlledState(bool isPlayerControlled)
-        {
-            if (isPlayerControlled)
-            {
-                // Add visual indication that this box is player-controlled
-                // For example, change border color or add a highlight effect
-                var border = this.Parent as Border;
-                if (border != null)
-                {
-                    border.BorderBrush = new Avalonia.Media.SolidColorBrush(
-                        Avalonia.Media.Color.FromRgb(255, 215, 0)); // Gold color
-                    border.BorderThickness = new Thickness(3);
-                }
-            }
-        }
+        
+        // private void UpdatePlayerControlledState(bool isPlayerControlled)
+        // {
+        //     if (isPlayerControlled)
+        //     {
+        //         // Add visual indication that this box is player-controlled
+        //         // For example, change border color or add a highlight effect
+        //         var border = this.Parent as Border;
+        //         if (border != null)
+        //         {
+        //             border.BorderBrush = new Avalonia.Media.SolidColorBrush(
+        //                 Avalonia.Media.Color.FromRgb(255, 215, 0)); // Gold color
+        //             border.BorderThickness = new Thickness(3);
+        //         }
+        //     }
+        // }
     }
 }

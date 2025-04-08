@@ -1,5 +1,4 @@
 ﻿using System;
-using Avalonia;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using KC.Frontend.Client.Extensions;
@@ -7,7 +6,7 @@ using KC.Shared.Models.GameItems;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 
-namespace KC.Frontend.Client.ViewModels;
+namespace KC.Frontend.Client.ViewModels.Components;
 
 public partial class CardViewModel : ReactiveObject
 {

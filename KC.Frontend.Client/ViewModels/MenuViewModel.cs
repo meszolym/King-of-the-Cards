@@ -35,7 +35,7 @@ namespace KC.Frontend.Client.ViewModels
         private void JoinSession()
         {
             Debug.WriteLine("Joining session");
-            HostScreen.Router.Navigate.Execute(new SessionViewModel(HostScreen, SelectedItem));
+            HostScreen.Router.Navigate.Execute(new SessionViewModel(HostScreen, SelectedItem.Id));
         }
 
         [ReactiveCommand]

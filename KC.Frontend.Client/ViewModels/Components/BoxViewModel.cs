@@ -49,33 +49,41 @@ public partial class BoxViewModel : ReactiveObject
         IsClaimed = false;
     }
     
-    //TODO: Claim box button command + canexecute + server comm
-    public BoxViewModel()
+    //TODO: Claim box button command (done) + canexecute (skeleton done) + server comm
+    public BoxViewModel(Guid sessionId, int boxIdx)
     {
+        SessionId = sessionId;
+        BoxIdx = boxIdx;
         LeftHand = new HandViewModel();
         RightHand = new HandViewModel();
         IsSplit = false;
         PlayerName = "Unclaimed";
     }
 
-    //TODO: Take a look, this is more complex and needs to involve the server probably.
-    public void SplitHands()
-    {
-        if (LeftHand.Cards.Count >= 2 && !IsSplit)
-        {
-            // Take the second card from left hand and move it to right hand
-            // var cardToMove = LeftHand.Cards[1];
-            // LeftHand.Cards.RemoveAt(1);
-            // RightHand.Cards.Add(cardToMove);
-            //     
-            // // Copy bet amount
-            // RightHand.BetAmount = LeftHand.BetAmount;
-            // Activate right hand
-            RightHand.Cards.Clear();
-            IsSplit = true;
+    public int BoxIdx { get; init; }
 
-            RightHand.AddCard(Card.WithSuitAndFace(Card.CardSuit.Clubs, Card.CardFace.Ace));
-            RightHand.AddCard(Card.WithSuitAndFace(Card.CardSuit.Hearts, Card.CardFace.Jack));
-        }
-    }
+    public Guid SessionId { get; init; }
+
+
+    //TODO: Take a look, this is more complex and needs to involve the server probably.
+    //
+    // public void SplitHands()
+    // {
+    //     if (LeftHand.Cards.Count >= 2 && !IsSplit)
+    //     {
+    //         // Take the second card from left hand and move it to right hand
+    //         // var cardToMove = LeftHand.Cards[1];
+    //         // LeftHand.Cards.RemoveAt(1);
+    //         // RightHand.Cards.Add(cardToMove);
+    //         //     
+    //         // // Copy bet amount
+    //         // RightHand.BetAmount = LeftHand.BetAmount;
+    //         // Activate right hand
+    //         RightHand.Cards.Clear();
+    //         IsSplit = true;
+    //
+    //         RightHand.AddCard(Card.WithSuitAndFace(Card.CardSuit.Clubs, Card.CardFace.Ace));
+    //         RightHand.AddCard(Card.WithSuitAndFace(Card.CardSuit.Hearts, Card.CardFace.Jack));
+    //     }
+    // }
 }

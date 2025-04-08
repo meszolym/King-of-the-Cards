@@ -4,6 +4,7 @@ using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,6 @@ namespace KC.Frontend.Client.ViewModels
 {
     partial class SessionViewModel : ReactiveObject, IRoutableViewModel
     {
-        private SessionListItem selectedItem;
         private BoxViewModel _userControlledBox;
         [Reactive]
         private ObservableCollection<BoxViewModel> _boxes;
@@ -24,17 +24,16 @@ namespace KC.Frontend.Client.ViewModels
         [ReactiveCommand]
         private void NavBack() => HostScreen.Router.NavigateBack.Execute();
         
-
-        [ReactiveCommand]
-        private void TestSplit() => _userControlledBox.SplitHands();
-        public SessionViewModel(IScreen hostScreen, SessionListItem selectedItem)
+        public SessionViewModel(IScreen hostScreen, Guid id)
         {
             this.HostScreen = hostScreen;
-            this.selectedItem = selectedItem;
+            Id = id;
             Boxes = new ObservableCollection<BoxViewModel>();
             Dealer = new DealerViewModel();
             InitializeBoxes();
         }
+
+        public Guid Id { get; set; }
 
         public string? UrlPathSegment { get; } = "session";
 
@@ -45,11 +44,11 @@ namespace KC.Frontend.Client.ViewModels
         {
             HostScreen.Router.NavigateBack.Execute();
         }
-        private void InitializeBoxes()
+        private void InitializeBoxes() //TODO: Get from server
         {
             for (int i = 0; i < 5; i++)
             {
-                var box = new BoxViewModel();
+                var box = new BoxViewModel(Id, i);
                 Boxes.Add(box);
             }
         }
