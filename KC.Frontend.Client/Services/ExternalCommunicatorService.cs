@@ -16,16 +16,17 @@ namespace KC.Frontend.Client.Services;
 public static class Endpoints
 {
     public static readonly Uri BaseUri = new Uri("http://localhost:5238");
-
-    //public static readonly Uri baseUri = new Uri("http://localhost:5000");
-    public static readonly RestRequest GetSessions = new RestRequest(BaseUri + "session");
-    public static readonly RestRequest GetPlayerByMac = new RestRequest(BaseUri + "player/{macAddress}");
-    public static readonly RestRequest RegisterPlayer = new RestRequest(BaseUri + "player", Method.Post);
-    public static readonly RestRequest UpdatePlayerConnectionId = new RestRequest(BaseUri + "player", Method.Put);
-    public static readonly RestRequest ClaimBox = new RestRequest(BaseUri + "bettingbox", Method.Post);
-    public static readonly RestRequest DisclaimBox = new RestRequest(BaseUri + "bettingbox", Method.Delete);
+    //public static readonly Uri BaseUri = new Uri("http://localhost:5000");
     
-    public static readonly string SignalRHub = BaseUri + "signalR";
+    public static readonly Uri SignalRHub = new Uri(BaseUri + "signalR");
+
+    public static RestRequest GetSessions => new RestRequest(BaseUri + "session");
+    public static RestRequest GetPlayerByMac => new RestRequest(BaseUri + "player/{macAddress}");
+    public static RestRequest RegisterPlayer => new RestRequest(BaseUri + "player", Method.Post);
+    public static RestRequest UpdatePlayerConnectionId => new RestRequest(BaseUri + "player", Method.Put);
+    public static RestRequest ClaimBox => new RestRequest(BaseUri + "bettingbox", Method.Post);
+    public static RestRequest DisclaimBox => new RestRequest(BaseUri + "bettingbox", Method.Delete);
+    
 }
 public class ExternalCommunicationException(string message) : Exception(message);
 
@@ -145,7 +146,7 @@ public class ExternalCommunicatorService
     public async Task RegisterPlayer(string name) => await _client.PostAsync(Endpoints.RegisterPlayer.AddBody(new PlayerRegisterDto(name, ClientMacAddressHandler.PrimaryMacAddress)));
 
     public async Task<PlayerReadDto> GetPlayerByMac(MacAddress macAddress) 
-        => await _client.GetAsync<PlayerReadDto>(Endpoints.GetPlayerByMac.AddUrlSegment("macAddress", macAddress.Address)) 
+        => await _client.GetAsync<PlayerReadDto?>(Endpoints.GetPlayerByMac.AddUrlSegment("macAddress", macAddress.Address)) 
            ?? throw new ExternalCommunicationException("Player not found");
 
     public async Task ClaimBox(Guid sessionId, int boxIdx, MacAddress primaryMacAddress) =>
