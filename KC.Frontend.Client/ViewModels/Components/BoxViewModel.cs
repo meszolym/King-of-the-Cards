@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using KC.Frontend.Client.Extensions;
@@ -52,6 +53,7 @@ public partial class BoxViewModel : ReactiveObject
         catch (Exception e)
         {
             //TODO: Show dialog
+            Debug.WriteLine(e.Message + "at ClaimBox in BoxViewModel");
         }
     }   
 
@@ -68,6 +70,7 @@ public partial class BoxViewModel : ReactiveObject
         catch (Exception e)
         {
             //TODO: Show dialog
+            Debug.WriteLine(e.Message + "at DisclaimBox in BoxViewModel");
         }
     }
     

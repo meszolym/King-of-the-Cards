@@ -84,6 +84,7 @@ namespace KC.Frontend.Client.ViewModels
             catch (Exception e)
             {
                 //TODO: Show dialog
+                Debug.WriteLine(e.Message + "at Register in MainWindowViewModel");
             }
             
         }
@@ -102,6 +103,7 @@ namespace KC.Frontend.Client.ViewModels
             {
                 _isRegistered = false;
                 //TODO: Show dialog
+                Debug.WriteLine(e.Message + "at CheckIfRegistered in MainWindowViewModel");
             }
         }
         public RoutingState Router { get; } = new();
