@@ -8,6 +8,7 @@ public partial struct MacAddress
     {
         Address = MacAddressRegex().IsMatch(address) ? address : throw new ArgumentException("Address is not standard", nameof(address));
     }
+    public static MacAddress Parse(string address) => new MacAddress(address);
     public readonly string Address { get; }
 
     [GeneratedRegex("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]
