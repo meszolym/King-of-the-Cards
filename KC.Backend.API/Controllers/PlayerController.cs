@@ -23,5 +23,6 @@ public class PlayerController(IPlayerLogic playerLogic) : Controller
     public void AddPlayer([FromBody] PlayerRegisterDto dto) => playerLogic.AddPlayer(dto.ToDomain());
 
     [HttpPut]
+    [Route("update-conn-id")]
     public void UpdatePlayerConnectionId([FromBody] PlayerConnectionIdUpdateDto dto) => playerLogic.UpdatePlayerConnectionId(dto.Id, dto.ConnectionId);
 }

@@ -9,6 +9,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using KC.Frontend.Client.Extensions;
 using KC.Frontend.Client.Services;
+using KC.Frontend.Client.Utilities;
 using Splat;
 namespace KC.Frontend.Client.ViewModels
 {
@@ -32,9 +33,11 @@ namespace KC.Frontend.Client.ViewModels
         private SessionListItem _selectedItem = null!;
 
         [ReactiveCommand(CanExecute = nameof(_joinCanExecute))]
-        private void JoinSession()
+        private async Task JoinSession()
         {
             Debug.WriteLine("Joining session");
+            await _externalCommunicator.JoinSession(SelectedItem.Id, ClientMacAddressHandler.PrimaryMacAddress);
+            //TODO: Get session data
             HostScreen.Router.Navigate.Execute(new SessionViewModel(HostScreen, SelectedItem.Id));
         }
 

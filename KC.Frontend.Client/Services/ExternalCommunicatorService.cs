@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using KC.Frontend.Client.Models;
@@ -17,17 +18,22 @@ public static class Endpoints
 {
     public static readonly Uri BaseUri = new Uri("http://localhost:5238");
     //public static readonly Uri BaseUri = new Uri("http://localhost:5000");
-    
+
     public static readonly Uri SignalRHub = new Uri(BaseUri + "signalR");
 
     public static RestRequest GetSessions => new RestRequest(BaseUri + "session");
     public static RestRequest GetPlayerByMac => new RestRequest(BaseUri + "player/{macAddress}");
     public static RestRequest RegisterPlayer => new RestRequest(BaseUri + "player", Method.Post);
-    public static RestRequest UpdatePlayerConnectionId => new RestRequest(BaseUri + "player", Method.Put);
-    public static RestRequest ClaimBox => new RestRequest(BaseUri + "bettingbox", Method.Post);
-    public static RestRequest DisclaimBox => new RestRequest(BaseUri + "bettingbox", Method.Delete);
-    
+
+    public static RestRequest UpdatePlayerConnectionId =>
+        new RestRequest(BaseUri + "player/update-conn-id", Method.Put);
+
+    public static RestRequest ClaimBox => new RestRequest(BaseUri + "bettingbox/claim-box", Method.Post);
+    public static RestRequest DisclaimBox => new RestRequest(BaseUri + "bettingbox/disclaim-box", Method.Delete);
+    public static RestRequest JoinSession => new RestRequest(BaseUri + "session/join", Method.Post);
+    public static RestRequest LeaveSession => new RestRequest(BaseUri + "session/leave", Method.Delete);
 }
+
 public class ExternalCommunicationException(string message) : Exception(message);
 
 public class ExternalCommunicatorService
@@ -35,13 +41,14 @@ public class ExternalCommunicatorService
     private readonly RestClient _client = new RestClient(Endpoints.BaseUri,
         configureSerialization: s => s.UseNewtonsoftJson());
 
-    public readonly HubConnection SignalRHubConnection = new HubConnectionBuilder().WithUrl(Endpoints.SignalRHub).WithAutomaticReconnect().Build();
-    
+    public readonly HubConnection SignalRHubConnection =
+        new HubConnectionBuilder().WithUrl(Endpoints.SignalRHub).WithAutomaticReconnect().Build();
+
     private readonly Subject<bool> _connectionStatusSubject = new Subject<bool>();
     public IObservable<bool> ConnectionStatus => _connectionStatusSubject;
-    
-    #region  Deprecated request handling
-    
+
+    #region Deprecated request handling
+
     // private bool _lastConnectionStatus = false;
 
 
@@ -84,7 +91,7 @@ public class ExternalCommunicatorService
     //         throw new ExternalCommunicationException($"Status: {response.StatusCode} - {response.StatusDescription} Error: {response.ErrorMessage}");
     //     }
     // }
-    
+
     #endregion
 
     public ExternalCommunicatorService()
@@ -93,8 +100,8 @@ public class ExternalCommunicatorService
         {
             _connectionStatusSubject.OnNext(false);
             return Task.CompletedTask;
-        }; 
-        
+        };
+
         SignalRHubConnection.Reconnected += _ =>
         {
             _connectionStatusSubject.OnNext(true);
@@ -103,50 +110,56 @@ public class ExternalCommunicatorService
     }
 
     public bool SignalRInitialized { get; private set; } = false;
-    
+
     public async Task ConnectToSignalR()
     {
         try
         {
             await SignalRHubConnection.StartAsync();
             SignalRInitialized = true;
-            
         }
         catch (Exception e)
         {
             _connectionStatusSubject.OnNext(false);
             throw;
         }
-        
+
         if (SignalRHubConnection.State == HubConnectionState.Connected)
         {
             _connectionStatusSubject.OnNext(true);
             return;
         }
+
         _connectionStatusSubject.OnNext(false);
     }
 
-    public async Task UpdatePlayerConnectionId()
+    public async Task UpdatePlayerConnectionId(MacAddress macAddress)
     {
         if (SignalRHubConnection.State != HubConnectionState.Connected)
         {
             throw new ExternalCommunicationException("SignalR connection is not established");
         }
-        await _client.PutAsync(Endpoints.UpdatePlayerConnectionId.AddBody(new PlayerConnectionIdUpdateDto(ClientMacAddressHandler.PrimaryMacAddress, SignalRHubConnection.ConnectionId!)));
+
+        await _client.PutAsync(Endpoints.UpdatePlayerConnectionId.AddBody(
+            new PlayerConnectionIdUpdateDto(macAddress,
+                SignalRHubConnection.ConnectionId!)));
     }
 
     public async Task<IEnumerable<SessionListItem>> GetSessions()
         => (await _client.GetAsync<List<SessionReadDto>>(Endpoints.GetSessions)
             ?? throw new ExternalCommunicationException("Could not get sessions"))
-           .Select(s => new SessionListItem()
-           {
-               Id = s.Id, CurrentOccupancy = s.Table.BettingBoxes.Count(b => b.OwnerId != MacAddress.None), MaxOccupancy = s.Table.BettingBoxes.Count()
-           });
+            .Select(s => new SessionListItem()
+            {
+                Id = s.Id, CurrentOccupancy = s.Table.BettingBoxes.Count(b => b.OwnerId != MacAddress.None),
+                MaxOccupancy = s.Table.BettingBoxes.Count()
+            });
 
-    public async Task RegisterPlayer(string name) => await _client.PostAsync(Endpoints.RegisterPlayer.AddBody(new PlayerRegisterDto(name, ClientMacAddressHandler.PrimaryMacAddress)));
+    public async Task RegisterPlayer(string name, MacAddress macAddress) => await _client.PostAsync(
+        Endpoints.RegisterPlayer.AddBody(new PlayerRegisterDto(name, macAddress)));
 
-    public async Task<PlayerReadDto> GetPlayerByMac(MacAddress macAddress) 
-        => await _client.GetAsync<PlayerReadDto?>(Endpoints.GetPlayerByMac.AddUrlSegment("macAddress", macAddress.Address)) 
+    public async Task<PlayerReadDto> GetPlayerByMac(MacAddress macAddress)
+        => await _client.GetAsync<PlayerReadDto?>(
+               Endpoints.GetPlayerByMac.AddUrlSegment("macAddress", macAddress.Address))
            ?? throw new ExternalCommunicationException("Player not found");
 
     public async Task ClaimBox(Guid sessionId, int boxIdx, MacAddress primaryMacAddress) =>
@@ -156,5 +169,10 @@ public class ExternalCommunicatorService
     public async Task DisclaimBox(Guid sessionId, int boxIdx, MacAddress primaryMacAddress) =>
         await _client.DeleteAsync(
             Endpoints.DisclaimBox.AddBody(new BoxOwnerUpdateDto(sessionId, boxIdx, primaryMacAddress)));
-}
 
+    public async Task JoinSession(Guid sessionId, MacAddress macAddress) =>
+        await _client.PostAsync(Endpoints.JoinSession.AddBody(new SessionJoinLeaveDto(sessionId, macAddress)));
+    
+    public async Task LeaveSession(Guid sessionId, MacAddress macAddress) =>
+        await _client.DeleteAsync(Endpoints.LeaveSession.AddBody(new SessionJoinLeaveDto(sessionId, macAddress)));
+}

@@ -60,7 +60,7 @@ namespace KC.Frontend.Client.ViewModels
             //TODO: Loop until registered?
             await Register();
             
-            await _externalCommunicator.UpdatePlayerConnectionId();
+            await _externalCommunicator.UpdatePlayerConnectionId(ClientMacAddressHandler.PrimaryMacAddress);
             Router.Navigate.Execute(new MenuViewModel(this));
         }
         
@@ -78,7 +78,7 @@ namespace KC.Frontend.Client.ViewModels
             var name = await PlayerNameInteraction.Handle(null);
             try
             {
-                await _externalCommunicator.RegisterPlayer(name!);
+                await _externalCommunicator.RegisterPlayer(name!, ClientMacAddressHandler.PrimaryMacAddress);
                 await CheckIfRegistered();
             }
             catch (Exception e)

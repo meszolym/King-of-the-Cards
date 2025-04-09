@@ -13,6 +13,8 @@ using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 using KC.Frontend.Client.Extensions;
+using KC.Frontend.Client.Services;
+using KC.Frontend.Client.Utilities;
 using KC.Frontend.Client.ViewModels.Components;
 using Splat;
 
@@ -26,9 +28,19 @@ namespace KC.Frontend.Client.ViewModels
         
         [Reactive]
         private DealerViewModel _dealer;
+
+        private readonly ExternalCommunicatorService _externalCommunicator;
+        private IObservable<bool> CanGoBack => BoxViewModel.BoxClaimStatusChanged.Select(_ =>
+        {
+            return Boxes.All(x => x.OwnerId != _player.Id);
+        });
         
-        [ReactiveCommand]
-        private void NavBack() => HostScreen.Router.NavigateBack.Execute();
+        [ReactiveCommand(CanExecute = nameof(CanGoBack))]
+        private async Task NavBack()
+        {
+            await _externalCommunicator.LeaveSession(Id, ClientMacAddressHandler.PrimaryMacAddress);
+            HostScreen.Router.NavigateBack.Execute();
+        } 
         
         public SessionViewModel(IScreen hostScreen, Guid id)
         {
@@ -38,6 +50,7 @@ namespace KC.Frontend.Client.ViewModels
             Dealer = new DealerViewModel();
             InitializeBoxes();
             _player = Locator.Current.GetRequiredService<PlayerViewModel>();
+            _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
         }
 
         public Guid Id { get; set; }
@@ -47,21 +60,8 @@ namespace KC.Frontend.Client.ViewModels
         public IScreen HostScreen { get; }
 
         private PlayerViewModel _player;
-        
-        //TODO: This did not work :( Make it work
-        //
-        // private IObservable<bool> CanGoBack => BoxViewModel.BoxClaimStatusChanged.Select(_ =>
-        // {
-        //     return Boxes.All(x => x.OwnerId != _player.Id);
-        // });
-        
-        private IObservable<bool> CanGoBack => Observable.Return(true);
-        
-        [ReactiveCommand(CanExecute = nameof(CanGoBack))]
-        private void GoBack()
-        {
-            HostScreen.Router.NavigateBack.Execute();
-        }
+
+
         private void InitializeBoxes() //TODO: Get from server
         {
             for (int i = 0; i < 5; i++)

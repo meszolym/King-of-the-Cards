@@ -24,7 +24,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             this.OneWayBind(ViewModel, vm => vm.ClientMacAddress, v => v.PlayerMacTextBlock.Text, mac => $"(MAC: {mac})").DisposeWith(d);
             
             this.BeforeFirstConnStackPanel.IsVisible = true;
-            await ViewModel.InitAsync();
+            await ViewModel!.InitAsync();
             this.BeforeFirstConnStackPanel.IsVisible = false;
             
             
