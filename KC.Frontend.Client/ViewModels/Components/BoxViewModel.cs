@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -7,6 +9,7 @@ using System.Threading.Tasks;
 using KC.Frontend.Client.Extensions;
 using KC.Frontend.Client.Services;
 using KC.Frontend.Client.Utilities;
+using KC.Shared.Models.Dtos;
 using KC.Shared.Models.GameItems;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
@@ -83,12 +86,13 @@ public partial class BoxViewModel : ReactiveObject
     }
     
     //TODO: Claim box button command (done) + canexecute (skeleton done) + server comm
-    public BoxViewModel(Guid sessionId, int boxIdx)
+    public BoxViewModel(Guid sessionId, BettingBoxReadDto sourceDto)
     {
         _sessionId = sessionId;
-        _boxIdx = boxIdx;
-        LeftHand = new HandViewModel();
-        RightHand = new HandViewModel();
+        _boxIdx = sourceDto.BoxIdx;
+        var hands = sourceDto.Hands.ToImmutableArray();
+        RightHand = new(hands[0]);
+        LeftHand = new(hands[1]);
         IsSplit = false;
         PlayerName = "Unclaimed";
         _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();

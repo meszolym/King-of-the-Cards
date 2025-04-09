@@ -37,8 +37,8 @@ namespace KC.Frontend.Client.ViewModels
         {
             Debug.WriteLine("Joining session");
             await _externalCommunicator.JoinSession(SelectedItem.Id, ClientMacAddressHandler.PrimaryMacAddress);
-            //TODO: Get session data
-            HostScreen.Router.Navigate.Execute(new SessionViewModel(HostScreen, SelectedItem.Id));
+            var session = await _externalCommunicator.GetSession(SelectedItem.Id);
+            HostScreen.Router.Navigate.Execute(new SessionViewModel(HostScreen, session));
         }
 
         [ReactiveCommand]
@@ -52,7 +52,7 @@ namespace KC.Frontend.Client.ViewModels
         {
             try
             {
-                Sessions = (await _externalCommunicator.GetSessions()).ToList();
+                Sessions = (await _externalCommunicator.GetSessionList()).ToList();
                 SessionGetErrored = false;
             }
             catch (Exception e)

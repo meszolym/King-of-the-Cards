@@ -12,10 +12,10 @@ public static class ConversionExtensions
     public static HandReadDto ToDto(this Hand hand) => new HandReadDto(hand.Cards, hand.Bet);
 
     public static BettingBoxReadDto ToDto(this BettingBox bettingBox) =>
-        new BettingBoxReadDto(bettingBox.OwnerId, bettingBox.Hands.Select(h => h.ToDto()));
+        new BettingBoxReadDto(bettingBox.IdxOnTable, bettingBox.OwnerId, bettingBox.Hands.Select(h => h.ToDto()));
 
     public static TableReadDto ToDto(this Table table) =>
-        new TableReadDto(table.Dealer.DealerVisibleCards, table.BettingBoxes.Select(b => b.ToDto()));
+        new TableReadDto(table.Dealer.DealerVisibleCards, table.BettingBoxes.Select(b => b.ToDto()).OrderBy(b => b.BoxIdx));
     
     public static SessionReadDto ToDto(this Session session) => new SessionReadDto(session.Id, session.Table.ToDto(),
         session.CurrentTurnInfo, session.CanPlaceBets);

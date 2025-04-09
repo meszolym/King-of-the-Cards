@@ -16,6 +16,7 @@ using KC.Frontend.Client.Extensions;
 using KC.Frontend.Client.Services;
 using KC.Frontend.Client.Utilities;
 using KC.Frontend.Client.ViewModels.Components;
+using KC.Shared.Models.Dtos;
 using Splat;
 
 namespace KC.Frontend.Client.ViewModels
@@ -42,13 +43,12 @@ namespace KC.Frontend.Client.ViewModels
             HostScreen.Router.NavigateBack.Execute();
         } 
         
-        public SessionViewModel(IScreen hostScreen, Guid id)
+        public SessionViewModel(IScreen hostScreen, SessionReadDto session)
         {
             this.HostScreen = hostScreen;
-            Id = id;
-            Boxes = new ObservableCollection<BoxViewModel>();
-            Dealer = new DealerViewModel();
-            InitializeBoxes();
+            Id = session.Id;
+            Boxes = new(session.Table.BettingBoxes.Select(x => new BoxViewModel(Id, x)));
+            Dealer = new DealerViewModel(session.Table.DealerVisibleCards);
             _player = Locator.Current.GetRequiredService<PlayerViewModel>();
             _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
         }
@@ -60,15 +60,5 @@ namespace KC.Frontend.Client.ViewModels
         public IScreen HostScreen { get; }
 
         private PlayerViewModel _player;
-
-
-        private void InitializeBoxes() //TODO: Get from server
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                var box = new BoxViewModel(Id, i);
-                Boxes.Add(box);
-            }
-        }
     }
 }

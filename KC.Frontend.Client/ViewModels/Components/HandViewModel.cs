@@ -1,29 +1,27 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
+using DynamicData;
+using KC.Shared.Models.Dtos;
 using KC.Shared.Models.GameItems;
 using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 
 namespace KC.Frontend.Client.ViewModels.Components;
 
  public partial class HandViewModel : ReactiveObject
     {
-        public ObservableCollection<CardViewModel> Cards { get; set; }
+        public ObservableCollection<CardViewModel> Cards { get; private set; }
         
-        private decimal _betAmount;
-        public decimal BetAmount
-        {
-            get => _betAmount;
-            set => this.RaiseAndSetIfChanged(ref _betAmount, value);
-        }
+        [Reactive]
+        private double _betAmount;
         
         private double _height = 648; //gombócból is sok :)
         
-        public HandViewModel()
+        public HandViewModel(HandReadDto sourceDto)
         {
-            Cards = new ObservableCollection<CardViewModel>();
-            BetAmount = 0;
-            AddCard(Card.WithSuitAndFace(Card.CardSuit.Clubs, Card.CardFace.Ace));
-            AddCard(Card.WithSuitAndFace(Card.CardSuit.Diamonds, Card.CardFace.Seven));
-            AddCard(Card.WithSuitAndFace(Card.CardSuit.Hearts, Card.CardFace.Two));
+            Cards = [];
+            foreach (var card in sourceDto.Cards) AddCard(card);
+            BetAmount = sourceDto.Bet;
         }
         
         private const int CardOffsetX = 23; // Horizontal offset for each card
