@@ -1,11 +1,10 @@
-using System.Reactive;
-using Avalonia;
+using System;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using KC.Frontend.Client.ViewModels;
 using ReactiveUI;
 using System.Reactive.Disposables;
+using KC.Frontend.Client.ViewModels.Components;
 
 namespace KC.Frontend.Client.Views;
 

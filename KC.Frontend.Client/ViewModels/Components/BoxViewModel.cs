@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using KC.Frontend.Client.Extensions;
 using KC.Frontend.Client.Services;
@@ -38,6 +40,9 @@ public partial class BoxViewModel : ReactiveObject
 
     //TODO: This should reflect if the game is in progress or not (you cannot unclaim a box that is in use)
     private IObservable<bool> CanClaimDisclaimBox => Observable.Return(true);
+    
+    private static Subject<Unit> _boxClaimStatusChanged = new Subject<Unit>();
+    public static IObservable<Unit> BoxClaimStatusChanged => _boxClaimStatusChanged.AsObservable();
 
     [ReactiveCommand(CanExecute = nameof(CanClaimDisclaimBox))]
     private async Task ClaimBox()
@@ -49,6 +54,8 @@ public partial class BoxViewModel : ReactiveObject
             PlayerName = localPlayer.PlayerName;
             OwnerId = localPlayer.Id;
             IsClaimed = true;
+            _boxClaimStatusChanged.OnNext(Unit.Default);
+            
         }
         catch (Exception e)
         {
@@ -66,6 +73,7 @@ public partial class BoxViewModel : ReactiveObject
             PlayerName = "Unclaimed";
             OwnerId = Guid.Empty;
             IsClaimed = false;
+            _boxClaimStatusChanged.OnNext(Unit.Default);
         }
         catch (Exception e)
         {

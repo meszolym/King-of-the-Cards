@@ -4,11 +4,17 @@ using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
+using KC.Frontend.Client.Extensions;
 using KC.Frontend.Client.ViewModels.Components;
+using Splat;
 
 namespace KC.Frontend.Client.ViewModels
 {
@@ -31,6 +37,7 @@ namespace KC.Frontend.Client.ViewModels
             Boxes = new ObservableCollection<BoxViewModel>();
             Dealer = new DealerViewModel();
             InitializeBoxes();
+            _player = Locator.Current.GetRequiredService<PlayerViewModel>();
         }
 
         public Guid Id { get; set; }
@@ -39,7 +46,18 @@ namespace KC.Frontend.Client.ViewModels
 
         public IScreen HostScreen { get; }
 
-        [ReactiveCommand]
+        private PlayerViewModel _player;
+        
+        //TODO: This did not work :( Make it work
+        //
+        // private IObservable<bool> CanGoBack => BoxViewModel.BoxClaimStatusChanged.Select(_ =>
+        // {
+        //     return Boxes.All(x => x.OwnerId != _player.Id);
+        // });
+        
+        private IObservable<bool> CanGoBack => Observable.Return(true);
+        
+        [ReactiveCommand(CanExecute = nameof(CanGoBack))]
         private void GoBack()
         {
             HostScreen.Router.NavigateBack.Execute();
