@@ -18,11 +18,19 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
 
     [HttpPost]
     [Route("join")]
-    public void JoinSession(SessionJoinLeaveDto dto) =>
-        hub.Groups.AddToGroupAsync(playerLogic.Get(dto.Address).ConnectionId, dto.SessionId.ToString());
+    public async Task JoinSession(SessionJoinLeaveDto dto)
+    {
+        var connId = playerLogic.Get(dto.Address).ConnectionId;
+        await hub.Groups.AddToGroupAsync(connId, dto.SessionId.ToString());
+        await  hub.Groups.RemoveFromGroupAsync(connId, "lobby");
+    }
 
     [HttpDelete]
     [Route("leave")]
-    public void LeaveSession(SessionJoinLeaveDto dto) =>
-        hub.Groups.RemoveFromGroupAsync(playerLogic.Get(dto.Address).ConnectionId, dto.SessionId.ToString());
+    public async Task LeaveSession(SessionJoinLeaveDto dto)
+    {
+        var connId = playerLogic.Get(dto.Address).ConnectionId;
+        await hub.Groups.RemoveFromGroupAsync(connId, dto.SessionId.ToString());
+        await hub.Groups.AddToGroupAsync(connId, "lobby");
+    }
 }

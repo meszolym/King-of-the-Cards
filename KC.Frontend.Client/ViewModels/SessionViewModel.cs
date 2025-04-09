@@ -33,7 +33,7 @@ namespace KC.Frontend.Client.ViewModels
         private IObservable<bool> CanGoBack => BoxViewModel.BoxClaimStatusChanged.Select(_ =>
         {
             return Boxes.All(x => x.OwnerId != _player.Id);
-        });
+        }).StartWith(true);
         
         [ReactiveCommand(CanExecute = nameof(CanGoBack))]
         private async Task NavBack()

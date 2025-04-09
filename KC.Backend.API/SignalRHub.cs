@@ -7,7 +7,7 @@ public class SignalRHub : Hub
     public override Task OnConnectedAsync()
     {
         Clients.Caller.SendAsync("Connected", Context.ConnectionId);
-        this.Groups.AddToGroupAsync(Context.ConnectionId, "NoSession");
+        this.Groups.AddToGroupAsync(Context.ConnectionId, "lobby");
         return base.OnConnectedAsync();
     }
 
