@@ -26,6 +26,8 @@ namespace KC.Frontend.Client.ViewModels
             _joinCanExecute = this.WhenAnyValue(x => x.SelectedItem).Select(x => x != null!);
             
             _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
+
+            JoinSessionCommand.ThrownExceptions.Subscribe(e => Debug.WriteLine(e.Message));
         }
 
         [Reactive]

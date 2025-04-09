@@ -108,7 +108,9 @@ namespace KC.Backend.API
                 shoe.ShuffleCardIdx = shuffleCardPlacement;
         
                 var table = new Table((int)numberOfBoxes, shoe);
-        
+                
+                table.BettingBoxes[0].Hands[0].Cards.Add(Card.WithSuitAndFace(Card.CardSuit.Spades, Card.CardFace.Ace));
+                
                 var sess = new Session(table, new TickingTimer(TimeSpan.FromSeconds(bettingTimerSeconds)));
             
                 return sess;

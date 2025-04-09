@@ -85,14 +85,15 @@ public partial class BoxViewModel : ReactiveObject
         }
     }
     
-    //TODO: Claim box button command (done) + canexecute (skeleton done) + server comm
+    //TODO: Claim box button canexecute (skeleton done)
     public BoxViewModel(Guid sessionId, BettingBoxReadDto sourceDto)
     {
         _sessionId = sessionId;
         _boxIdx = sourceDto.BoxIdx;
         var hands = sourceDto.Hands.ToImmutableArray();
-        RightHand = new(hands[0]);
-        LeftHand = new(hands[1]);
+        RightHand = new HandViewModel(hands[0]);
+        LeftHand = hands.Length > 1 ?  new HandViewModel(hands[1]) : new HandViewModel();
+        
         IsSplit = false;
         PlayerName = "Unclaimed";
         _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();

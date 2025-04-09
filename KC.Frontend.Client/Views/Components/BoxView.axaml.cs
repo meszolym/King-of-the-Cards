@@ -28,21 +28,24 @@ namespace KC.Frontend.Client.Views.Components
             
             this.WhenActivated(d =>
             {
-                ViewModel.WhenAnyValue(vm => vm.IsSplit).Subscribe(UpdateColumnDefinitions).DisposeWith(d);
+                // ViewModel.WhenAnyValue(vm => vm.IsSplit).Subscribe(UpdateColumnDefinitions).DisposeWith(d);
+                
+                // Bind the right hand view model
+                this.OneWayBind(ViewModel, 
+                        vm => vm.RightHand, 
+                        view => view.RightHandViewFound.ViewModel)
+                    .DisposeWith(d);
+
+                
                 // Bind the left hand view model
                 this.OneWayBind(ViewModel, 
                     vm => vm.LeftHand, 
                     view => view.LeftHandViewFound.ViewModel)
                     .DisposeWith(d);
                 //_rightHandView.IsVisible = false;
-                this.OneWayBind(ViewModel,
-                    vm => vm.IsSplit,
-                    v => v.RightHandViewFound.IsVisible);
-                // Bind the right hand view model
-                this.OneWayBind(ViewModel, 
-                    vm => vm.RightHand, 
-                    view => view.RightHandViewFound.ViewModel)
-                    .DisposeWith(d);
+                // this.OneWayBind(ViewModel,
+                //     vm => vm.IsSplit,
+                //     v => v.LeftHandViewFound.IsVisible);
 
                 // Bind player name
                 this.Bind(ViewModel, 
@@ -56,9 +59,9 @@ namespace KC.Frontend.Client.Views.Components
                 //     .DisposeWith(d);
                 
                 // Update visibility of right hand based on split state
-                this.WhenAnyValue(x => x.ViewModel.IsSplit)
-                    .Subscribe(isSplit => RightHandViewFound.IsVisible = isSplit)
-                    .DisposeWith(d);
+                // this.WhenAnyValue(x => x.ViewModel.IsSplit)
+                //     .Subscribe(isSplit => LeftHandViewFound.IsVisible = isSplit)
+                //     .DisposeWith(d);
 
                 var localPlayerGuid = Locator.Current.GetRequiredService<PlayerViewModel>().Id;
                 
@@ -77,23 +80,23 @@ namespace KC.Frontend.Client.Views.Components
             AvaloniaXamlLoader.Load(this);
         }
         
-        private void UpdateColumnDefinitions(bool isSplit)
-        {
-            var grid = this.FindControl<Grid>("MainGrid"); // Add x:Name="MainGrid" to your Grid in XAML
-    
-            if (isSplit)
-            {
-                // Split evenly when right hand is visible
-                grid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
-                grid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
-            }
-            else
-            {
-                // Left hand takes all space when right hand is hidden
-                grid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
-                grid.ColumnDefinitions[1].Width = GridLength.Auto;
-            }
-        }
+        // private void UpdateColumnDefinitions(bool isSplit)
+        // {
+        //     var grid = this.FindControl<Grid>("MainGrid"); // Add x:Name="MainGrid" to your Grid in XAML
+        //
+        //     if (isSplit)
+        //     {
+        //         // Split evenly when right hand is visible
+        //         grid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+        //         grid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+        //     }
+        //     else
+        //     {
+        //         // Left hand takes all space when right hand is hidden
+        //         grid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+        //         grid.ColumnDefinitions[1].Width = GridLength.Auto;
+        //     }
+        // }
         
         // private void UpdatePlayerControlledState(bool isPlayerControlled)
         // {

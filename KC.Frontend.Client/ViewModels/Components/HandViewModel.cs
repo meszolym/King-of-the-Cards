@@ -9,8 +9,8 @@ using ReactiveUI.SourceGenerators;
 namespace KC.Frontend.Client.ViewModels.Components;
 
  public partial class HandViewModel : ReactiveObject
-    {
-        public ObservableCollection<CardViewModel> Cards { get; private set; }
+ {
+        public ObservableCollection<CardViewModel> Cards { get; set; } = [];
         
         [Reactive]
         private double _betAmount;
@@ -19,10 +19,10 @@ namespace KC.Frontend.Client.ViewModels.Components;
         
         public HandViewModel(HandReadDto sourceDto)
         {
-            Cards = [];
             foreach (var card in sourceDto.Cards) AddCard(card);
             BetAmount = sourceDto.Bet;
         }
+        public HandViewModel(){}
         
         private const int CardOffsetX = 23; // Horizontal offset for each card
         private const int CardOffsetY = -23; // Negative offset for each card
