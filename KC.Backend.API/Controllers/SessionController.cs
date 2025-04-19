@@ -1,6 +1,7 @@
 using KC.Backend.API.Services;
 using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Interfaces;
+using KC.Frontend.Client.Services;
 using KC.Shared.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -58,16 +59,14 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     public void CreateSession()
     {
         var sess = sessionLogic.CreateSession(DefaultBoxes, DefaultDecks, DefaultShuffleCardPlacement, DefaultShuffleCardRange, TimeSpan.FromSeconds(DefaultBettingTimeSpanSecs), TimeSpan.FromSeconds(DefaultSessionDestructionTimeSpanSecs));
-        sess.DestructionTimer.Elapsed += async (sender, args) => await OnSessionDestruction(sess.Id);
-        hub.SendMessageToGroupAsync("lobby", "SessionCreated", sess.ToDto());
+        sess.DestructionTimer.Elapsed += (sender, args) => OnSessionDestruction(sess.Id);
+        hub.SendMessageToGroupAsync("lobby", SignalRMethods.SessionCreated, sess.ToDto());
     }
 
-    private async Task OnSessionDestruction(Guid id)
-    {
+    private void OnSessionDestruction(Guid id) =>
         hub.ConnectionsAndGroups.Where(x=> x.Value == id.ToString()).ToList().ForEach(async x =>
         {
             await hub.RemoveFromGroupAsync(x.Key, id.ToString());
             await hub.AddToGroupAsync(x.Key, "lobby");
         });
-    }
 }

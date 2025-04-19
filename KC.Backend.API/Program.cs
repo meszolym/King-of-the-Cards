@@ -40,7 +40,7 @@ namespace KC.Backend.API
             builder.Services.AddTransient<IRuleBook, RuleBook>();
             builder.Services.AddTransient<ISessionLogic, SessionLogic>();
             
-            builder.Services.AddSignalR();
+            builder.Services.AddSignalR().AddNewtonsoftJsonProtocol();
             builder.Services.AddTransient<IClientCommunicator, SignalRHub>();
 
             var app = builder.Build();

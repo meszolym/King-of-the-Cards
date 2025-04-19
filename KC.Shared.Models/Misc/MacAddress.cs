@@ -2,14 +2,10 @@
 
 namespace KC.Shared.Models.Misc;
 
-public partial struct MacAddress
+public readonly partial struct MacAddress(string address) : IEquatable<MacAddress>
 {
-    public MacAddress(string address)
-    {
-        Address = MacAddressRegex().IsMatch(address) ? address : throw new ArgumentException("Address is not standard", nameof(address));
-    }
     public static MacAddress Parse(string address) => new MacAddress(address);
-    public readonly string Address { get; }
+    public readonly string Address { get; } = MacAddressRegex().IsMatch(address) ? address : throw new ArgumentException("Address is not standard", nameof(address));
 
     [GeneratedRegex("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]
     private static partial Regex MacAddressRegex();
@@ -23,4 +19,9 @@ public partial struct MacAddress
     public override int GetHashCode() => Address.GetHashCode();
     
     public override string ToString() => Address;
+
+    public bool Equals(MacAddress other)
+    {
+        return Address == other.Address;
+    }
 }

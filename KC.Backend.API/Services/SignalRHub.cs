@@ -2,10 +2,12 @@
 
 namespace KC.Backend.API.Services;
 
-public class SignalRHub : Hub, IClientCommunicator
+public class SignalRHub(IHubContext<SignalRHub> hubContext) : Hub, IClientCommunicator
 {
     public Dictionary<string, string> ConnectionsAndGroups { get; private init; } = new();
     
+    private IHubContext<SignalRHub> _hubContext = hubContext;
+
     #region Base Hub Methods
     
     public override Task OnConnectedAsync()
@@ -39,7 +41,7 @@ public class SignalRHub : Hub, IClientCommunicator
         return Groups.RemoveFromGroupAsync(connectionId, group);
     }
 
-    public Task SendMessageAsync(string connectionId, string method, object? message) => Clients.User(connectionId).SendAsync(method, message);
+    public Task SendMessageAsync(string connectionId, string method, object? message) => _hubContext.Clients.User(connectionId).SendAsync(method, message);
 
-    public Task SendMessageToGroupAsync(string group, string method, object message) => Clients.Group(group).SendAsync(method, message);
+    public Task SendMessageToGroupAsync(string group, string method, object? message) => _hubContext.Clients.Group(group).SendAsync(method, message);
 }

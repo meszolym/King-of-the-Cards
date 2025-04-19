@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using KC.Frontend.Client.Extensions;
 using KC.Frontend.Client.Services;
 using KC.Frontend.Client.Utilities;
+using KC.Shared.Models.Dtos;
+using Microsoft.AspNetCore.SignalR.Client;
 using Splat;
 namespace KC.Frontend.Client.ViewModels
 {
@@ -28,6 +30,9 @@ namespace KC.Frontend.Client.ViewModels
             _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
 
             JoinSessionCommand.ThrownExceptions.Subscribe(e => Debug.WriteLine(e.Message));
+            
+            _externalCommunicator.SignalRHubConnection.On<SessionReadDto>(SignalRMethods.SessionCreated, s => Sessions.Add(s.ToSessionListItem()));
+            _externalCommunicator.SignalRHubConnection.On<Guid>(SignalRMethods.SessionDeleted, s => Sessions.Remove(Sessions.FirstOrDefault(x => x.Id == s)));
         }
 
         [Reactive]
@@ -44,11 +49,8 @@ namespace KC.Frontend.Client.ViewModels
         }
 
         [ReactiveCommand]
-        private void CreateSession()
-        {
-            Debug.WriteLine("Creating session");
-        }
-        
+        private async Task CreateSession() => await _externalCommunicator.CreateSession();
+
         [ReactiveCommand]
         private async Task TryGetSessions()
         {
