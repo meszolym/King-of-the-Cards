@@ -18,8 +18,12 @@ public class GamePlayLogic(IList<Session> sessions, IRuleBook ruleBook) : IGameP
     public void Shuffle(Guid sessionId, Random? random = null)
     {
         random ??= Random.Shared;
+        var session = sessions.Single(s => s.Id == sessionId);
+        session.DestructionTimer.Stop();
+        session.DestructionTimer.Start();
+
+        var shoe = session.Table.Shoe;
         
-        var shoe = sessions.Single(s => s.Id == sessionId).Table.Shoe;
         // Fischer-Yates shuffle
         for (int i = 0; i < shoe.Cards.Count; i++)
         {
@@ -71,6 +75,10 @@ public class GamePlayLogic(IList<Session> sessions, IRuleBook ruleBook) : IGameP
     public void DealStartingCards(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
+        
+        session.DestructionTimer.Stop();
+        session.DestructionTimer.Start();
+        
         //if shoe needs shuffling, throw exception
         if (session.Table.Shoe.ShuffleCardIdx <= session.Table.Shoe.NextCardIdx)
         {
@@ -148,6 +156,7 @@ public class GamePlayLogic(IList<Session> sessions, IRuleBook ruleBook) : IGameP
         if (ruleBook.GetValue(hand).NumberValue > 21)
             hand.Finished = true;
 
-        session.LastMoveMadeAt = DateTime.Now;
+        session.DestructionTimer.Stop();
+        session.DestructionTimer.Start();
     }
 }

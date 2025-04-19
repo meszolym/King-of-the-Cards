@@ -10,10 +10,10 @@ namespace KC.Backend.Logic;
 //TODO: Make the logic more atomic, chaining them together will be handled by the API layer.
 public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessionLogic
 {
-    private CardShoe CreateUnshuffledShoe(uint numberOfDecks) =>
+    private static CardShoe CreateUnshuffledShoe(uint numberOfDecks) =>
         new CardShoe([.. Enumerable.Range(0, (int)numberOfDecks).SelectMany(i => GetDeck())]);
 
-    private IEnumerable<Card> GetDeck() => Enum.GetValues<Card.CardSuit>().Where(s => s != Card.CardSuit.None)
+    private static IEnumerable<Card> GetDeck() => Enum.GetValues<Card.CardSuit>().Where(s => s != Card.CardSuit.None)
         .SelectMany(suit => Enum.GetValues<Card.CardFace>().Select(face => new Card {Face = face, Suit = suit}));
     
     /// <summary>
@@ -23,46 +23,61 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
     /// <param name="numberOfDecks"></param>
     /// <param name="shuffleCardPlacement"></param>
     /// <param name="shuffleCardRange"></param>
-    /// <param name="bettingTimerSeconds"></param>
+    /// <param name="bettingTimeSpan"></param>
     /// <param name="random"></param>
     /// <returns></returns>
-    public Session CreateSession(uint numberOfBoxes, uint numberOfDecks, int shuffleCardPlacement, int shuffleCardRange, int bettingTimerSeconds, Random? random = null)
+    public Session CreateSession(uint numberOfBoxes, uint numberOfDecks, int shuffleCardPlacement, uint shuffleCardRange, TimeSpan bettingTimeSpan, TimeSpan sessionDestructionTimeSpan, Random? random = null)
     {
         random ??= Random.Shared;
         var shoe = CreateUnshuffledShoe(numberOfDecks);
-        shuffleCardPlacement = random.Next(shuffleCardPlacement - shuffleCardRange, shuffleCardPlacement + shuffleCardRange);
+        
+        shuffleCardPlacement = random.Next((int)(shuffleCardPlacement - shuffleCardRange),(int)(shuffleCardPlacement + shuffleCardRange));
+        
+        if (shuffleCardPlacement < 0)
+            shuffleCardPlacement += shoe.Cards.Count;
+        
         shoe.ShuffleCardIdx = shuffleCardPlacement;
         
         var table = new Table((int)numberOfBoxes, shoe);
         
-        var sess = new Session(table, new TickingTimer(TimeSpan.FromSeconds(bettingTimerSeconds)));
+        var sess = new Session(table, bettingTimeSpan, sessionDestructionTimeSpan);
+
+        sess.DestructionTimer.Elapsed += (sender, args) => DestructSession(sess.Id);
+        sess.DestructionTimer.Start();
         
         sessions.Add(sess);
         return sess;
     }
-    
+
+    public void DestructSession(Guid sessId)
+    {
+        var session = sessions.Single(s => s.Id == sessId);
+        sessions.Remove(session);
+        session.DestructionTimer.Stop();
+    }
+
     public Session Get(Guid sessionId) => sessions.Single(s => s.Id == sessionId);
     
     public IEnumerable<Session> GetAll() => sessions;
 
-    public bool PurgeOldSessions(TimeSpan oldTimeSpan)
-    {
-        var purgableSessionIds = sessions
-            .Where(s => DateTime.Now - s.LastMoveMadeAt > oldTimeSpan)
-            .Select(s => s.Id);
-
-        if (!purgableSessionIds.Any())
-        {
-            return false;
-        }
-        
-        foreach (var sessionId in purgableSessionIds)
-        {
-            sessions.Remove(sessions.Single(s => s.Id == sessionId));
-        }
-
-        return true;
-    }
+    // public bool PurgeOldSessions(TimeSpan oldTimeSpan)
+    // {
+    //     var purgableSessionIds = sessions
+    //         .Where(s => DateTime.Now - s.LastMoveMadeAt > oldTimeSpan)
+    //         .Select(s => s.Id);
+    //
+    //     if (!purgableSessionIds.Any())
+    //     {
+    //         return false;
+    //     }
+    //     
+    //     foreach (var sessionId in purgableSessionIds)
+    //     {
+    //         sessions.Remove(sessions.Single(s => s.Id == sessionId));
+    //     }
+    //
+    //     return true;
+    // }
     
     public void UpdateTimer(Guid sessionId)
     {

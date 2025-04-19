@@ -1,3 +1,4 @@
+using KC.Backend.API.Services;
 using Microsoft.AspNetCore.Diagnostics;
 using KC.Backend.Logic;
 using KC.Backend.Logic.Interfaces;
@@ -28,7 +29,7 @@ namespace KC.Backend.API
             builder.Services.AddSwaggerGen();
 
             List<Player> players = [];
-            List<Session> sessions = [GenerateSeed.CreateSession(5,6, 160, 20, 30)];
+            List<Session> sessions = [];
             
             builder.Services.AddSingleton<IList<Player>>(players);
             builder.Services.AddSingleton<IList<Session>>(sessions);
@@ -38,9 +39,9 @@ namespace KC.Backend.API
             builder.Services.AddTransient<IPlayerLogic, PlayerLogic>();
             builder.Services.AddTransient<IRuleBook, RuleBook>();
             builder.Services.AddTransient<ISessionLogic, SessionLogic>();
-
-
+            
             builder.Services.AddSignalR();
+            builder.Services.AddTransient<IClientCommunicator, SignalRHub>();
 
             var app = builder.Build();
             
@@ -111,7 +112,7 @@ namespace KC.Backend.API
                 
                 table.BettingBoxes[0].Hands[0].Cards.Add(Card.WithSuitAndFace(Card.CardSuit.Spades, Card.CardFace.Ace));
                 
-                var sess = new Session(table, new TickingTimer(TimeSpan.FromSeconds(bettingTimerSeconds)));
+                var sess = new Session(table, TimeSpan.FromSeconds(bettingTimerSeconds), TimeSpan.FromMinutes(5));
             
                 return sess;
             }

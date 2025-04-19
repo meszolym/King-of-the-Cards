@@ -9,16 +9,17 @@ public interface ISessionLogic
     /// </summary>
     /// <param name="numberOfBoxes"></param>
     /// <param name="numberOfDecks"></param>
-    /// <param name="shuffleCardPlacement"></param>
+    /// <param name="shuffleCardPlacement">The placement of the suffle card. If negative, it is counted from the end of the deck backwards.</param>
     /// <param name="shuffleCardRange"></param>
-    /// <param name="bettingTimerSeconds"></param>
+    /// <param name="bettingTimeSpan"></param>
     /// <param name="random"></param>
     /// <returns></returns>
-    Session CreateSession(uint numberOfBoxes, uint numberOfDecks, int shuffleCardPlacement, int shuffleCardRange, int bettingTimerSeconds, Random? random = null);
+    Session CreateSession(uint numberOfBoxes, uint numberOfDecks, int shuffleCardPlacement, uint shuffleCardRange, TimeSpan bettingTimeSpan, TimeSpan sessionDestructionTimeSpan, Random? random = null);
 
     Session Get(Guid sessionId);
     IEnumerable<Session> GetAll();
-    bool PurgeOldSessions(TimeSpan oldTimeSpan);
+    //bool PurgeOldSessions(TimeSpan oldTimeSpan);
+    void DestructSession(Guid sessionId);
     void UpdateTimer(Guid sessionId);
     void TransferTurn(Guid sessionId);
     void FinishAllHandsInPlay(Guid sessionId);

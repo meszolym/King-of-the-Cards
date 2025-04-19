@@ -24,8 +24,10 @@ public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic
         var box = session.Table.BettingBoxes[boxIdx];
         if (box.OwnerId != MacAddress.None ) throw new InvalidOperationException("Box already has an owner.");
         box.OwnerId = playerId;
-        
-        session.LastMoveMadeAt = DateTime.Now;
+
+        //session.LastMoveMadeAt = DateTime.Now;
+        session.DestructionTimer.Stop();
+        session.DestructionTimer.Start();
     }
 
     /// <summary>
@@ -43,7 +45,9 @@ public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic
         var box = session.Table.BettingBoxes[boxIdx];
         if (box.OwnerId != playerId) throw new InvalidOperationException("Box is not owned by player.");
         box.OwnerId = MacAddress.None;
-        session.LastMoveMadeAt = DateTime.Now;
+        //session.LastMoveMadeAt = DateTime.Now;
+        session.DestructionTimer.Stop();
+        session.DestructionTimer.Start();
     }
     
     
@@ -69,7 +73,9 @@ public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic
 
         box.Hands[handIdx].Bet = amount;
         
-        session.LastMoveMadeAt = DateTime.Now;
+        //session.LastMoveMadeAt = DateTime.Now;
+        session.DestructionTimer.Stop();
+        session.DestructionTimer.Start();
     }
     
 }
