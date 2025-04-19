@@ -79,47 +79,5 @@ namespace KC.Backend.API
             }));
             app.Run();
         }
-
-        //TODO: Remove
-        private static class GenerateSeed
-        {
-            #region Generate seed for session
-
-            private static CardShoe CreateUnshuffledShoe(uint numberOfDecks) =>
-                new CardShoe([.. Enumerable.Range(0, (int)numberOfDecks).SelectMany(i => GetDeck())]);
-
-            private static IEnumerable<Card> GetDeck() => Enum.GetValues<Card.CardSuit>().Where(s => s != Card.CardSuit.None)
-                .SelectMany(suit => Enum.GetValues<Card.CardFace>().Select(face => new Card {Face = face, Suit = suit}));
-    
-            /// <summary>
-            /// Creates an empty session. Make sure to subscribe to events of the timer.
-            /// </summary>
-            /// <param name="numberOfBoxes"></param>
-            /// <param name="numberOfDecks"></param>
-            /// <param name="shuffleCardPlacement"></param>
-            /// <param name="shuffleCardRange"></param>
-            /// <param name="bettingTimerSeconds"></param>
-            /// <param name="random"></param>
-            /// <returns></returns>
-            public static Session CreateSession(uint numberOfBoxes, uint numberOfDecks, int shuffleCardPlacement, int shuffleCardRange, int bettingTimerSeconds, Random? random = null)
-            {
-                random ??= Random.Shared;
-                var shoe = CreateUnshuffledShoe(numberOfDecks);
-                shuffleCardPlacement = random.Next(shuffleCardPlacement - shuffleCardRange, shuffleCardPlacement + shuffleCardRange);
-                shoe.ShuffleCardIdx = shuffleCardPlacement;
-        
-                var table = new Table((int)numberOfBoxes, shoe);
-                
-                table.BettingBoxes[0].Hands[0].Cards.Add(Card.WithSuitAndFace(Card.CardSuit.Spades, Card.CardFace.Ace));
-                
-                var sess = new Session(table, TimeSpan.FromSeconds(bettingTimerSeconds), TimeSpan.FromMinutes(5));
-            
-                return sess;
-            }
-
-            #endregion
-        }
-
-
     }
 }

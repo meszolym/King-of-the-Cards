@@ -19,7 +19,7 @@ public interface ISessionLogic
     Session Get(Guid sessionId);
     IEnumerable<Session> GetAll();
     //bool PurgeOldSessions(TimeSpan oldTimeSpan);
-    void DestructSession(Guid sessionId);
+    void DestroySession(Guid sessionId);
     void UpdateTimer(Guid sessionId);
     void TransferTurn(Guid sessionId);
     void FinishAllHandsInPlay(Guid sessionId);

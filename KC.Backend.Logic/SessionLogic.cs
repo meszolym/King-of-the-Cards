@@ -42,14 +42,14 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
         
         var sess = new Session(table, bettingTimeSpan, sessionDestructionTimeSpan);
 
-        sess.DestructionTimer.Elapsed += (sender, args) => DestructSession(sess.Id);
+        sess.DestructionTimer.Elapsed += (sender, args) => DestroySession(sess.Id);
         sess.DestructionTimer.Start();
         
         sessions.Add(sess);
         return sess;
     }
 
-    public void DestructSession(Guid sessId)
+    public void DestroySession(Guid sessId)
     {
         var session = sessions.Single(s => s.Id == sessId);
         sessions.Remove(session);

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using KC.Backend.API.Services;
 using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Interfaces;
@@ -25,12 +26,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     public async Task JoinSession(SessionJoinLeaveDto dto)
     {
         var connId = playerLogic.Get(dto.Address).ConnectionId;
-        
-        // await hub.Groups.AddToGroupAsync(connId, dto.SessionId.ToString());
-        // await  hub.Groups.RemoveFromGroupAsync(connId, "lobby");
-        
-        await hub.RemoveFromGroupAsync(connId, "lobby");
-        await hub.AddToGroupAsync(connId, dto.SessionId.ToString());
+        await hub.MoveToGroupAsync(connId, dto.SessionId.ToString());
         
     }
 
@@ -39,12 +35,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     public async Task LeaveSession(SessionJoinLeaveDto dto)
     {
         var connId = playerLogic.Get(dto.Address).ConnectionId;
-        
-        // await hub.Groups.RemoveFromGroupAsync(connId, dto.SessionId.ToString());
-        // await hub.Groups.AddToGroupAsync(connId, "lobby");
-        
-        await hub.RemoveFromGroupAsync(connId, dto.SessionId.ToString());
-        await hub.AddToGroupAsync(connId, "lobby");
+        await hub.MoveToGroupAsync(connId, "lobby");
     }
 
     private const uint DefaultBoxes = 5;
@@ -52,21 +43,25 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     private const int DefaultShuffleCardPlacement = -40;
     private const uint DefaultShuffleCardRange = 10;
     private const uint DefaultBettingTimeSpanSecs = 15;
-    private const uint DefaultSessionDestructionTimeSpanSecs = 5*60; // 5 minutes
+    private const uint DefaultSessionDestructionTimeSpanSecs = 10; //5*60; // 5 minutes
     
     [HttpPost]
     [Route("create")]
     public void CreateSession()
     {
         var sess = sessionLogic.CreateSession(DefaultBoxes, DefaultDecks, DefaultShuffleCardPlacement, DefaultShuffleCardRange, TimeSpan.FromSeconds(DefaultBettingTimeSpanSecs), TimeSpan.FromSeconds(DefaultSessionDestructionTimeSpanSecs));
-        sess.DestructionTimer.Elapsed += (sender, args) => OnSessionDestruction(sess.Id);
+        sess.DestructionTimer.Elapsed += async (sender, args) => await OnSessionDestruction(sess.Id);
         hub.SendMessageToGroupAsync("lobby", SignalRMethods.SessionCreated, sess.ToDto());
     }
 
-    private void OnSessionDestruction(Guid id) =>
-        hub.ConnectionsAndGroups.Where(x=> x.Value == id.ToString()).ToList().ForEach(async x =>
+    private async Task OnSessionDestruction(Guid id)
+    {
+        var connected = hub.ConnectionsAndGroups.Where(x => x.Value == id.ToString()).ToList();
+        foreach (var conn in connected)
         {
-            await hub.RemoveFromGroupAsync(x.Key, id.ToString());
-            await hub.AddToGroupAsync(x.Key, "lobby");
-        });
+            await hub.MoveToGroupAsync(conn.Key, "lobby");
+        }
+
+        await hub.SendMessageToGroupAsync("lobby", SignalRMethods.SessionDeleted, id);
+    }
 }
