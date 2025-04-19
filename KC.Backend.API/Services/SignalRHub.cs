@@ -32,13 +32,13 @@ public class SignalRHub(IHubContext<SignalRHub> hubContext) : Hub, IClientCommun
     public Task AddToGroupAsync(string connectionId, string group)
     {
         ConnectionsAndGroups[connectionId] = group;
-        return Groups.AddToGroupAsync(connectionId, group);
+        return _hubContext.Groups.AddToGroupAsync(connectionId, group);
     }
     
     public Task RemoveFromGroupAsync(string connectionId, string group)
     {
         ConnectionsAndGroups.Remove(connectionId);
-        return Groups.RemoveFromGroupAsync(connectionId, group);
+        return _hubContext.Groups.RemoveFromGroupAsync(connectionId, group);
     }
 
     public Task SendMessageAsync(string connectionId, string method, object? message) => _hubContext.Clients.User(connectionId).SendAsync(method, message);

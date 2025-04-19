@@ -22,7 +22,8 @@ public static class ClientMacAddressHandler
             return _macAddress;
         }
     }
-    public static MacAddress GetPrimaryMacAddress()
+
+    private static MacAddress GetPrimaryMacAddress()
     {
         var macBytes = NetworkInterface.GetAllNetworkInterfaces()
             .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)

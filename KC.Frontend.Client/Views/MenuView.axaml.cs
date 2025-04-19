@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using Avalonia.ReactiveUI;
 using KC.Frontend.Client.ViewModels;
 using ReactiveUI;
@@ -20,8 +21,7 @@ partial class MenuView : ReactiveUserControl<MenuViewModel>
             this.BindCommand(ViewModel, vm => vm.CreateSessionCommand, v => v.CreateSessionButton).DisposeWith(d);
             this.Bind(ViewModel, vm => vm.SelectedItem, v => v.SessionsListBox.SelectedItem).DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.SessionGetErrored, v => v.NoConnStackPanel.IsVisible).DisposeWith(d);
-            this.OneWayBind(ViewModel, vm => vm.SessionGetErrored, v => v.NoSessionsTextBorder.IsVisible,
-                b => !b && ViewModel!.Sessions.Count == 0).DisposeWith(d);
+            this.OneWayBind(ViewModel, vm => vm.NoSessions, v => v.NoSessionsTextBorder.IsVisible).DisposeWith(d);
             this.BindCommand(ViewModel, vm => vm.TryGetSessionsCommand, v => v.GetSessionsTryAgainButton).DisposeWith(d);
             if (!Design.IsDesignMode)
             {

@@ -34,6 +34,9 @@
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
+		<Border x:Name="NoSessionsTextBorder" VerticalAlignment="Center" Background="LightGray">
+			<TextBlock Text="No sessions yet. Start by creating one yourself! →" HorizontalAlignment="Center" FontSize="50" Margin="0,20,0,20"/>
+		</Border>
 		<StackPanel x:Name="NoConnStackPanel" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Background="IndianRed">
 			<TextBlock Text="Could not get sessions from the server" HorizontalAlignment="Center" FontSize="50" Margin="0,20,0,0"/>
 			<Button HorizontalAlignment="Center"
@@ -42,9 +45,7 @@
 			        FontSize="30"
 			        CornerRadius="8">Try again</Button>
 		</StackPanel>
-		<Border x:Name="NoSessionsTextBorder" VerticalAlignment="Center" Background="LightGray">
-			<TextBlock Text="No sessions yet. Start by creating one yourself! →" HorizontalAlignment="Center" FontSize="50" Margin="0,20,0,20"/>
-		</Border>
+
 
 
 		<StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center">

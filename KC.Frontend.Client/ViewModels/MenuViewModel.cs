@@ -2,11 +2,13 @@
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using ReactiveUI.SourceGenerators;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Avalonia.Controls.Templates;
 using KC.Frontend.Client.Extensions;
 using KC.Frontend.Client.Services;
 using KC.Frontend.Client.Utilities;
@@ -22,6 +24,10 @@ namespace KC.Frontend.Client.ViewModels
         
         [Reactive]
         private bool _sessionGetErrored = true;
+        
+        [Reactive]
+        private bool _noSessions;
+        
         public MenuViewModel(IScreen host)
         {
             HostScreen = host;
@@ -33,6 +39,15 @@ namespace KC.Frontend.Client.ViewModels
             
             _externalCommunicator.SignalRHubConnection.On<SessionReadDto>(SignalRMethods.SessionCreated, s => Sessions.Add(s.ToSessionListItem()));
             _externalCommunicator.SignalRHubConnection.On<Guid>(SignalRMethods.SessionDeleted, s => Sessions.Remove(Sessions.FirstOrDefault(x => x.Id == s)));
+
+            Sessions.CollectionChanged += (_, __) =>
+                this.RaisePropertyChanged(nameof(Sessions.Count));
+
+            this.WhenAnyValue(x => x.Sessions.Count)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Select(count => count == 0)
+                .BindTo(this, x => x.NoSessions);
+
         }
 
         [Reactive]
@@ -56,7 +71,7 @@ namespace KC.Frontend.Client.ViewModels
         {
             try
             {
-                Sessions = (await _externalCommunicator.GetSessionList()).ToList();
+                Sessions = [..(await _externalCommunicator.GetSessionList())];
                 SessionGetErrored = false;
             }
             catch (Exception e)
@@ -65,8 +80,11 @@ namespace KC.Frontend.Client.ViewModels
             }
         }
 
+        // [Reactive]
+        // private List<SessionListItem> _sessions = new List<SessionListItem>();
+        
         [Reactive]
-        private List<SessionListItem> _sessions = new List<SessionListItem>();
+        private ObservableCollection<SessionListItem> _sessions = [];
 
         public string? UrlPathSegment { get; } = "menu";
 
