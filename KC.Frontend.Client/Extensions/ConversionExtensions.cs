@@ -5,7 +5,7 @@ using KC.Shared.Models.Misc;
 
 namespace KC.Frontend.Client.Extensions;
 
-public static class SessionReadDtoExtensions
+public static class ConversionExtensions
 {
     public static SessionListItem ToSessionListItem(this SessionReadDto s) =>
         new()
