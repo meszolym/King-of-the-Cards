@@ -52,7 +52,7 @@ namespace KC.Frontend.Client.ViewModels
             _player = Locator.Current.GetRequiredService<PlayerViewModel>();
             _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
         }
-
+        
         public Guid Id { get; set; }
 
         public string? UrlPathSegment { get; } = "session";

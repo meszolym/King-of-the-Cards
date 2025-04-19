@@ -12,10 +12,11 @@
 			d:DesignHeight="1080" d:DesignWidth="1920" Background="#529848">
 	<Grid ColumnDefinitions="0.25*,0.5*,0.25*" RowDefinitions="0.3*,0.6*,0.1*">
 		<Button x:Name="NavBackButton" VerticalAlignment="Top" Padding="30" Foreground="White">
-				<PathIcon Data="{StaticResource arrow_left_regular}" Foreground="White" Width="30" Height="30"/>
+			<PathIcon Data="{StaticResource arrow_left_regular}" Foreground="White" Width="30" Height="30"/>
 		</Button>
-		<comp:DealerView x:Name="DealerView" Grid.Column="1" />
-		
+		<comp:DealerView Grid.Row="0" x:Name="DealerView" Grid.Column="1" />
+		<TextBlock Grid.Column="2" x:Name="SessionIdTextBlock" HorizontalAlignment="Stretch" TextAlignment="Right" Text="SessionId: 123456" Foreground="White" />
+	
 		<ItemsControl x:Name="BoxesItemsControl" Grid.Row="1" Grid.ColumnSpan="3"
 		              HorizontalAlignment="Stretch">
 			<ItemsControl.ItemsPanel>
@@ -30,9 +31,11 @@
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>
-		
+	
 		<comp:SessionBoxControlsView Grid.Row="2" Grid.Column="1" />
 	</Grid>
+
+	
 		
 		<!--<Button x:Name="NavbackButton">navback</Button>-->
 	</rxui:ReactiveUserControl>
