@@ -38,12 +38,13 @@ namespace KC.Frontend.Client.ViewModels
 
             JoinSessionCommand.ThrownExceptions.Subscribe(e => Debug.WriteLine(e.Message));
             
-            _externalCommunicator.SignalRHubConnection.On<SessionReadDto>(SignalRMethods.SessionCreated, s => Sessions.Add(s.ToSessionListItem()));
-            _externalCommunicator.SignalRHubConnection.On<Guid>(SignalRMethods.SessionDeleted, g => Sessions.Remove(Sessions.FirstOrDefault(x => x.Id == g)));
-            _externalCommunicator.SignalRHubConnection.On<Guid>(SignalRMethods.SessionDeleted, _ =>
+            ExternalCommunicatorService.SignalREvents.SessionCreated.ObserveOn(RxApp.MainThreadScheduler).Subscribe(dto => Sessions.Add(dto.ToSessionListItem()));
+            ExternalCommunicatorService.SignalREvents.SessionDeleted.ObserveOn(RxApp.MainThreadScheduler).Subscribe(g =>
             {
+                Sessions.Remove(Sessions.FirstOrDefault(x => x.Id == g));
+                
                 if (HostScreen.Router.GetCurrentViewModel() is SessionViewModel)
-                    Avalonia.Threading.Dispatcher.UIThread.Post(() => HostScreen.Router.NavigateBack.Execute());
+                    HostScreen.Router.NavigateBack.Execute();
             });
 
             Sessions.CollectionChanged += (_, __) =>

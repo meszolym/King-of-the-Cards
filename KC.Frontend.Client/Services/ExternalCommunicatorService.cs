@@ -16,18 +16,24 @@ namespace KC.Frontend.Client.Services;
 
 public class ExternalCommunicationException(string message) : Exception(message);
 
-public class ExternalCommunicatorService
+public partial class ExternalCommunicatorService
 {
     private readonly RestClient _client = new(ApiEndpoints.BaseUri,
         configureSerialization: s => s.UseNewtonsoftJson());
 
-    public readonly HubConnection SignalRHubConnection =
+    private readonly HubConnection SignalRHubConnection =
         new HubConnectionBuilder().WithUrl(ApiEndpoints.SignalRHub).WithAutomaticReconnect().AddNewtonsoftJsonProtocol().Build();
 
     private readonly Subject<bool> _connectionStatusSubject = new();
     public IObservable<bool> ConnectionStatus => _connectionStatusSubject;
 
     public ExternalCommunicatorService()
+    {
+        InitSignalRStatuses();
+        SignalREvents.Init(SignalRHubConnection);
+    }
+
+    private void InitSignalRStatuses()
     {
         SignalRHubConnection.Reconnecting += _ =>
         {
@@ -40,8 +46,14 @@ public class ExternalCommunicatorService
             _connectionStatusSubject.OnNext(true);
             return Task.CompletedTask;
         };
+        
+        SignalRHubConnection.Closed += _ =>
+        {
+            _connectionStatusSubject.OnNext(false);
+            return Task.CompletedTask;
+        };
     }
-
+    
     public bool SignalRInitialized { get; private set; }
 
     public async Task ConnectToSignalR()

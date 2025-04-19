@@ -51,7 +51,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     {
         var sess = sessionLogic.CreateSession(DefaultBoxes, DefaultDecks, DefaultShuffleCardPlacement, DefaultShuffleCardRange, TimeSpan.FromSeconds(DefaultBettingTimeSpanSecs), TimeSpan.FromSeconds(DefaultSessionDestructionTimeSpanSecs));
         sess.DestructionTimer.Elapsed += async (sender, args) => await OnSessionDestruction(sess.Id);
-        hub.SendMessageToGroupAsync("lobby", SignalRMethods.SessionCreated, sess.ToDto());
+        hub.SendMessageToGroupAsync("lobby", "SessionCreated", sess.ToDto());
     }
 
     private async Task OnSessionDestruction(Guid id)
@@ -62,6 +62,6 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
             await hub.MoveToGroupAsync(conn.Key, "lobby");
         }
 
-        await hub.SendMessageToGroupAsync("lobby", SignalRMethods.SessionDeleted, id);
+        await hub.SendMessageToGroupAsync("lobby", "SessionDeleted", id);
     }
 }
