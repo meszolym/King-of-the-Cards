@@ -8,6 +8,7 @@ using System.Linq;
 using ReactiveUI.SourceGenerators;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using KC.Frontend.Client.Extensions;
 using KC.Frontend.Client.Services;
@@ -38,7 +39,12 @@ namespace KC.Frontend.Client.ViewModels
             JoinSessionCommand.ThrownExceptions.Subscribe(e => Debug.WriteLine(e.Message));
             
             _externalCommunicator.SignalRHubConnection.On<SessionReadDto>(SignalRMethods.SessionCreated, s => Sessions.Add(s.ToSessionListItem()));
-            _externalCommunicator.SignalRHubConnection.On<Guid>(SignalRMethods.SessionDeleted, s => Sessions.Remove(Sessions.FirstOrDefault(x => x.Id == s)));
+            _externalCommunicator.SignalRHubConnection.On<Guid>(SignalRMethods.SessionDeleted, g => Sessions.Remove(Sessions.FirstOrDefault(x => x.Id == g)));
+            _externalCommunicator.SignalRHubConnection.On<Guid>(SignalRMethods.SessionDeleted, _ =>
+            {
+                if (HostScreen.Router.GetCurrentViewModel() is SessionViewModel)
+                    Avalonia.Threading.Dispatcher.UIThread.Post(() => HostScreen.Router.NavigateBack.Execute());
+            });
 
             Sessions.CollectionChanged += (_, __) =>
                 this.RaisePropertyChanged(nameof(Sessions.Count));

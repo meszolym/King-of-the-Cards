@@ -4,6 +4,8 @@ namespace KC.Backend.API.Services;
 
 public class SignalRHub(IHubContext<SignalRHub> hubContext) : Hub, IClientCommunicator
 {
+    public string BaseGroup { get; } = "lobby";
+    
     public Dictionary<string, string> ConnectionsAndGroups { get; private init; } = new();
     
     private IHubContext<SignalRHub> _hubContext = hubContext;
@@ -13,7 +15,7 @@ public class SignalRHub(IHubContext<SignalRHub> hubContext) : Hub, IClientCommun
     public override Task OnConnectedAsync()
     {
         Clients.Caller.SendAsync("Connected", Context.ConnectionId);
-        AddToGroupAsync(Context.ConnectionId, "lobby");
+        MoveToGroupAsync(Context.ConnectionId, "lobby");
         return base.OnConnectedAsync();
     }
 
@@ -23,22 +25,25 @@ public class SignalRHub(IHubContext<SignalRHub> hubContext) : Hub, IClientCommun
         if (!ConnectionsAndGroups.TryGetValue(Context.ConnectionId, out var group))
             return base.OnDisconnectedAsync(exception);
         
-        RemoveFromGroupAsync(Context.ConnectionId, group);
+        MoveToGroupAsync(Context.ConnectionId, null);
+        
         return base.OnDisconnectedAsync(exception);
     }
     
     #endregion
 
-    public Task AddToGroupAsync(string connectionId, string group)
+    public async Task MoveToGroupAsync(string connectionId, string? group)
     {
+        if (ConnectionsAndGroups.TryGetValue(connectionId, out var oldGroup))
+        {
+            await _hubContext.Groups.RemoveFromGroupAsync(connectionId, oldGroup);
+            ConnectionsAndGroups.Remove(connectionId);
+        }
+
+        if (group is null) return;
+        
         ConnectionsAndGroups[connectionId] = group;
-        return _hubContext.Groups.AddToGroupAsync(connectionId, group);
-    }
-    
-    public Task RemoveFromGroupAsync(string connectionId, string group)
-    {
-        ConnectionsAndGroups.Remove(connectionId);
-        return _hubContext.Groups.RemoveFromGroupAsync(connectionId, group);
+        await _hubContext.Groups.AddToGroupAsync(connectionId, group);
     }
 
     public Task SendMessageAsync(string connectionId, string method, object? message) => _hubContext.Clients.User(connectionId).SendAsync(method, message);
