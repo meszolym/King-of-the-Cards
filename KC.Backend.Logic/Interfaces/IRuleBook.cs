@@ -1,4 +1,5 @@
-﻿using KC.Backend.Models.GameItems;
+﻿using System.Collections.Generic;
+using KC.Backend.Models.GameItems;
 
 namespace KC.Backend.Logic.Interfaces;
 

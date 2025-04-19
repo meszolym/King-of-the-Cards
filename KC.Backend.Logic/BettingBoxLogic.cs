@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.NetworkInformation;
+using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Interfaces;
 using KC.Backend.Models.GameItems;
 using KC.Backend.Models.GameManagement;
@@ -26,8 +30,7 @@ public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic
         box.OwnerId = playerId;
 
         //session.LastMoveMadeAt = DateTime.Now;
-        session.DestructionTimer.Stop();
-        session.DestructionTimer.Start();
+        session.DestructionTimer.Reset();
     }
 
     /// <summary>
@@ -46,8 +49,7 @@ public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic
         if (box.OwnerId != playerId) throw new InvalidOperationException("Box is not owned by player.");
         box.OwnerId = MacAddress.None;
         //session.LastMoveMadeAt = DateTime.Now;
-        session.DestructionTimer.Stop();
-        session.DestructionTimer.Start();
+        session.DestructionTimer.Reset();
     }
     
     
@@ -74,8 +76,7 @@ public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic
         box.Hands[handIdx].Bet = amount;
         
         //session.LastMoveMadeAt = DateTime.Now;
-        session.DestructionTimer.Stop();
-        session.DestructionTimer.Start();
+        session.DestructionTimer.Reset();
     }
     
 }

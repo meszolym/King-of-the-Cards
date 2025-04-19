@@ -48,6 +48,13 @@ public class TickingTimer
     }
 
     public void Stop() => timer.Stop();
+    
+    public void Reset()
+    {
+        Stop();
+        ElapsedSeconds = 0;
+        Start();
+    }
 }
 
     

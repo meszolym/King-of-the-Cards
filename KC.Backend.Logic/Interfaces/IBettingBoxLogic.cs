@@ -1,4 +1,5 @@
-﻿using System.Net.NetworkInformation;
+﻿using System;
+using System.Net.NetworkInformation;
 using KC.Shared.Models.Misc;
 
 namespace KC.Backend.Logic.Interfaces;

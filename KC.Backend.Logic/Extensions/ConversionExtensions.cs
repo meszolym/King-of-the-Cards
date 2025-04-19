@@ -1,3 +1,4 @@
+using System.Linq;
 using KC.Backend.Models.GameItems;
 using KC.Backend.Models.GameManagement;
 using KC.Shared.Models.Dtos;

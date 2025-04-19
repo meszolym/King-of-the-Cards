@@ -1,4 +1,8 @@
-﻿using System.Net.NetworkInformation;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.NetworkInformation;
+using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Interfaces;
 using KC.Backend.Models.GameItems;
 using KC.Backend.Models.GameManagement;
@@ -19,8 +23,7 @@ public class GamePlayLogic(IList<Session> sessions, IRuleBook ruleBook) : IGameP
     {
         random ??= Random.Shared;
         var session = sessions.Single(s => s.Id == sessionId);
-        session.DestructionTimer.Stop();
-        session.DestructionTimer.Start();
+        session.DestructionTimer.Reset();
 
         var shoe = session.Table.Shoe;
         
@@ -76,8 +79,7 @@ public class GamePlayLogic(IList<Session> sessions, IRuleBook ruleBook) : IGameP
     {
         var session = sessions.Single(s => s.Id == sessionId);
         
-        session.DestructionTimer.Stop();
-        session.DestructionTimer.Start();
+        session.DestructionTimer.Reset();
         
         //if shoe needs shuffling, throw exception
         if (session.Table.Shoe.ShuffleCardIdx <= session.Table.Shoe.NextCardIdx)
@@ -156,7 +158,6 @@ public class GamePlayLogic(IList<Session> sessions, IRuleBook ruleBook) : IGameP
         if (ruleBook.GetValue(hand).NumberValue > 21)
             hand.Finished = true;
 
-        session.DestructionTimer.Stop();
-        session.DestructionTimer.Start();
+        session.DestructionTimer.Reset();
     }
 }

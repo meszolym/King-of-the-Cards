@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using KC.Backend.Models.GameManagement;
 
 namespace KC.Backend.Logic.Interfaces;

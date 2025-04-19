@@ -1,4 +1,5 @@
-﻿using System.Net.NetworkInformation;
+﻿using System;
+using System.Net.NetworkInformation;
 using KC.Backend.Models.GameItems;
 using KC.Shared.Models.GameItems;
 using KC.Shared.Models.Misc;
