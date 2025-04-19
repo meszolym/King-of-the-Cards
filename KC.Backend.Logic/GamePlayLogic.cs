@@ -71,10 +71,10 @@ public class GamePlayLogic(IList<Session> sessions, IRuleBook ruleBook) : IGameP
     public void DealStartingCards(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
-        //if shoe needs shuffling, shuffle
+        //if shoe needs shuffling, throw exception
         if (session.Table.Shoe.ShuffleCardIdx <= session.Table.Shoe.NextCardIdx)
         {
-            Shuffle(sessionId);
+            throw new InvalidOperationException("Shoe needs shuffling.");
         }
 
         //deal cards
@@ -132,13 +132,11 @@ public class GamePlayLogic(IList<Session> sessions, IRuleBook ruleBook) : IGameP
                 hand.Finished = true;
                 break;
             case Move.Hit:
-                hand.Cards.Add(GiveCard(sessionId));
-                break;
             case Move.Double:
                 hand.Cards.Add(GiveCard(sessionId));
                 break;
             case Move.Split:
-                box.Hands.Add(new Hand(){Cards = new List<Card>(){hand.Cards[1]}, FromSplit = true});
+                box.Hands.Add(new Hand(){Cards = [hand.Cards[1]], FromSplit = true});
                 hand.Cards.RemoveAt(1);
                 hand.Cards.Add(GiveCard(sessionId));
                 break;
