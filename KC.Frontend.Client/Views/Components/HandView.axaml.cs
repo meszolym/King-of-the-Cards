@@ -17,7 +17,7 @@ namespace KC.Frontend.Client.Views.Components;
 public partial class HandView : ReactiveUserControl<HandViewModel>
 {
     //private const double CardOffsetX = 20; // Horizontal offset for each card
-    private ItemsControl _cardsItemsControl => this.FindControl<ItemsControl>("CardsItemsControl");
+    private ItemsControl _cardsItemsControl => this.FindControl<ItemsControl>("CardsItemsControl")!;
     public HandView()
     {
         InitializeComponent();

@@ -10,7 +10,7 @@ namespace KC.Frontend.Client.Views.Components;
 
 public partial class DealerView : ReactiveUserControl<DealerViewModel>
 {
-    private ItemsControl _cardsItemsControl => this.FindControl<ItemsControl>("CardsItemsControl");
+    private ItemsControl _cardsItemsControl => this.FindControl<ItemsControl>("CardsItemsControl")!;
     public DealerView()
     {
         InitializeComponent();

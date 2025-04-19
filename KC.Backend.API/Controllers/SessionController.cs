@@ -43,7 +43,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     private const int DefaultShuffleCardPlacement = -40;
     private const uint DefaultShuffleCardRange = 10;
     private const uint DefaultBettingTimeSpanSecs = 15;
-    private const uint DefaultSessionDestructionTimeSpanSecs = 5*60; // 5 minutes
+    private const uint DefaultSessionDestructionTimeSpanSecs = 10; //5*60; // 5 minutes
     
     [HttpPost]
     [Route("create")]

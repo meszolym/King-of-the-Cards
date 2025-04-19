@@ -61,7 +61,7 @@ namespace KC.Frontend.Client.ViewModels
             await Register();
             
             await _externalCommunicator.UpdatePlayerConnectionId(ClientMacAddressHandler.PrimaryMacAddress);
-            Router.Navigate.Execute(new MenuViewModel(this));
+            await Router.Navigate.Execute(new MenuViewModel(this));
         }
         
         public Interaction<string?, string?> PlayerNameInteraction { get; } = new Interaction<string?, string?>();

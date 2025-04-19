@@ -67,7 +67,7 @@ namespace KC.Backend.API
             app.UseExceptionHandler(c => c.Run(async context =>
             {
                 var ex = context.Features
-                    .Get<IExceptionHandlerPathFeature>()
+                    .Get<IExceptionHandlerPathFeature>()!
                     .Error;
                 var resp = new
                 {

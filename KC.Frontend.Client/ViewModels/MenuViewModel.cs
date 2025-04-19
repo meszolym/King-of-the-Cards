@@ -41,7 +41,7 @@ namespace KC.Frontend.Client.ViewModels
             ExternalCommunicatorService.SignalREvents.SessionCreated.ObserveOn(RxApp.MainThreadScheduler).Subscribe(dto => Sessions.Add(dto.ToSessionListItem()));
             ExternalCommunicatorService.SignalREvents.SessionDeleted.ObserveOn(RxApp.MainThreadScheduler).Subscribe(g =>
             {
-                Sessions.Remove(Sessions.FirstOrDefault(x => x.Id == g));
+                Sessions.Remove(Sessions.FirstOrDefault(x => x.Id == g)!);
                 
                 if (HostScreen.Router.GetCurrentViewModel() is SessionViewModel)
                     HostScreen.Router.NavigateBack.Execute();
@@ -67,7 +67,7 @@ namespace KC.Frontend.Client.ViewModels
             Debug.WriteLine("Joining session");
             await _externalCommunicator.JoinSession(SelectedItem.Id, ClientMacAddressHandler.PrimaryMacAddress);
             var session = await _externalCommunicator.GetSession(SelectedItem.Id);
-            HostScreen.Router.Navigate.Execute(new SessionViewModel(HostScreen, session));
+            await HostScreen.Router.Navigate.Execute(new SessionViewModel(HostScreen, session));
         }
 
         [ReactiveCommand]

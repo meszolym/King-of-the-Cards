@@ -12,22 +12,18 @@ public class SignalRHub(IHubContext<SignalRHub> hubContext) : Hub, IClientCommun
 
     #region Base Hub Methods
     
-    public override Task OnConnectedAsync()
+    public override async Task OnConnectedAsync()
     {
-        Clients.Caller.SendAsync("Connected", Context.ConnectionId);
-        MoveToGroupAsync(Context.ConnectionId, "lobby");
-        return base.OnConnectedAsync();
+        await Clients.Caller.SendAsync("Connected", Context.ConnectionId);
+        await MoveToGroupAsync(Context.ConnectionId, "lobby");
+        await base.OnConnectedAsync();
     }
 
-    public override Task OnDisconnectedAsync(Exception? exception)
+    public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        Clients.Caller.SendAsync("Disconnected", Context.ConnectionId);
-        if (!ConnectionsAndGroups.TryGetValue(Context.ConnectionId, out var group))
-            return base.OnDisconnectedAsync(exception);
-        
-        MoveToGroupAsync(Context.ConnectionId, null);
-        
-        return base.OnDisconnectedAsync(exception);
+        await Clients.Caller.SendAsync("Disconnected", Context.ConnectionId);
+        await MoveToGroupAsync(Context.ConnectionId, null);
+        await base.OnDisconnectedAsync(exception);
     }
     
     #endregion

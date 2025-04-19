@@ -35,7 +35,7 @@ namespace KC.Frontend.Client.ViewModels
         private async Task NavBack()
         {
             await _externalCommunicator.LeaveSession(Id, ClientMacAddressHandler.PrimaryMacAddress);
-            HostScreen.Router.NavigateBack.Execute();
+            await HostScreen.Router.NavigateBack.Execute();
         }
 
         public SessionViewModel(IScreen hostScreen, SessionReadDto session)

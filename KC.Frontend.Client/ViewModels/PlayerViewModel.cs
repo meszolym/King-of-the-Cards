@@ -8,9 +8,9 @@ public partial class PlayerViewModel : ReactiveObject
 {
     [Reactive]
     private Guid _id;
-    
+
     [Reactive]
-    private string _playerName;
+    private string _playerName = "";
     
     [Reactive]
     private double _playerBalance;

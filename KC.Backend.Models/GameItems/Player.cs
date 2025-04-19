@@ -17,7 +17,7 @@ public class Player
     
     public Guid Id { get; set; } = Guid.NewGuid();
     public MacAddress Mac { get; private init; }
-    public string ConnectionId { get; set; } 
-    public string Name { get; set; }
+    public string ConnectionId { get; set; } = null!;
+    public string Name { get; set; } = null!;
     public double Balance { get; set; }
 }

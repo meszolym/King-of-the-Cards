@@ -18,7 +18,7 @@ public static class CardExtensions
         else
         {
             sb.Append(card.Suit.ToString());
-            string face = card.Face switch
+            var face = card.Face switch
             {
                 Card.CardFace.King => "K",
                 Card.CardFace.Queen => "Q",

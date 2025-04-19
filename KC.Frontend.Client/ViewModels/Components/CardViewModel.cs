@@ -11,7 +11,7 @@ namespace KC.Frontend.Client.ViewModels.Components;
 public partial class CardViewModel : ReactiveObject
 {
     [Reactive]
-    private Bitmap _imageSource;
+    private Bitmap _imageSource = null!;
 
     /// <summary>
     /// From left
@@ -40,7 +40,7 @@ public partial class CardViewModel : ReactiveObject
     {
         try
         {
-            Uri imagePath = Card.ImagePath();
+            var imagePath = Card.ImagePath();
             ImageSource = new Bitmap(AssetLoader.Open(imagePath));
         }
         catch (Exception ex)
