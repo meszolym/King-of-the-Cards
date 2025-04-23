@@ -23,9 +23,11 @@ public partial class HandView : ReactiveUserControl<HandViewModel>
         InitializeComponent();
         //ViewModel = new HandViewModel(this.Height);
 
-        this.WhenActivated(disposables =>
+        this.WhenActivated(d =>
         {
-            this.OneWayBind(ViewModel, vm => vm.Cards, v => v._cardsItemsControl.ItemsSource).DisposeWith(disposables);
+            this.OneWayBind(ViewModel, vm => vm.Cards, v => v._cardsItemsControl.ItemsSource).DisposeWith(d);
+            this.OneWayBind(ViewModel, vm => vm.BetAmount, v => BetTextBlock.Text, bet => $"${bet}").DisposeWith(d);
+            this.OneWayBind(ViewModel, vm => vm.IsPartOfSplit, v => BetTextBlock.IsVisible).DisposeWith(d);
         });
         
         //TODO: Bet display + bet setting

@@ -14,6 +14,9 @@ namespace KC.Frontend.Client.ViewModels.Components;
         
         [Reactive]
         private double _betAmount;
+
+        [Reactive]
+        private bool _isPartOfSplit;
         
         private double _height = 648; //gombócból is sok :)
         
