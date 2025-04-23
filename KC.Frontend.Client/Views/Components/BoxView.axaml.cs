@@ -53,10 +53,15 @@ namespace KC.Frontend.Client.Views.Components
                 this.OneWayBind(ViewModel, vm => vm.IsClaimed, v=> v.ClaimButtonFound.IsVisible, b => !b && ViewModel!.OwnerId == Guid.Empty);
                 this.BindCommand(ViewModel, vm => vm.DisclaimBoxCommand, view => view.UnclaimButtonFound);
                 this.OneWayBind(ViewModel, vm => vm.IsClaimed, v=> v.UnclaimButtonFound.IsVisible, b => b && ViewModel!.OwnerId == localPlayerGuid);
-                this.OneWayBind(ViewModel, vm => vm.RightHand.BetAmount, v => v.BetTextBlockFound.Text, bet => $"${bet}").DisposeWith(d);
                 
-                this.OneWayBind(ViewModel, vm => vm.IsBettingTextVisible, v => v.BetTextBlockFound.IsVisible).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.IsBettingModifierVisible, v => v.BetNumericUpDownFound.IsVisible).DisposeWith(d);
+                
+                this.OneWayBind(ViewModel, vm => vm.RightHand.BetAmount, v => v.BetTextBlockFound.Text, bet => $"${bet}").DisposeWith(d);
+
+                BetTextBlockFound.Bind(TextBlock.IsVisibleProperty, ViewModel.IsBettingTextVisible).DisposeWith(d);
+                BetNumericUpDownFound.Bind(NumericUpDown.IsVisibleProperty, ViewModel.IsBettingModifierVisible).DisposeWith(d);
+                
+                // this.Bind(ViewModel, vm => vm.IsBettingTextVisible, v => v.BetTextBlockFound.IsVisible).DisposeWith(d);
+                // this.Bind(ViewModel, vm => vm.IsBettingModifierVisible, v => v.BetNumericUpDownFound.IsVisible).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.RightHand.BetAmount, v => v.BetNumericUpDownFound.Value).DisposeWith(d);
 
             });

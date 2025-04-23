@@ -47,18 +47,33 @@ public partial class BoxViewModel : ReactiveObject
     
     //TODO: Use these to show/hide betting text and bet modifier 
     
+    private IObservable<bool> IsPlayerOwned => this.WhenAnyValue(vm => vm.OwnerId)
+        .Select(ownerId => ownerId == Locator.Current.GetRequiredService<PlayerViewModel>().Id);
+
+    // [Reactive]
+    // private bool _isBettingModifierVisible;
+
     //Betting modifier is visible when:
     // 1. The box is claimed by the player and the game is not in progress
-    [Reactive]
-    private bool _isBettingModifierVisible;
-    
+    public IObservable<bool> IsBettingModifierVisible =>
+        IsPlayerOwned.CombineLatest(CanClaimDisclaimBox,
+            (isOwner, canClaim) => isOwner && canClaim);
+
     //Betting text is visible when:
     // 1. The box is not claimed by the player (e.g. unclaimed or claimed by another player)
     // 2. The game is in progress (this is effectively conveyed by CanClaimDisclaimBox)
     // 3. The box's hand is not split (if split, the betting text is shown on the hand level not the box level)
-    [Reactive]
-    private bool _isBettingTextVisible;
+    // [Reactive]
+    // private bool _isBettingTextVisible;
+
     
+    public IObservable<bool> IsBettingTextVisible => Observable.CombineLatest(
+        IsPlayerOwned,
+        CanClaimDisclaimBox,
+        this.WhenAnyValue(vm => vm.IsSplit), (p,c,s) => !p && !c && !s);
+
+        
+
     private static Subject<Unit> _boxClaimStatusChanged = new Subject<Unit>();
     public static IObservable<Unit> BoxClaimStatusChanged => _boxClaimStatusChanged.AsObservable();
 

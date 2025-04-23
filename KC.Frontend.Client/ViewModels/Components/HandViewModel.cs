@@ -13,7 +13,7 @@ namespace KC.Frontend.Client.ViewModels.Components;
         public ObservableCollection<CardViewModel> Cards { get; set; } = [];
         
         [Reactive]
-        private double _betAmount;
+        private decimal _betAmount;
 
         [Reactive]
         private bool _isPartOfSplit;
@@ -23,7 +23,7 @@ namespace KC.Frontend.Client.ViewModels.Components;
         public HandViewModel(HandReadDto sourceDto)
         {
             foreach (var card in sourceDto.Cards) AddCard(card);
-            BetAmount = sourceDto.Bet;
+            BetAmount = (decimal)sourceDto.Bet;
         }
         public HandViewModel(){}
         
