@@ -17,7 +17,9 @@ namespace KC.Frontend.Client.Views.Components;
 public partial class HandView : ReactiveUserControl<HandViewModel>
 {
     //private const double CardOffsetX = 20; // Horizontal offset for each card
-    private ItemsControl _cardsItemsControl => this.FindControl<ItemsControl>("CardsItemsControl")!;
+    private ItemsControl CardsItemsControlFound => this.FindControl<ItemsControl>("CardsItemsControl")!;
+    private TextBlock BetTextBlockFound => this.FindControl<TextBlock>("BetTextBlock")!;
+    
     public HandView()
     {
         InitializeComponent();
@@ -25,9 +27,9 @@ public partial class HandView : ReactiveUserControl<HandViewModel>
 
         this.WhenActivated(d =>
         {
-            this.OneWayBind(ViewModel, vm => vm.Cards, v => v._cardsItemsControl.ItemsSource).DisposeWith(d);
-            this.OneWayBind(ViewModel, vm => vm.BetAmount, v => BetTextBlock.Text, bet => $"${bet}").DisposeWith(d);
-            this.OneWayBind(ViewModel, vm => vm.IsPartOfSplit, v => BetTextBlock.IsVisible).DisposeWith(d);
+            this.OneWayBind(ViewModel, vm => vm.Cards, v => v.CardsItemsControlFound.ItemsSource).DisposeWith(d);
+            this.OneWayBind(ViewModel, vm => vm.BetAmount, v => v.BetTextBlockFound.Text, bet => $"${bet}").DisposeWith(d);
+            this.OneWayBind(ViewModel, vm => vm.IsPartOfSplit, v => v.BetTextBlockFound.IsVisible).DisposeWith(d);
         });
         
         //TODO: Bet display + bet setting

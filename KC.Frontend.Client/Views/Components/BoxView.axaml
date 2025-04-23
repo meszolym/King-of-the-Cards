@@ -15,8 +15,8 @@
             <local:HandView Grid.Column="1" x:Name="RightHandView" Margin="0,5,0,0" HorizontalAlignment="Stretch"/>
             <local:HandView Grid.Column="0" x:Name="LeftHandView" Margin="0,0,0,5" HorizontalAlignment="Stretch"/>
             <!-- Bet display (only used when hands are NOT split -->
-            <TextBlock  x:Name="BetTextBlock" Grid.Row="1" HorizontalAlignment="Center" Foreground="White"
-                       Margin="5"/>
+            <TextBlock Text="$0"  x:Name="BetTextBlock" Grid.Row="1" Grid.ColumnSpan="2" 
+                       HorizontalAlignment="Center" Foreground="White" Margin="5"/>
             <TextBlock x:Name="PlayerNameTextBlock" Grid.Row="2" Grid.ColumnSpan="2"
                        HorizontalAlignment="Center" Foreground="White" Margin="5"/>
             <Button x:Name="ClaimBoxButton" Grid.Row="3" HorizontalAlignment="Center" Foreground="White" Grid.ColumnSpan="2">Claim box</Button>

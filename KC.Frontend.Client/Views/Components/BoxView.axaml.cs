@@ -20,7 +20,7 @@ namespace KC.Frontend.Client.Views.Components
         private TextBlock PlayerNameTextBlockFound => this.FindControl<TextBlock>(nameof(PlayerNameTextBlock))!;
         private Button ClaimButtonFound => this.FindControl<Button>(nameof(ClaimBoxButton))!;
         private Button UnclaimButtonFound => this.FindControl<Button>(nameof(UnclaimBoxButton))!;
-        
+        private TextBlock BetTextBlockFound => this.FindControl<TextBlock>(nameof(BetTextBlock))!;
         public BoxView()
         {
             InitializeComponent();
@@ -52,8 +52,8 @@ namespace KC.Frontend.Client.Views.Components
                 this.OneWayBind(ViewModel, vm => vm.IsClaimed, v=> v.ClaimButtonFound.IsVisible, b => !b && ViewModel!.OwnerId == Guid.Empty);
                 this.BindCommand(ViewModel, vm => vm.DisclaimBoxCommand, view => view.UnclaimButtonFound);
                 this.OneWayBind(ViewModel, vm => vm.IsClaimed, v=> v.UnclaimButtonFound.IsVisible, b => b && ViewModel!.OwnerId == localPlayerGuid);
-                this.OneWayBind(ViewModel, vm => vm.RightHand.BetAmount, v => v.BetTextBlock.Text, bet => $"${bet}").DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.IsSplit, v => v.BetTextBlock.IsVisible, b => !b).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.RightHand.BetAmount, v => v.BetTextBlockFound.Text, bet => $"${bet}").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsSplit, v => v.BetTextBlockFound.IsVisible, b => !b).DisposeWith(d);
             });
         }
 
