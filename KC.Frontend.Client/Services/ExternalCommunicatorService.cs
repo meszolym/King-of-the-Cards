@@ -21,7 +21,7 @@ public partial class ExternalCommunicatorService
     private readonly RestClient _client = new(ApiEndpoints.BaseUri,
         configureSerialization: s => s.UseNewtonsoftJson());
 
-    private readonly HubConnection SignalRHubConnection =
+    private readonly HubConnection _signalRHubConnection =
         new HubConnectionBuilder().WithUrl(ApiEndpoints.SignalRHub).WithAutomaticReconnect().AddNewtonsoftJsonProtocol().Build();
 
     private readonly Subject<bool> _connectionStatusSubject = new();
@@ -30,24 +30,24 @@ public partial class ExternalCommunicatorService
     public ExternalCommunicatorService()
     {
         InitSignalRStatuses();
-        SignalREvents.Init(SignalRHubConnection);
+        SignalREvents.Init(_signalRHubConnection);
     }
 
     private void InitSignalRStatuses()
     {
-        SignalRHubConnection.Reconnecting += _ =>
+        _signalRHubConnection.Reconnecting += _ =>
         {
             _connectionStatusSubject.OnNext(false);
             return Task.CompletedTask;
         };
 
-        SignalRHubConnection.Reconnected += _ =>
+        _signalRHubConnection.Reconnected += _ =>
         {
             _connectionStatusSubject.OnNext(true);
             return Task.CompletedTask;
         };
         
-        SignalRHubConnection.Closed += _ =>
+        _signalRHubConnection.Closed += _ =>
         {
             _connectionStatusSubject.OnNext(false);
             return Task.CompletedTask;
@@ -60,7 +60,7 @@ public partial class ExternalCommunicatorService
     {
         try
         {
-            await SignalRHubConnection.StartAsync();
+            await _signalRHubConnection.StartAsync();
             SignalRInitialized = true;
         }
         catch (Exception e)
@@ -69,7 +69,7 @@ public partial class ExternalCommunicatorService
             throw;
         }
 
-        if (SignalRHubConnection.State == HubConnectionState.Connected)
+        if (_signalRHubConnection.State == HubConnectionState.Connected)
         {
             _connectionStatusSubject.OnNext(true);
             return;
@@ -80,12 +80,12 @@ public partial class ExternalCommunicatorService
 
     public async Task UpdatePlayerConnectionId(MacAddress macAddress)
     {
-        if (SignalRHubConnection.State != HubConnectionState.Connected)
+        if (_signalRHubConnection.State != HubConnectionState.Connected)
             throw new ExternalCommunicationException("SignalR connection is not established");
 
         await _client.PutAsync(ApiEndpoints.UpdatePlayerConnectionId.AddBody(
             new PlayerConnectionIdUpdateDto(macAddress,
-                SignalRHubConnection.ConnectionId!)));
+                _signalRHubConnection.ConnectionId!)));
     }
 
     public async Task<IEnumerable<SessionListItem>> GetSessionList()

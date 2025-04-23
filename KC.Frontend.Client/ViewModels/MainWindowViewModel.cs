@@ -26,7 +26,8 @@ namespace KC.Frontend.Client.ViewModels
         
         private readonly ExternalCommunicatorService _externalCommunicator;
         
-        public readonly PlayerViewModel PlayerViewModel;
+        [Reactive]
+        private PlayerViewModel _playerViewModel;
 
         public MainWindowViewModel()
         {
@@ -37,6 +38,13 @@ namespace KC.Frontend.Client.ViewModels
             Router.NavigationChanged.ObserveOn(RxApp.MainThreadScheduler).Subscribe(_ =>
             {
                 IsFullScreen = Router.GetCurrentViewModel() is SessionViewModel;
+            });
+            ExternalCommunicatorService.SignalREvents.PlayerBalanceUpdated.ObserveOn(RxApp.MainThreadScheduler).Subscribe(player =>
+            {
+                if (player.Id == PlayerViewModel.Id)
+                {
+                    PlayerViewModel.PlayerBalance = player.Balance;
+                }
             });
         }
         

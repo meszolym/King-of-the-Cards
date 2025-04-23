@@ -1,3 +1,5 @@
+using KC.Backend.API.Services;
+using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Interfaces;
 using KC.Shared.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +8,7 @@ namespace KC.Backend.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic playerLogic) : Controller
+public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic playerLogic, IClientCommunicator hub) : Controller
 {
     [HttpPost]
     [Route("claim-box")]
@@ -30,5 +32,6 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
         bettingBoxLogic.UpdateBetOnBox(dto.SessionId, dto.BoxIdx, dto.OwnerMac, dto.Amount, dto.HandIdx);
         playerLogic.UpdateBalance(dto.OwnerMac, player.Balance - (dto.Amount - alreadyPlaced));
         
+        hub.SendMessageAsync(player.ConnectionId, "PlayerBalanceUpdated", player.ToDto());
     }
 }
