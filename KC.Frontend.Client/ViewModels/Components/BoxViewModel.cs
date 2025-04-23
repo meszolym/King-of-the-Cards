@@ -70,7 +70,7 @@ public partial class BoxViewModel : ReactiveObject
     public IObservable<bool> IsBettingTextVisible => Observable.CombineLatest(
         IsPlayerOwned,
         CanClaimDisclaimBox,
-        this.WhenAnyValue(vm => vm.IsSplit), (p,c,s) => !p && !c && !s);
+        this.WhenAnyValue(vm => vm.IsSplit), (p,c,s) => !p || s || !c);
 
         
 

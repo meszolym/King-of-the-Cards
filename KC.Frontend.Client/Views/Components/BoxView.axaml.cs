@@ -57,11 +57,10 @@ namespace KC.Frontend.Client.Views.Components
                 
                 this.OneWayBind(ViewModel, vm => vm.RightHand.BetAmount, v => v.BetTextBlockFound.Text, bet => $"${bet}").DisposeWith(d);
 
+                //I hate avalonia for this
                 BetTextBlockFound.Bind(TextBlock.IsVisibleProperty, ViewModel.IsBettingTextVisible).DisposeWith(d);
                 BetNumericUpDownFound.Bind(NumericUpDown.IsVisibleProperty, ViewModel.IsBettingModifierVisible).DisposeWith(d);
                 
-                // this.Bind(ViewModel, vm => vm.IsBettingTextVisible, v => v.BetTextBlockFound.IsVisible).DisposeWith(d);
-                // this.Bind(ViewModel, vm => vm.IsBettingModifierVisible, v => v.BetNumericUpDownFound.IsVisible).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.RightHand.BetAmount, v => v.BetNumericUpDownFound.Value).DisposeWith(d);
 
             });
