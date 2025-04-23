@@ -42,7 +42,7 @@ public class SignalRHub(IHubContext<SignalRHub> hubContext) : Hub, IClientCommun
         await _hubContext.Groups.AddToGroupAsync(connectionId, group);
     }
 
-    public Task SendMessageAsync(string connectionId, string method, object? message) => _hubContext.Clients.User(connectionId).SendAsync(method, message);
+    public Task SendMessageAsync(string connectionId, string method, object? message) => _hubContext.Clients.Client(connectionId).SendAsync(method, message);
 
     public Task SendMessageToGroupAsync(string group, string method, object? message) => _hubContext.Clients.Group(group).SendAsync(method, message);
 }
