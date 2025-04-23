@@ -20,7 +20,7 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
         .SelectMany(suit => Enum.GetValues<Card.CardFace>().Select(face => new Card {Face = face, Suit = suit}));
     
     /// <summary>
-    /// Creates an empty session. Make sure to subscribe to events of the timer.
+    /// Creates an empty session. Make sure to subscribe to events of the timers.
     /// </summary>
     /// <param name="numberOfBoxes"></param>
     /// <param name="numberOfDecks"></param>
@@ -44,19 +44,19 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
         var table = new Table((int)numberOfBoxes, shoe);
         
         var sess = new Session(table, bettingTimeSpan, sessionDestructionTimeSpan);
-
-        sess.DestructionTimer.Elapsed += (sender, args) => DestroySession(sess.Id);
+        
         sess.DestructionTimer.Start();
         
         sessions.Add(sess);
         return sess;
     }
 
-    public void DestroySession(Guid sessId)
+    public Session RemoveSession(Guid sessId)
     {
         var session = sessions.Single(s => s.Id == sessId);
         sessions.Remove(session);
         session.DestructionTimer.Stop();
+        return session;
     }
 
     public Session Get(Guid sessionId) => sessions.Single(s => s.Id == sessionId);

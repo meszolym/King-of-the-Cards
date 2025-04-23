@@ -11,6 +11,9 @@ public class Session(Table table, TimeSpan betTimerTimeSpan, TimeSpan destructio
     public TurnInfo CurrentTurnInfo { get; set; } = new TurnInfo();
     //public DateTime LastMoveMadeAt { get; set; } = DateTime.MinValue;
 
+    /// <summary>
+    /// Shows when it is time to destroy the session as there was no activity.
+    /// </summary>
     public Timer DestructionTimer { get; set; } = new Timer(destructionTimerTimeSpan);
     public bool CanPlaceBets => BettingTimer.RemainingSeconds > 0;
     public TickingTimer BettingTimer { get; set; } = new TickingTimer(betTimerTimeSpan);

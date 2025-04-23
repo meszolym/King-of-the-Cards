@@ -4,6 +4,7 @@ using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Interfaces;
 using KC.Frontend.Client.Services;
 using KC.Shared.Models.Dtos;
+using KC.Shared.Models.Misc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
@@ -46,26 +47,40 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     private const int DefaultShuffleCardPlacement = -40;
     private const uint DefaultShuffleCardRange = 10;
     private const uint DefaultBettingTimeSpanSecs = 15;
-    //private const uint DefaultSessionDestructionTimeSpanSecs = 10; 
-    private const uint DefaultSessionDestructionTimeSpanSecs = 5*60; // 5 minutes
+    private const uint DefaultSessionDestructionTimeSpanSecs = 10; 
+    //private const uint DefaultSessionDestructionTimeSpanSecs = 5*60; // 5 minutes
     
     [HttpPost]
     [Route("create")]
     public void CreateSession()
     {
         var sess = sessionLogic.CreateSession(DefaultBoxes, DefaultDecks, DefaultShuffleCardPlacement, DefaultShuffleCardRange, TimeSpan.FromSeconds(DefaultBettingTimeSpanSecs), TimeSpan.FromSeconds(DefaultSessionDestructionTimeSpanSecs));
-        sess.DestructionTimer.Elapsed += async (sender, args) => await OnSessionDestruction(sess.Id);
+        sess.DestructionTimer.Elapsed += async (sender, args) => await OnDestructionTimerElapsed(sess.Id);
         hub.SendMessageToGroupAsync("lobby", "SessionCreated", sess.ToDto());
     }
 
-    private async Task OnSessionDestruction(Guid id)
+    private async Task OnDestructionTimerElapsed(Guid id)
     {
+        var destroyedSession = sessionLogic.RemoveSession(id);
+        
         var connected = hub.ConnectionsAndGroups.Where(x => x.Value == id.ToString()).ToList();
         foreach (var conn in connected)
         {
             await hub.MoveToGroupAsync(conn.Key, "lobby");
         }
-
         await hub.SendMessageToGroupAsync("lobby", "SessionDeleted", id);
+
+        foreach (var box in destroyedSession.Table.BettingBoxes)
+        {
+            if (box.OwnerId == MacAddress.None) continue;
+            
+            var p = playerLogic.Get(box.OwnerId);
+            foreach (var hand in box.Hands)
+            {
+                if (hand.Bet > 0)
+                    playerLogic.UpdateBalance(box.OwnerId, p.Balance+hand.Bet);
+            }
+            await hub.SendMessageAsync(p.ConnectionId, "PlayerBalanceUpdated", p.ToDto());
+        }
     }
 }
