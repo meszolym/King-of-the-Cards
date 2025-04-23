@@ -5,6 +5,7 @@ using Avalonia.Markup.Xaml;
 using ReactiveUI;
 using System;
 using System.Reactive.Disposables;
+using System.Runtime.InteropServices.ComTypes;
 using Avalonia.ReactiveUI;
 using KC.Frontend.Client.Extensions;
 using KC.Frontend.Client.ViewModels;
@@ -46,13 +47,12 @@ namespace KC.Frontend.Client.Views.Components
                         vm => vm.PlayerName, 
                         v => v.PlayerNameTextBlockFound.Text)
                     .DisposeWith(d);
-
-                var localPlayerGuid = Locator.Current.GetRequiredService<PlayerViewModel>().Id;
+                
                 
                 this.BindCommand(ViewModel, vm => vm.ClaimBoxCommand, view => view.ClaimButtonFound);
                 this.OneWayBind(ViewModel, vm => vm.IsClaimed, v=> v.ClaimButtonFound.IsVisible, b => !b && ViewModel!.OwnerId == Guid.Empty);
                 this.BindCommand(ViewModel, vm => vm.DisclaimBoxCommand, view => view.UnclaimButtonFound);
-                this.OneWayBind(ViewModel, vm => vm.IsClaimed, v=> v.UnclaimButtonFound.IsVisible, b => b && ViewModel!.OwnerId == localPlayerGuid);
+                this.OneWayBind(ViewModel, vm => vm.IsClaimed, v=> v.UnclaimButtonFound.IsVisible, b => b && ViewModel!.OwnerId == ViewModel!.LocalPlayer.Id);
                 
                 
                 this.OneWayBind(ViewModel, vm => vm.RightHand.BetAmount, v => v.BetTextBlockFound.Text, bet => $"${bet}").DisposeWith(d);
@@ -60,6 +60,8 @@ namespace KC.Frontend.Client.Views.Components
                 //I hate avalonia for this
                 BetTextBlockFound.Bind(TextBlock.IsVisibleProperty, ViewModel.IsBettingTextVisible).DisposeWith(d);
                 BetNumericUpDownFound.Bind(NumericUpDown.IsVisibleProperty, ViewModel.IsBettingModifierVisible).DisposeWith(d);
+                
+                BetNumericUpDownFound.ValueChanged += (sender, args) => ViewModel.UpdateBetAmount(args.OldValue, args.NewValue);
                 
                 this.Bind(ViewModel, vm => vm.RightHand.BetAmount, v => v.BetNumericUpDownFound.Value).DisposeWith(d);
 

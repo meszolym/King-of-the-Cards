@@ -44,14 +44,8 @@ public partial class BoxViewModel : ReactiveObject
     //TODO: This should reflect if the game is in progress or not (you cannot unclaim a box that is in use)
     private IObservable<bool> CanClaimDisclaimBox => Observable.Return(true);
     
-    
-    //TODO: Use these to show/hide betting text and bet modifier 
-    
     private IObservable<bool> IsPlayerOwned => this.WhenAnyValue(vm => vm.OwnerId)
-        .Select(ownerId => ownerId == Locator.Current.GetRequiredService<PlayerViewModel>().Id);
-
-    // [Reactive]
-    // private bool _isBettingModifierVisible;
+        .Select(ownerId => ownerId == LocalPlayer.Id);
 
     //Betting modifier is visible when:
     // 1. The box is claimed by the player and the game is not in progress
@@ -63,19 +57,11 @@ public partial class BoxViewModel : ReactiveObject
     // 1. The box is not claimed by the player (e.g. unclaimed or claimed by another player)
     // 2. The game is in progress (this is effectively conveyed by CanClaimDisclaimBox)
     // 3. The box's hand is not split (if split, the betting text is shown on the hand level not the box level)
-    // [Reactive]
-    // private bool _isBettingTextVisible;
-
-    
-    public IObservable<bool> IsBettingTextVisible => Observable.CombineLatest(
-        IsPlayerOwned,
-        CanClaimDisclaimBox,
+    public IObservable<bool> IsBettingTextVisible => IsPlayerOwned.CombineLatest(CanClaimDisclaimBox,
         this.WhenAnyValue(vm => vm.IsSplit), (p,c,s) => !p || s || !c);
-
-        
-
-    private static Subject<Unit> _boxClaimStatusChanged = new Subject<Unit>();
-    public static IObservable<Unit> BoxClaimStatusChanged => _boxClaimStatusChanged.AsObservable();
+    
+    private static readonly Subject<Unit> BoxClaimStatusChangedSub = new Subject<Unit>();
+    public static IObservable<Unit> BoxClaimStatusChanged => BoxClaimStatusChangedSub.AsObservable();
 
     [ReactiveCommand(CanExecute = nameof(CanClaimDisclaimBox))]
     private async Task ClaimBox()
@@ -83,11 +69,10 @@ public partial class BoxViewModel : ReactiveObject
         try
         {
             await _externalCommunicator.ClaimBox(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress);
-            var localPlayer = Locator.Current.GetRequiredService<PlayerViewModel>();
-            PlayerName = localPlayer.PlayerName;
-            OwnerId = localPlayer.Id;
+            PlayerName = LocalPlayer.PlayerName;
+            OwnerId = LocalPlayer.Id;
             IsClaimed = true;
-            _boxClaimStatusChanged.OnNext(Unit.Default);
+            BoxClaimStatusChangedSub.OnNext(Unit.Default);
             
         }
         catch (Exception e)
@@ -106,7 +91,7 @@ public partial class BoxViewModel : ReactiveObject
             PlayerName = "Unclaimed";
             OwnerId = Guid.Empty;
             IsClaimed = false;
-            _boxClaimStatusChanged.OnNext(Unit.Default);
+            BoxClaimStatusChangedSub.OnNext(Unit.Default);
         }
         catch (Exception e)
         {
@@ -114,8 +99,7 @@ public partial class BoxViewModel : ReactiveObject
             Debug.WriteLine(e.Message + "at DisclaimBox in BoxViewModel");
         }
     }
-    
-    //TODO: Claim box button canexecute (skeleton done)
+    public PlayerViewModel LocalPlayer => Locator.Current.GetRequiredService<PlayerViewModel>();
     public BoxViewModel(Guid sessionId, BettingBoxReadDto sourceDto)
     {
         _sessionId = sessionId;
@@ -127,6 +111,7 @@ public partial class BoxViewModel : ReactiveObject
         IsSplit = false;
         PlayerName = "Unclaimed";
         _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
+        
     }
 
     private readonly Guid _sessionId;
@@ -153,4 +138,8 @@ public partial class BoxViewModel : ReactiveObject
     //         RightHand.AddCard(Card.WithSuitAndFace(Card.CardSuit.Hearts, Card.CardFace.Jack));
     //     }
     // }
+    public void UpdateBetAmount(decimal? argsOldValue, decimal? argsNewValue)
+    {
+        
+    }
 }
