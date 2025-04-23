@@ -44,6 +44,21 @@ public partial class BoxViewModel : ReactiveObject
     //TODO: This should reflect if the game is in progress or not (you cannot unclaim a box that is in use)
     private IObservable<bool> CanClaimDisclaimBox => Observable.Return(true);
     
+    
+    //TODO: Use these to show/hide betting text and bet modifier 
+    
+    //Betting modifier is visible when:
+    // 1. The box is claimed by the player and the game is not in progress
+    [Reactive]
+    private bool _isBettingModifierVisible;
+    
+    //Betting text is visible when:
+    // 1. The box is not claimed by the player (e.g. unclaimed or claimed by another player)
+    // 2. The game is in progress (this is effectively conveyed by CanClaimDisclaimBox)
+    // 3. The box's hand is not split (if split, the betting text is shown on the hand level not the box level)
+    [Reactive]
+    private bool _isBettingTextVisible;
+    
     private static Subject<Unit> _boxClaimStatusChanged = new Subject<Unit>();
     public static IObservable<Unit> BoxClaimStatusChanged => _boxClaimStatusChanged.AsObservable();
 
