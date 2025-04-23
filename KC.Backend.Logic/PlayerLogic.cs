@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -19,8 +20,14 @@ public class PlayerLogic(IList<Player> players) : IPlayerLogic
     public Player Get(MacAddress playerId) => players.Single(p => p.Mac == playerId);
     
     public void UpdateName(MacAddress playerId, string name) => players.Single(p => p.Mac == playerId).Name = name;
-    
-    public void UpdateBalance(MacAddress playerId, double balance) => players.Single(p => p.Mac == playerId).Balance = balance;
+
+    public void UpdateBalance(MacAddress playerId, double balance)
+    {
+        if (balance < 0)
+            throw new ArgumentException("Player balance can not be negative.");
+        
+        players.Single(p => p.Mac == playerId).Balance = balance;
+    }
     
     public void UpdatePlayerConnectionId(MacAddress playerId, string connectionId) => players.Single(p => p.Mac == playerId).ConnectionId = connectionId;
 }
