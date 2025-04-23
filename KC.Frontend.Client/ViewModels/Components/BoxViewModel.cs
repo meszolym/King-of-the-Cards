@@ -87,6 +87,7 @@ public partial class BoxViewModel : ReactiveObject
     {
         try
         {
+            RightHand.BetAmount = 0; //This goes through UpdateBetAmount (and thus the server) as it is bound to the UI!
             await _externalCommunicator.DisclaimBox(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress);
             PlayerName = "Unclaimed";
             OwnerId = Guid.Empty;
