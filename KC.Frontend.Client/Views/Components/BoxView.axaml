@@ -21,7 +21,7 @@
             
             <NumericUpDown x:Name="BetNumericUpDown" Grid.Row="1" Grid.ColumnSpan="2"
                            HorizontalAlignment="Center" Foreground="White" Margin="5" 
-                           Increment="10" FormatString="$0" Value="10" Minimum="10"/>
+                           Increment="10" FormatString="$0" Value="0" Minimum="10"/>
             
             <TextBlock x:Name="PlayerNameTextBlock" Grid.Row="2" Grid.ColumnSpan="2"
                        HorizontalAlignment="Center" Foreground="White" Margin="5"/>

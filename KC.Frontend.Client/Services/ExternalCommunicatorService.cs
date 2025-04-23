@@ -125,6 +125,12 @@ public partial class ExternalCommunicatorService
             ApiEndpoints.DisclaimBox.AddBody(new BoxOwnerUpdateDto(sessionId, boxIdx, primaryMacAddress)));
     }
 
+    public async Task UpdateBet(Guid sessionId, int boxIdx, MacAddress primaryMacAddress, double amount, int handIdx = 0)
+    {
+        await _client.PutAsync(
+            ApiEndpoints.UpdateBet.AddBody(new BoxBetUpdateDto(sessionId, boxIdx, primaryMacAddress, amount, handIdx)));
+    }
+    
     public async Task JoinSession(Guid sessionId, MacAddress macAddress)
     {
         await _client.PostAsync(ApiEndpoints.JoinSession.AddBody(new SessionJoinLeaveDto(sessionId, macAddress)));

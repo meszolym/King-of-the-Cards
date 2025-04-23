@@ -38,4 +38,6 @@ public interface IBettingBoxLogic
     /// <exception cref="InvalidOperationException">"Box is not owned by player." if the box is nt owned by the player.</exception>
     /// <exception cref="ArgumentException">"Bet cannot be less than 0." if the amount is less than 0.</exception>
     void UpdateBetOnBox(Guid sessionId, int boxIdx, MacAddress playerId, double amount, int handIdx = 0);
+
+    public double GetBetOnBox(Guid sessionId, int boxIdx, int handIdx = 0);
 }

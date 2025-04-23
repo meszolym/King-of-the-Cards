@@ -138,8 +138,21 @@ public partial class BoxViewModel : ReactiveObject
     //         RightHand.AddCard(Card.WithSuitAndFace(Card.CardSuit.Hearts, Card.CardFace.Jack));
     //     }
     // }
-    public void UpdateBetAmount(decimal? argsOldValue, decimal? argsNewValue)
+    public async Task<bool> UpdateBetAmount(decimal? oldVal, decimal? newVal)
     {
-        
+        if (newVal is null) return false;
+        if (oldVal == newVal) return true;
+
+        try
+        {
+            await _externalCommunicator.UpdateBet(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress, (double) newVal);
+            return true;
+        }
+        catch (Exception e)
+        {
+            //TODO: Show dialog
+            Debug.WriteLine(e);
+            return false;
+        }
     }
 }

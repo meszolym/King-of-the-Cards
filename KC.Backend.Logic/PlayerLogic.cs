@@ -20,7 +20,7 @@ public class PlayerLogic(IList<Player> players) : IPlayerLogic
     
     public void UpdateName(MacAddress playerId, string name) => players.Single(p => p.Mac == playerId).Name = name;
     
-    public void UpdateBalance(MacAddress playerId, int balance) => players.Single(p => p.Mac == playerId).Balance = balance;
+    public void UpdateBalance(MacAddress playerId, double balance) => players.Single(p => p.Mac == playerId).Balance = balance;
     
     public void UpdatePlayerConnectionId(MacAddress playerId, string connectionId) => players.Single(p => p.Mac == playerId).ConnectionId = connectionId;
 }

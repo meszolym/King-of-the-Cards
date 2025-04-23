@@ -61,7 +61,12 @@ namespace KC.Frontend.Client.Views.Components
                 BetTextBlockFound.Bind(TextBlock.IsVisibleProperty, ViewModel.IsBettingTextVisible).DisposeWith(d);
                 BetNumericUpDownFound.Bind(NumericUpDown.IsVisibleProperty, ViewModel.IsBettingModifierVisible).DisposeWith(d);
                 
-                BetNumericUpDownFound.ValueChanged += (sender, args) => ViewModel.UpdateBetAmount(args.OldValue, args.NewValue);
+                BetNumericUpDownFound.ValueChanged += async (sender, args) =>
+                {
+                    var succ = await ViewModel.UpdateBetAmount(args.OldValue, args.NewValue);
+                    if (!succ)
+                        BetNumericUpDownFound.Value = args.OldValue;
+                };
                 
                 this.Bind(ViewModel, vm => vm.RightHand.BetAmount, v => v.BetNumericUpDownFound.Value).DisposeWith(d);
 

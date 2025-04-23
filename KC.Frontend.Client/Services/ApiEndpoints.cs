@@ -18,11 +18,13 @@ public partial class ExternalCommunicatorService
         public static RestRequest RegisterPlayer => new(BaseUri + "player", Method.Post);
 
         public static RestRequest UpdatePlayerConnectionId => new(BaseUri + "player/update-conn-id", Method.Put);
-
-        public static RestRequest ClaimBox => new(BaseUri + "bettingbox/claim-box", Method.Post);
-        public static RestRequest DisclaimBox => new(BaseUri + "bettingbox/disclaim-box", Method.Delete);
+        
         public static RestRequest JoinSession => new(BaseUri + "session/join", Method.Post);
         public static RestRequest LeaveSession => new(BaseUri + "session/leave", Method.Delete);
         public static RestRequest CreateSession => new(BaseUri + "session/create", Method.Post);
+        
+        public static RestRequest ClaimBox => new(BaseUri + "bettingbox/claim-box", Method.Post);
+        public static RestRequest DisclaimBox => new(BaseUri + "bettingbox/disclaim-box", Method.Delete);
+        public static RestRequest UpdateBet => new(BaseUri + "bettingbox/update-bet", Method.Put);
     }
 }
