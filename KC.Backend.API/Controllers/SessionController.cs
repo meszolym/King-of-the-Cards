@@ -21,7 +21,8 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     public IEnumerable<SessionReadDto> GetAllSessions() => sessionLogic.GetAll().Select(s => s.ToDto(g => playerLogic.Get(g).Name));
 
     [HttpGet("{id:guid}")]
-    public SessionReadDto GetSession(Guid id) => sessionLogic.Get(id).ToDto(g => playerLogic.Get(g).Name);
+    public SessionReadDto GetSession(Guid id) =>
+        sessionLogic.Get(id).ToDto(g => playerLogic.Get(g).Name);
 
     [HttpPost]
     [Route("join")]

@@ -13,8 +13,10 @@ public class Player
     }
     
     public Player() { }
+
+    public static readonly Player None = new Player() { Balance = 0, ConnectionId = "", Id = Guid.Empty, Name = "" };
     
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; private init; } = Guid.NewGuid();
     public string ConnectionId { get; set; } = null!;
     public string Name { get; set; } = null!;
     public double Balance { get; set; }

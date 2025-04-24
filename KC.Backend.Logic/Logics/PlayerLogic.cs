@@ -22,9 +22,9 @@ public class PlayerLogic(IList<Player> players, IDictionary<MacAddress, Guid> ma
     
     public void RemovePlayer(MacAddress playerId) => players.Remove(players.Single(p => p.Id == macToPlayerGuid[playerId]));
     
-    public Player Get(MacAddress playerId) => players.Single(p => p.Id == macToPlayerGuid[playerId]);
-    
-    public Player Get(Guid playerId) => players.Single(p => p.Id == playerId);
+    public Player Get(MacAddress playerId) => Get(macToPlayerGuid[playerId]);
+
+    public Player Get(Guid playerId) => playerId != Guid.Empty ? players.Single(p => p.Id == playerId) : Player.None;
     
     public void UpdateName(MacAddress playerId, string name) => players.Single(p => p.Id == macToPlayerGuid[playerId]).Name = name;
 
