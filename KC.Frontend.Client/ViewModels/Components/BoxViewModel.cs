@@ -31,6 +31,9 @@ public partial class BoxViewModel : ReactiveObject
     [Reactive]
     private TurnState _boxTurnState; 
     
+    public IObservable<bool> InTurn => this.WhenAnyValue(vm => vm.BoxTurnState)
+        .Select(turnState => turnState != TurnState.None);
+    
     [Reactive]
     private HandViewModel _leftHand;
     
@@ -54,7 +57,7 @@ public partial class BoxViewModel : ReactiveObject
     [Reactive]
     private bool _bettingPhase = true;
     
-    private IObservable<bool> IsPlayerOwned => this.WhenAnyValue(vm => vm.OwnerId)
+    public IObservable<bool> IsLocalPlayerOwned => this.WhenAnyValue(vm => vm.OwnerId)
         .Select(ownerId => ownerId == LocalPlayer.Id);
 
     private IObservable<bool> BettingPhaseObs => this.WhenAnyValue(vm => vm.BettingPhase);
@@ -62,14 +65,14 @@ public partial class BoxViewModel : ReactiveObject
     //Betting modifier is visible when:
     // 1. The box is claimed by the player and the game is not in progress
     public IObservable<bool> IsBettingModifierVisible =>
-        IsPlayerOwned.CombineLatest(BettingPhaseObs,
+        IsLocalPlayerOwned.CombineLatest(BettingPhaseObs,
             (isOwner, bettingPhase) => isOwner && bettingPhase);
 
     //Betting text is visible when:
     // 1. The box is not claimed by the player (e.g. unclaimed or claimed by another player)
     // 2. The game is in progress (this is effectively conveyed by CanClaimDisclaimBox)
     // 3. The box's hand is not split (if split, the betting text is shown on the hand level not the box level)
-    public IObservable<bool> IsBettingTextVisible => IsPlayerOwned.CombineLatest(BettingPhaseObs,
+    public IObservable<bool> IsBettingTextVisible => IsLocalPlayerOwned.CombineLatest(BettingPhaseObs,
         this.WhenAnyValue(vm => vm.IsSplit), (playerOwned,bettingPhase,isSplit) => !playerOwned || isSplit || !bettingPhase);
     
     private static readonly Subject<Unit> BoxClaimStatusChangedSub = new Subject<Unit>();

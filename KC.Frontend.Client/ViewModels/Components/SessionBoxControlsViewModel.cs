@@ -7,11 +7,11 @@ namespace KC.Frontend.Client.ViewModels.Components
 {
     public partial class SessionBoxControlsViewModel : ReactiveObject
     {
-        private IObservable<bool> _isMyTurn;
-        public SessionBoxControlsViewModel()
+        private readonly IObservable<bool> _isMyTurn;
+        public SessionBoxControlsViewModel(IObservable<bool> isMyTurn)
         {
-            _isMyTurn = Observable.Return(true);
-            _canSplitOnHand = Observable.Return(true);
+            _isMyTurn = isMyTurn;
+            _canSplitOnHand = Observable.Return(true).CombineLatest(_isMyTurn, (a, b) => a && b);
             _canDoubleDownOnHand = Observable.Return(false);
         }
         

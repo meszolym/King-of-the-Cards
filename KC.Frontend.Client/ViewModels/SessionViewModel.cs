@@ -56,18 +56,19 @@ namespace KC.Frontend.Client.ViewModels
             BettingPhase = session.CanPlaceBets;
             Boxes = new ObservableCollection<BoxViewModel>(session.Table.BettingBoxes.OrderByDescending(b => b.BoxIdx).Select(b => new BoxViewModel(Id, b, session.CurrentTurnInfo, session.CanPlaceBets)));
             Dealer = new DealerViewModel(session.Table.DealerVisibleCards);
-            Controls = new SessionBoxControlsViewModel();
+
+            var isMyTurn = Boxes.Select(b => b.InTurn.CombineLatest(b.IsLocalPlayerOwned, (turn,playerOwned) => turn && playerOwned)).CombineLatest(bs => bs.Any(b => b));
+            Controls = new SessionBoxControlsViewModel(isMyTurn);
             
             ExternalCommunicatorService.SignalREvents.BettingTimerTicked.ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(dto => BettingTimeLeft = $"Time left: {dto.remainingSeconds} seconds");
 
             ExternalCommunicatorService.SignalREvents.BettingTimerStopped.ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(_ => BettingTimeLeft = "Waiting for first bet...");
-            
+
             ExternalCommunicatorService.SignalREvents.BettingTimerElapsed.ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(_ => BettingPhase = false);
-            
-            
+
         }
 
         [Reactive]
