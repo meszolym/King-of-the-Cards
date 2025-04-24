@@ -14,6 +14,7 @@ public partial class PlayerNameDialog : ReactiveWindow<PlayerNameDialogViewModel
         InitializeComponent();
         this.WhenActivated(d =>
         {
+            this.NewNameTextBox.Focus();
             this.BindValidation(ViewModel, vm => vm.PlayerName, v => v.NewNameValidation.Text).DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.IsRename, v => v.CancelButton.IsEnabled).DisposeWith(d);
             CancelButton.Click += (_, _) => Close(null);
