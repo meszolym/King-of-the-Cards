@@ -51,7 +51,7 @@ namespace KC.Frontend.Client.ViewModels
             this.HostScreen = hostScreen;
             Id = session.Id;
             BettingPhase = session.CanPlaceBets;
-            Boxes = new ObservableCollection<BoxViewModel>(session.Table.BettingBoxes.Select(x => new BoxViewModel(Id, x, session.CanPlaceBets)));
+            Boxes = new ObservableCollection<BoxViewModel>(session.Table.BettingBoxes.OrderByDescending(b => b.BoxIdx).Select(b => new BoxViewModel(Id, b, session.CurrentTurnInfo, session.CanPlaceBets)));
             Dealer = new DealerViewModel(session.Table.DealerVisibleCards);
             
             ExternalCommunicatorService.SignalREvents.BettingTimerTicked.ObserveOn(RxApp.MainThreadScheduler)
