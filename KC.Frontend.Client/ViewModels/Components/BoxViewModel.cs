@@ -39,7 +39,8 @@ public partial class BoxViewModel : ReactiveObject
     private bool _isClaimed;
 
     private readonly ExternalCommunicatorService _externalCommunicator;
-    public int BoxIdx { get; }
+    private readonly int _boxIdx;
+
     
     [Reactive]
     private bool _bettingPhase = true;
@@ -70,7 +71,7 @@ public partial class BoxViewModel : ReactiveObject
     {
         try
         {
-            await _externalCommunicator.ClaimBox(_sessionId, BoxIdx, ClientMacAddressHandler.PrimaryMacAddress);
+            await _externalCommunicator.ClaimBox(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress);
             PlayerName = LocalPlayer.PlayerName;
             OwnerId = LocalPlayer.Id;
             IsClaimed = true;
@@ -90,7 +91,7 @@ public partial class BoxViewModel : ReactiveObject
         try
         {
             RightHand.BetAmount = 0; //This goes through UpdateBetAmount (and thus the server) as it is bound to the UI!
-            await _externalCommunicator.DisclaimBox(_sessionId, BoxIdx, ClientMacAddressHandler.PrimaryMacAddress);
+            await _externalCommunicator.DisclaimBox(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress);
             PlayerName = "Unclaimed";
             OwnerId = Guid.Empty;
             IsClaimed = false;
@@ -106,7 +107,7 @@ public partial class BoxViewModel : ReactiveObject
     public BoxViewModel(Guid sessionId, BettingBoxReadDto sourceDto, bool bettingPhase)
     {
         _sessionId = sessionId;
-        BoxIdx = sourceDto.BoxIdx;
+        _boxIdx = sourceDto.BoxIdx;
         var hands = sourceDto.Hands.ToImmutableArray();
         RightHand = new HandViewModel(hands[0]);
         LeftHand = hands.Length > 1 ?  new HandViewModel(hands[1]) : new HandViewModel();
@@ -118,7 +119,7 @@ public partial class BoxViewModel : ReactiveObject
 
         ExternalCommunicatorService.SignalREvents.BoxOwnerChanged.ObserveOn(RxApp.MainThreadScheduler).Subscribe(dto =>
         {
-            if (dto.BoxIdx != BoxIdx) return;
+            if (dto.BoxIdx != _boxIdx) return;
             
             if (dto.OwnerId == Guid.Empty)
             {
@@ -137,11 +138,17 @@ public partial class BoxViewModel : ReactiveObject
         
         ExternalCommunicatorService.SignalREvents.BetUpdated.ObserveOn(RxApp.MainThreadScheduler).Subscribe(dto =>
         {
-            if (dto.BoxIdx != BoxIdx || dto.Hands.Count() > 1) return;
+            if (dto.BoxIdx != _boxIdx || dto.Hands.Count() > 1) return;
             
             RightHand.BetAmount = (decimal)dto.Hands.First().Bet;
             
         });
+        
+        ExternalCommunicatorService.SignalREvents.BettingTimerElapsed.ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => BettingPhase = false);
+        
+        ExternalCommunicatorService.SignalREvents.HandsUpdated.ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(s => UpdateHands(s.Table.BettingBoxes.First(b => b.BoxIdx == _boxIdx)));
     }
 
     private readonly Guid _sessionId;
@@ -173,11 +180,9 @@ public partial class BoxViewModel : ReactiveObject
         if (newVal is null) return false;
         if (oldVal == newVal) return true;
         
-        
-
         try
         {
-            await _externalCommunicator.UpdateBet(_sessionId, BoxIdx, ClientMacAddressHandler.PrimaryMacAddress, (double) newVal);
+            await _externalCommunicator.UpdateBet(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress, (double) newVal);
             return true;
         }
         catch (Exception e)
@@ -188,7 +193,7 @@ public partial class BoxViewModel : ReactiveObject
         }
     }
 
-    public void UpdateHands(BettingBoxReadDto boxDto)
+    private void UpdateHands(BettingBoxReadDto boxDto)
     {
         ImmutableArray<HandReadDto> hands = [..boxDto.Hands];
         if (hands.Length > 0)

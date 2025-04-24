@@ -61,21 +61,8 @@ namespace KC.Frontend.Client.ViewModels
             ExternalCommunicatorService.SignalREvents.BettingTimerStopped.ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(_ => BettingTimeLeft = "Waiting for first bet...");
             
-            //Subscribe to betting timer elapsed (no more bets)
             ExternalCommunicatorService.SignalREvents.BettingTimerElapsed.ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(id =>
-                {
-                    BettingPhase = false;
-                    _boxes.ToList().ForEach(b => b.BettingPhase = false);
-                });
-
-            ExternalCommunicatorService.SignalREvents.HandsUpdated.ObserveOn(RxApp.MainThreadScheduler).Subscribe(s =>
-            {
-                _boxes.ToList().ForEach(boxVm =>
-                    boxVm.UpdateHands(s.Table.BettingBoxes.First(b => b.BoxIdx == boxVm.BoxIdx)));
-                _dealer.UpdateDealer(s.Table.DealerVisibleCards);
-            });
-
+                .Subscribe(_ => BettingPhase = false);
         }
 
         [Reactive]
