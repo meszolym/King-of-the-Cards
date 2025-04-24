@@ -27,6 +27,9 @@ partial class SessionView : ReactiveUserControl<SessionViewModel>
             this.OneWayBind(ViewModel, vm => vm.Dealer, v => v.DealerView.ViewModel).DisposeWith(d);
             this.BindCommand(ViewModel, vm => vm.NavBackCommand, v => v.NavBackButton).DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.Id, v => v.SessionIdTextBlock.Text, i => $"Session ID: {i}").DisposeWith(d);
+            this.OneWayBind(ViewModel, vm => vm.BettingPhase, v => v.BetPlacementStackPanel.IsVisible).DisposeWith(d);
+            this.OneWayBind(ViewModel, vm => vm.BettingTimeLeft, v => v.BetTimerTextBlock.Text).DisposeWith(d);
+            
         });
         InitializeComponent();
 

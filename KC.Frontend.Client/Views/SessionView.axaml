@@ -6,7 +6,6 @@
 			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			mc:Ignorable="d"
 			xmlns:rxui="http://reactiveui.net"
-			xmlns:models="using:KC.Frontend.Client.Models"
 			x:Class="KC.Frontend.Client.Views.SessionView"
 			xmlns:comp="using:KC.Frontend.Client.Views.Components"
 			d:DesignHeight="1080" d:DesignWidth="1920" Background="#529848">
@@ -15,7 +14,7 @@
 			<PathIcon Data="{StaticResource arrow_left_regular}" Foreground="White" Width="30" Height="30"/>
 		</Button>
 		<comp:DealerView Grid.Row="0" x:Name="DealerView" Grid.Column="1" />
-		<TextBlock Grid.Column="2" x:Name="SessionIdTextBlock" HorizontalAlignment="Stretch" TextAlignment="Right" Text="SessionId: 123456" Foreground="White" />
+		<TextBlock Grid.Column="2" x:Name="SessionIdTextBlock" HorizontalAlignment="Stretch" TextAlignment="Right" Text="SessionId: 123456" Foreground="White" Margin="3,1"/>
 	
 		<ItemsControl x:Name="BoxesItemsControl" Grid.Row="1" Grid.ColumnSpan="3"
 		              HorizontalAlignment="Stretch">
@@ -26,16 +25,19 @@
 			</ItemsControl.ItemsPanel>
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
-					<!-- Is this okay? -->
 					<comp:BoxView DataContext="{Binding}" HorizontalAlignment="Stretch"/>
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>
 	
+		<StackPanel x:Name="BetPlacementStackPanel" Grid.Row="1" Grid.ColumnSpan="3" VerticalAlignment="Center" Background="#4a8b40" HorizontalAlignment="Center">
+			<TextBlock  Text="Place your bets please!" Foreground="White" FontSize="22" 
+			           TextAlignment="Center" Padding="20,20,20,4" />	
+			<TextBlock x:Name="BetTimerTextBlock" Text="Waiting for first bet..." Foreground="White" FontSize="20" 
+			           TextAlignment="Center" Padding="20,4,20,20"></TextBlock>
+		</StackPanel>
+		
 		<comp:SessionBoxControlsView Grid.Row="2" Grid.Column="1" />
 	</Grid>
-
 	
-		
-		<!--<Button x:Name="NavbackButton">navback</Button>-->
 	</rxui:ReactiveUserControl>

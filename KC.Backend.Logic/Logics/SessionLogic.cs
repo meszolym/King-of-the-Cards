@@ -16,7 +16,7 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
         new CardShoe([.. Enumerable.Range(0, (int)numberOfDecks).SelectMany(i => GetDeck())]);
 
     private static IEnumerable<Card> GetDeck() => Enum.GetValues<Card.CardSuit>().Where(s => s != Card.CardSuit.None)
-        .SelectMany(suit => Enum.GetValues<Card.CardFace>().Select(face => new Card {Face = face, Suit = suit}));
+        .SelectMany(suit => Enum.GetValues<Card.CardFace>().Where(face => face != Card.CardFace.None).Select(face => new Card {Face = face, Suit = suit}));
     
     /// <summary>
     /// Creates an empty session. Make sure to subscribe to events of the timers.
@@ -62,12 +62,19 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
     
     public IEnumerable<Session> GetAll() => sessions;
     
-    public void UpdateBettingTimer(Guid sessionId)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sessionId"></param>
+    /// <returns>Whether the betting timer is enabled after the update.</returns>
+    public bool UpdateBettingTimer(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         if (session.Table.BettingBoxes.Any(b => b.Hands[0].Bet > 0)
             && !session.BettingTimer.Enabled) session.BettingTimer.Start();
         else if (session.BettingTimer.Enabled) session.BettingTimer.Stop();
+        
+        return session.BettingTimer.Enabled;
     }
     
     private IEnumerable<BettingBox> BoxesInPlay(Guid sessionId) =>

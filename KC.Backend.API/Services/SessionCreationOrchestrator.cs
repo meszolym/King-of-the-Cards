@@ -22,7 +22,7 @@ public class SessionCreationOrchestrator(ISessionLogic sessionLogic, IPlayerLogi
         var sess = sessionLogic.CreateSession(DefaultBoxes, DefaultDecks, DefaultShuffleCardPlacement, DefaultShuffleCardRange, TimeSpan.FromSeconds(DefaultBettingTimeSpanSecs), TimeSpan.FromSeconds(DefaultSessionDestructionTimeSpanSecs));
         sess.DestructionTimer.Elapsed += async (sender, args) => await OnDestructionTimerElapsed(sess.Id);
         await hub.SendMessageToGroupAsync(hub.BaseGroup, SignalRMethods.SessionCreated, sess.ToDto(g => playerLogic.Get(g).Name));
-        sess.BettingTimer.Tick += async (sender, args) => await OnBettingTimerTicked(sess.Id);
+        sess.BettingTimer.Tick += async (sender, args) => await OnBettingTimerTicked(sess.Id, sess.BettingTimer.RemainingSeconds);
         sess.BettingTimer.Elapsed += async (sender, args) => await OnBettingTimerElapsed(sess.Id);
     }
 
@@ -33,7 +33,7 @@ public class SessionCreationOrchestrator(ISessionLogic sessionLogic, IPlayerLogi
         var session = sessionLogic.Get(sessId);
         await hub.SendMessageToGroupAsync(sessId.ToString(), SignalRMethods.HandsUpdated, session.ToDto(g => playerLogic.Get(g).Name));
     }
-    private async Task OnBettingTimerTicked(Guid sessionId) => await hub.SendMessageToGroupAsync(sessionId.ToString(), SignalRMethods.BettingTimerTicked, sessionId);
+    private async Task OnBettingTimerTicked(Guid sessionId, int remainingSeconds) => await hub.SendMessageToGroupAsync(sessionId.ToString(), SignalRMethods.BettingTimerTicked, (sessionId, remainingSeconds));
     
     private async Task OnDestructionTimerElapsed(Guid id)
     {

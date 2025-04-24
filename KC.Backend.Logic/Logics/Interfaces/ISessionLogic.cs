@@ -7,21 +7,28 @@ namespace KC.Backend.Logic.Logics.Interfaces;
 public interface ISessionLogic
 {
     /// <summary>
-    /// Creates an empty session. Make sure to subscribe to events of the timer.
+    /// Creates an empty session. Make sure to subscribe to events of the timers.
     /// </summary>
     /// <param name="numberOfBoxes"></param>
     /// <param name="numberOfDecks"></param>
-    /// <param name="shuffleCardPlacement">The placement of the suffle card. If negative, it is counted from the end of the deck backwards.</param>
+    /// <param name="shuffleCardPlacement"></param>
     /// <param name="shuffleCardRange"></param>
     /// <param name="bettingTimeSpan"></param>
     /// <param name="random"></param>
     /// <returns></returns>
     Session CreateSession(uint numberOfBoxes, uint numberOfDecks, int shuffleCardPlacement, uint shuffleCardRange, TimeSpan bettingTimeSpan, TimeSpan sessionDestructionTimeSpan, Random? random = null);
 
+    Session RemoveSession(Guid sessId);
     Session Get(Guid sessionId);
     IEnumerable<Session> GetAll();
-    Session RemoveSession(Guid sessionId);
-    void UpdateBettingTimer(Guid sessionId);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sessionId"></param>
+    /// <returns>Whether the betting timer is enabled after the update.</returns>
+    bool UpdateBettingTimer(Guid sessionId);
+
     void TransferTurn(Guid sessionId);
     void FinishAllHandsInPlay(Guid sessionId);
 

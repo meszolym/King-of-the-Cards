@@ -24,6 +24,9 @@ public class BetOrchestrator(IBettingBoxLogic bettingBoxLogic, IPlayerLogic play
         var dtoToSend = bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name);
         await hub.SendMessageToGroupAsync(dto.SessionId.ToString(), SignalRMethods.BetUpdated, dtoToSend);
         
-        sessionLogic.UpdateBettingTimer(dto.SessionId);
+        var running = sessionLogic.UpdateBettingTimer(dto.SessionId);
+
+        if (!running)
+            await hub.SendMessageAsync(dto.SessionId.ToString(), SignalRMethods.BettingTimerStopped, dto.SessionId);
     }
 }

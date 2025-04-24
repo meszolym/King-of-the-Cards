@@ -39,22 +39,35 @@ namespace KC.Frontend.Client.ViewModels
             await HostScreen.Router.NavigateBack.Execute();
         }
 
+        [Reactive]
+        private bool _bettingPhase;
+
+        [Reactive]
+        private string _bettingTimeLeft = "Waiting for first bet...";
+        
         public SessionViewModel(IScreen hostScreen, SessionReadDto session)
         {
             this.HostScreen = hostScreen;
             Id = session.Id;
+            BettingPhase = session.CanPlaceBets;
             Boxes = new ObservableCollection<BoxViewModel>(session.Table.BettingBoxes.Select(x => new BoxViewModel(Id, x, session.CanPlaceBets)));
             Dealer = new DealerViewModel(session.Table.DealerVisibleCards);
             _player = Locator.Current.GetRequiredService<PlayerViewModel>();
             _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
             
-            //Subscribe to tick (TODO: should let user know how long they have to bet at a later time)
             ExternalCommunicatorService.SignalREvents.BettingTimerTicked.ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(_ => { });
+                .Subscribe(dto => BettingTimeLeft = $"Time left: {dto.remainingSeconds} seconds");
+
+            ExternalCommunicatorService.SignalREvents.BettingTimerStopped.ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => BettingTimeLeft = "Waiting for first bet...");
             
             //Subscribe to betting timer elapsed (no more bets)
             ExternalCommunicatorService.SignalREvents.BettingTimerElapsed.ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(id => _boxes.ToList().ForEach(b => b.BettingPhase = false));
+                .Subscribe(id =>
+                {
+                    BettingPhase = false;
+                    _boxes.ToList().ForEach(b => b.BettingPhase = false);
+                });
 
             ExternalCommunicatorService.SignalREvents.HandsUpdated.ObserveOn(RxApp.MainThreadScheduler).Subscribe(s =>
             {

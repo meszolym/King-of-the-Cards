@@ -17,8 +17,9 @@ public partial class ExternalCommunicatorService
         public static IObservable<SessionReadDto> SessionCreated => SessionCreatedSubject.AsObservable();
         public static IObservable<Guid> SessionDeleted => SessionDeletedSubject.AsObservable();
         public static IObservable<PlayerReadDto> PlayerBalanceUpdated => PlayerBalanceUpdatedSubject.AsObservable();
-        public static IObservable<Guid> BettingTimerTicked => BettingTimerTickedSubject.AsObservable();
+        public static IObservable<(Guid sessionId, int remainingSeconds)> BettingTimerTicked => BettingTimerTickedSubject.AsObservable();
         public static IObservable<Guid> BettingTimerElapsed => BettingTimerElapsedSubject.AsObservable();
+        public static IObservable<Guid> BettingTimerStopped => BettingTimerStoppedSubject.AsObservable();
         public static IObservable<SessionReadDto> HandsUpdated => HandsUpdatedSubject.AsObservable();
         public static IObservable<BettingBoxReadDto> BetUpdated => BetUpdatedSubject.AsObservable();
         public static IObservable<BettingBoxReadDto> BoxOwnerChanged => BoxOwnerChangedSubject.AsObservable();
@@ -27,8 +28,9 @@ public partial class ExternalCommunicatorService
         private static readonly Subject<SessionReadDto> SessionCreatedSubject = new();
         private static readonly Subject<Guid> SessionDeletedSubject = new();
         private static readonly Subject<PlayerReadDto> PlayerBalanceUpdatedSubject = new();
-        private static readonly Subject<Guid> BettingTimerTickedSubject = new();
+        private static readonly Subject<(Guid sessionId, int remainingSeconds)> BettingTimerTickedSubject = new();
         private static readonly Subject<Guid> BettingTimerElapsedSubject = new();
+        private static readonly Subject<Guid> BettingTimerStoppedSubject = new();
         private static readonly Subject<SessionReadDto> HandsUpdatedSubject = new();
         private static readonly Subject<BettingBoxReadDto> BetUpdatedSubject = new();
         private static readonly Subject<BettingBoxReadDto> BoxOwnerChangedSubject = new();
@@ -42,6 +44,7 @@ public partial class ExternalCommunicatorService
             conn.On(SignalRMethods.PlayerBalanceUpdated, dto => PlayerBalanceUpdatedSubject.OnNext(dto));
             conn.On(SignalRMethods.BettingTimerTicked, id => BettingTimerTickedSubject.OnNext(id));
             conn.On(SignalRMethods.BettingTimerElapsed, id => BettingTimerElapsedSubject.OnNext(id));
+            conn.On(SignalRMethods.BettingTimerStopped, id => BettingTimerStoppedSubject.OnNext(id));
             conn.On(SignalRMethods.HandsUpdated, dto => HandsUpdatedSubject.OnNext(dto));
             conn.On(SignalRMethods.BetUpdated, dto => BetUpdatedSubject.OnNext(dto));
             conn.On(SignalRMethods.BoxOwnerChanged, dto => BoxOwnerChangedSubject.OnNext(dto));
