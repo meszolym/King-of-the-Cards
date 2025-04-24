@@ -26,6 +26,9 @@ namespace KC.Frontend.Client.ViewModels
         [Reactive]
         private DealerViewModel _dealer;
 
+        [Reactive]
+        private SessionBoxControlsViewModel _controls;
+        
         private readonly ExternalCommunicatorService _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
 
         private IObservable<bool> CanGoBack => BoxViewModel.BoxClaimStatusChanged.Select(_ =>
@@ -53,6 +56,7 @@ namespace KC.Frontend.Client.ViewModels
             BettingPhase = session.CanPlaceBets;
             Boxes = new ObservableCollection<BoxViewModel>(session.Table.BettingBoxes.OrderByDescending(b => b.BoxIdx).Select(b => new BoxViewModel(Id, b, session.CurrentTurnInfo, session.CanPlaceBets)));
             Dealer = new DealerViewModel(session.Table.DealerVisibleCards);
+            Controls = new SessionBoxControlsViewModel();
             
             ExternalCommunicatorService.SignalREvents.BettingTimerTicked.ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(dto => BettingTimeLeft = $"Time left: {dto.remainingSeconds} seconds");

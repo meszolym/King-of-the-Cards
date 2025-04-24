@@ -15,8 +15,8 @@ public class ClientCommunicator(IHubContext<SignalRHub> hubContext, IDictionary<
             await hubContext.Groups.RemoveFromGroupAsync(connectionId, oldGroup);
             ConnectionsAndGroups.Remove(connectionId, out var _);
         }
-
-        if (group is null) return;
+        
+        group ??= string.Empty; // Default to empty string if null (disconnect)
         
         ConnectionsAndGroups.TryAdd(connectionId, group);
         await hubContext.Groups.AddToGroupAsync(connectionId, group);

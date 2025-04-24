@@ -13,7 +13,7 @@
 		<Button x:Name="NavBackButton" VerticalAlignment="Top" Padding="30" Foreground="White">
 			<PathIcon Data="{StaticResource arrow_left_regular}" Foreground="White" Width="30" Height="30"/>
 		</Button>
-		<comp:DealerView Grid.Row="0" x:Name="DealerView" Grid.Column="1" />
+		<comp:DealerView Grid.Row="0" Grid.Column="1" x:Name="DealerView"/>
 		<TextBlock Grid.Column="2" x:Name="SessionIdTextBlock" HorizontalAlignment="Stretch" TextAlignment="Right" Text="SessionId: 123456" Foreground="White" Margin="3,1"/>
 	
 		<ItemsControl x:Name="BoxesItemsControl" Grid.Row="1" Grid.ColumnSpan="3"
@@ -37,7 +37,7 @@
 			           TextAlignment="Center" Padding="20,4,20,20"></TextBlock>
 		</StackPanel>
 		
-		<comp:SessionBoxControlsView Grid.Row="2" Grid.Column="1" />
+		<comp:SessionBoxControlsView Grid.Row="2" Grid.Column="1" x:Name="ControlsView"/>
 	</Grid>
 	
 	</rxui:ReactiveUserControl>
