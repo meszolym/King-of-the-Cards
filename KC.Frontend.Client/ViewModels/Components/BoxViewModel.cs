@@ -65,7 +65,7 @@ public partial class BoxViewModel : ReactiveObject
     private static readonly Subject<Unit> BoxClaimStatusChangedSub = new Subject<Unit>();
     public static IObservable<Unit> BoxClaimStatusChanged => BoxClaimStatusChangedSub.AsObservable();
 
-    [ReactiveCommand(CanExecute = nameof(BettingPhase))]
+    [ReactiveCommand(CanExecute = nameof(BettingPhaseObs))]
     private async Task ClaimBox()
     {
         try
@@ -84,7 +84,7 @@ public partial class BoxViewModel : ReactiveObject
         }
     }   
 
-    [ReactiveCommand(CanExecute = nameof(BettingPhase))]
+    [ReactiveCommand(CanExecute = nameof(BettingPhaseObs))]
     private async Task DisclaimBox()
     {
         try
@@ -102,7 +102,7 @@ public partial class BoxViewModel : ReactiveObject
             Debug.WriteLine(e.Message + "at DisclaimBox in BoxViewModel");
         }
     }
-    public PlayerViewModel LocalPlayer => Locator.Current.GetRequiredService<PlayerViewModel>();
+    public static PlayerViewModel LocalPlayer => Locator.Current.GetRequiredService<PlayerViewModel>();
     public BoxViewModel(Guid sessionId, BettingBoxReadDto sourceDto)
     {
         _sessionId = sessionId;
@@ -114,7 +114,25 @@ public partial class BoxViewModel : ReactiveObject
         IsSplit = false;
         PlayerName = "Unclaimed";
         _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
-        
+
+        ExternalCommunicatorService.SignalREvents.BoxOwnerChanged.ObserveOn(RxApp.MainThreadScheduler).Subscribe(dto =>
+        {
+            if (dto.BoxIdx != _boxIdx) return;
+            
+            if (dto.OwnerId == Guid.Empty)
+            {
+                PlayerName = "Unclaimed";
+                OwnerId = Guid.Empty;
+                IsClaimed = false;
+            }
+            else
+            {
+                PlayerName = dto.OwnerName;
+                OwnerId = dto.OwnerId;
+                IsClaimed = true;
+            }
+            
+        });
     }
 
     private readonly Guid _sessionId;

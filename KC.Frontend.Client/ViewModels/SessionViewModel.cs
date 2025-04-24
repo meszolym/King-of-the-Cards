@@ -43,7 +43,7 @@ namespace KC.Frontend.Client.ViewModels
         {
             this.HostScreen = hostScreen;
             Id = session.Id;
-            Boxes = new(session.Table.BettingBoxes.Select(x => new BoxViewModel(Id, x)));
+            Boxes = new ObservableCollection<BoxViewModel>(session.Table.BettingBoxes.Select(x => new BoxViewModel(Id, x)));
             Dealer = new DealerViewModel(session.Table.DealerVisibleCards);
             _player = Locator.Current.GetRequiredService<PlayerViewModel>();
             _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
@@ -54,23 +54,16 @@ namespace KC.Frontend.Client.ViewModels
             
             //Subscribe to betting timer elapsed (no more bets)
             ExternalCommunicatorService.SignalREvents.BettingTimerElapsed.ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(id =>
-                {
-                    if (id != Id) return;
-                    
-                    foreach (var box in _boxes)
-                    {
-                        box.BettingPhase = false;
-                    }
-                });
+                .Subscribe(id => _boxes.ToList().ForEach(b => b.BettingPhase = false));
         }
-        
-        public Guid Id { get; set; }
+
+        [Reactive]
+        private Guid _id;
 
         public string? UrlPathSegment { get; } = "session";
 
         public IScreen HostScreen { get; }
 
-        private PlayerViewModel _player;
+        private readonly PlayerViewModel _player;
     }
 }

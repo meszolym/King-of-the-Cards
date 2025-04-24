@@ -20,7 +20,7 @@ public class BetOrchestrator(IBettingBoxLogic bettingBoxLogic, IPlayerLogic play
         playerLogic.UpdateBalance(dto.OwnerMac, player.Balance - (dto.Amount - alreadyPlaced));
         
         hub.SendMessageAsync(player.ConnectionId, "PlayerBalanceUpdated", player.ToDto());
-        hub.SendMessageAsync(dto.SessionId.ToString(), "BetUpdated", bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto());
+        hub.SendMessageAsync(dto.SessionId.ToString(), "BetUpdated", bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name));
         
         sessionLogic.UpdateBettingTimer(dto.SessionId);
     }

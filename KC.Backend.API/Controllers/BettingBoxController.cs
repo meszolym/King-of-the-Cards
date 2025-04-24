@@ -9,14 +9,14 @@ namespace KC.Backend.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IBetOrchestrator betOrchestrator, IClientCommunicator hub) : Controller
+public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic playerLogic, IBetOrchestrator betOrchestrator, IClientCommunicator hub) : Controller
 {
     [HttpPost]
     [Route("claim-box")]
     public void ClaimBox([FromBody] BoxOwnerUpdateDto dto)
     {
         bettingBoxLogic.ClaimBettingBox(dto.SessionId, dto.BoxIdx, dto.OwnerMac);
-        hub.SendMessageToGroupAsync(dto.SessionId.ToString(), "BoxOwnerChanged", bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto());
+        hub.SendMessageToGroupAsync(dto.SessionId.ToString(), "BoxOwnerChanged", bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name));
     }
 
     [HttpDelete]
@@ -24,7 +24,7 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IBetOrchestr
     public void DisclaimBox([FromBody] BoxOwnerUpdateDto dto)
     {
         bettingBoxLogic.DisclaimBettingBox(dto.SessionId, dto.BoxIdx, dto.OwnerMac);
-        hub.SendMessageToGroupAsync(dto.SessionId.ToString(), "BoxOwnerChanged", bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto());
+        hub.SendMessageToGroupAsync(dto.SessionId.ToString(), "BoxOwnerChanged", bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name));
     }
 
     [HttpPut]

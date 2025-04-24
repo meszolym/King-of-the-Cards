@@ -18,10 +18,10 @@ namespace KC.Backend.API.Controllers;
 public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLogic, ISessionCreationOrchestrator sessionCreationOrchestrator, IClientCommunicator hub) : Controller
 {
     [HttpGet]
-    public IEnumerable<SessionReadDto> GetAllSessions() => sessionLogic.GetAll().Select(s => s.ToDto());
+    public IEnumerable<SessionReadDto> GetAllSessions() => sessionLogic.GetAll().Select(s => s.ToDto(g => playerLogic.Get(g).Name));
 
     [HttpGet("{id:guid}")]
-    public SessionReadDto GetSession(Guid id) => sessionLogic.Get(id).ToDto();
+    public SessionReadDto GetSession(Guid id) => sessionLogic.Get(id).ToDto(g => playerLogic.Get(g).Name);
 
     [HttpPost]
     [Route("join")]
