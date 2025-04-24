@@ -112,8 +112,8 @@ public partial class BoxViewModel : ReactiveObject
         LeftHand = hands.Length > 1 ?  new HandViewModel(hands[1]) : new HandViewModel();
         BettingPhase = bettingPhase;
         
-        IsSplit = false;
-        PlayerName = "Unclaimed";
+        IsSplit = hands.Length > 1;
+        PlayerName = sourceDto.OwnerName;
         _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
 
         ExternalCommunicatorService.SignalREvents.BoxOwnerChanged.ObserveOn(RxApp.MainThreadScheduler).Subscribe(dto =>

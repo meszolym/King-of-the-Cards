@@ -57,8 +57,11 @@ namespace KC.Frontend.Client.ViewModels
                 .Subscribe(id => _boxes.ToList().ForEach(b => b.BettingPhase = false));
 
             ExternalCommunicatorService.SignalREvents.HandsUpdated.ObserveOn(RxApp.MainThreadScheduler).Subscribe(s =>
+            {
                 _boxes.ToList().ForEach(boxVm =>
-                    boxVm.UpdateHands(s.Table.BettingBoxes.First(b => b.BoxIdx == boxVm.BoxIdx))));
+                    boxVm.UpdateHands(s.Table.BettingBoxes.First(b => b.BoxIdx == boxVm.BoxIdx)));
+                _dealer.UpdateDealer(s.Table.DealerVisibleCards);
+            });
 
         }
 

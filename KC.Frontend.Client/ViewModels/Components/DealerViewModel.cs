@@ -14,4 +14,10 @@ public partial class DealerViewModel : ReactiveObject
     public DealerViewModel(IEnumerable<Card> tableDealerVisibleCards) => Cards.AddRange(tableDealerVisibleCards.Select(c => new CardViewModel(c)));
     
     public void AddCard(Card card) => Cards.Add(new CardViewModel(card));
+
+    public void UpdateDealer(IEnumerable<Card> tableDealerVisibleCards)
+    {
+        Cards.Clear();
+        tableDealerVisibleCards.ToList().ForEach(c => Cards.Add(new CardViewModel(c)));
+    }
 }
