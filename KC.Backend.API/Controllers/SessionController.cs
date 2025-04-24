@@ -2,6 +2,8 @@ using System.Diagnostics;
 using KC.Backend.API.Services;
 using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Interfaces;
+using KC.Backend.Logic.Services.Interfaces;
+using KC.Backend.Models.GameManagement;
 using KC.Frontend.Client.Services;
 using KC.Shared.Models.Dtos;
 using KC.Shared.Models.Misc;
@@ -12,7 +14,7 @@ namespace KC.Backend.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLogic, IClientCommunicator hub) : Controller
+public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLogic, ISessionTerminatorService sessionTerminatorService, IClientCommunicator hub) : Controller
 {
     
     
@@ -47,8 +49,8 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     private const int DefaultShuffleCardPlacement = -40;
     private const uint DefaultShuffleCardRange = 10;
     private const uint DefaultBettingTimeSpanSecs = 15;
-    private const uint DefaultSessionDestructionTimeSpanSecs = 10; 
-    //private const uint DefaultSessionDestructionTimeSpanSecs = 5*60; // 5 minutes
+    //private const uint DefaultSessionDestructionTimeSpanSecs = 10; 
+    private const uint DefaultSessionDestructionTimeSpanSecs = 5*60; // 5 minutes
     
     [HttpPost]
     [Route("create")]
@@ -57,30 +59,31 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
         var sess = sessionLogic.CreateSession(DefaultBoxes, DefaultDecks, DefaultShuffleCardPlacement, DefaultShuffleCardRange, TimeSpan.FromSeconds(DefaultBettingTimeSpanSecs), TimeSpan.FromSeconds(DefaultSessionDestructionTimeSpanSecs));
         sess.DestructionTimer.Elapsed += async (sender, args) => await OnDestructionTimerElapsed(sess.Id);
         hub.SendMessageToGroupAsync("lobby", "SessionCreated", sess.ToDto());
+        sess.BettingTimer.Tick += async (sender, args) => await OnBettingTimerTicked(sess.Id);
+        sess.BettingTimer.Elapsed += async (sender, args) => await OnBettingTimerElapsed(sess.Id);
     }
 
+    private async Task OnBettingTimerElapsed(Guid sessId) => await hub.SendMessageToGroupAsync(sessId.ToString(), "BettingTimerElapsed", sessId);
+
+    private async Task OnBettingTimerTicked(Guid sessionId) => await hub.SendMessageToGroupAsync(sessionId.ToString(), "BettingTimerTicked", sessionId);
+    
     private async Task OnDestructionTimerElapsed(Guid id)
     {
-        var destroyedSession = sessionLogic.RemoveSession(id);
-        
+        var refundedPlayers = sessionTerminatorService.RefundAndRemoveSession(id).Select(playerLogic.Get).ToList();
+
         var connected = hub.ConnectionsAndGroups.Where(x => x.Value == id.ToString()).ToList();
         foreach (var conn in connected)
         {
             await hub.MoveToGroupAsync(conn.Key, "lobby");
         }
         await hub.SendMessageToGroupAsync("lobby", "SessionDeleted", id);
-
-        foreach (var box in destroyedSession.Table.BettingBoxes)
+        
+        foreach (var p in refundedPlayers)
         {
-            if (box.OwnerId == MacAddress.None) continue;
-            
-            var p = playerLogic.Get(box.OwnerId);
-            foreach (var hand in box.Hands)
-            {
-                if (hand.Bet > 0)
-                    playerLogic.UpdateBalance(box.OwnerId, p.Balance+hand.Bet);
-            }
             await hub.SendMessageAsync(p.ConnectionId, "PlayerBalanceUpdated", p.ToDto());
         }
+        
+
+
     }
 }

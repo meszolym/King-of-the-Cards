@@ -21,7 +21,7 @@ public interface ISessionLogic
     Session Get(Guid sessionId);
     IEnumerable<Session> GetAll();
     Session RemoveSession(Guid sessionId);
-    void UpdateTimer(Guid sessionId);
+    void UpdateBettingTimer(Guid sessionId);
     void TransferTurn(Guid sessionId);
     void FinishAllHandsInPlay(Guid sessionId);
 

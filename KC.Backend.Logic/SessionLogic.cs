@@ -62,27 +62,8 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
     public Session Get(Guid sessionId) => sessions.Single(s => s.Id == sessionId);
     
     public IEnumerable<Session> GetAll() => sessions;
-
-    // public bool PurgeOldSessions(TimeSpan oldTimeSpan)
-    // {
-    //     var purgableSessionIds = sessions
-    //         .Where(s => DateTime.Now - s.LastMoveMadeAt > oldTimeSpan)
-    //         .Select(s => s.Id);
-    //
-    //     if (!purgableSessionIds.Any())
-    //     {
-    //         return false;
-    //     }
-    //     
-    //     foreach (var sessionId in purgableSessionIds)
-    //     {
-    //         sessions.Remove(sessions.Single(s => s.Id == sessionId));
-    //     }
-    //
-    //     return true;
-    // }
     
-    public void UpdateTimer(Guid sessionId)
+    public void UpdateBettingTimer(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         if (session.Table.BettingBoxes.Any(b => b.Hands[0].Bet > 0)

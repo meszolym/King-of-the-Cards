@@ -2,6 +2,8 @@ using KC.Backend.API.Services;
 using Microsoft.AspNetCore.Diagnostics;
 using KC.Backend.Logic;
 using KC.Backend.Logic.Interfaces;
+using KC.Backend.Logic.Services;
+using KC.Backend.Logic.Services.Interfaces;
 using KC.Backend.Models;
 using KC.Backend.Models.GameItems;
 using KC.Backend.Models.GameManagement;
@@ -39,6 +41,7 @@ namespace KC.Backend.API
             builder.Services.AddTransient<IPlayerLogic, PlayerLogic>();
             builder.Services.AddTransient<IRuleBook, RuleBook>();
             builder.Services.AddTransient<ISessionLogic, SessionLogic>();
+            builder.Services.AddTransient<ISessionTerminatorService, SessionTerminatorService>();
             
             builder.Services.AddSignalR().AddNewtonsoftJsonProtocol();
             builder.Services.AddTransient<IClientCommunicator, SignalRHub>();
