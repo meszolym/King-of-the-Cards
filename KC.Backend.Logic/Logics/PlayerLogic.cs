@@ -9,24 +9,34 @@ using KC.Shared.Models.Misc;
 namespace KC.Backend.Logic.Logics;
 
 //This is done.
-public class PlayerLogic(IList<Player> players) : IPlayerLogic
+public class PlayerLogic(IList<Player> players, IDictionary<MacAddress, Guid> macToPlayerGuid) : IPlayerLogic
 {
-    public static double DefaultBalance { get; set; } = 500;
-    public void AddPlayer(Player player) => players.Add(player.WithBalance(DefaultBalance));
-    
-    public void RemovePlayer(MacAddress playerId) => players.Remove(players.Single(p => p.Mac == playerId));
-    
-    public Player Get(MacAddress playerId) => players.Single(p => p.Mac == playerId);
-    
-    public void UpdateName(MacAddress playerId, string name) => players.Single(p => p.Mac == playerId).Name = name;
+    private static double DefaultBalance { get; set; } = 500;
 
-    public void UpdateBalance(MacAddress playerId, double balance)
+    public void AddPlayer(MacAddress mac, Player player)
+    {
+        var p = player.WithBalance(DefaultBalance);
+        players.Add(p);
+        macToPlayerGuid.Add(mac, p.Id);
+    }
+    
+    public void RemovePlayer(MacAddress playerId) => players.Remove(players.Single(p => p.Id == macToPlayerGuid[playerId]));
+    
+    public Player Get(MacAddress playerId) => players.Single(p => p.Id == macToPlayerGuid[playerId]);
+    
+    public Player Get(Guid playerId) => players.Single(p => p.Id == playerId);
+    
+    public void UpdateName(MacAddress playerId, string name) => players.Single(p => p.Id == macToPlayerGuid[playerId]).Name = name;
+
+    public void UpdateBalance(MacAddress playerId, double balance) => UpdateBalance(macToPlayerGuid[playerId], balance);
+
+    public void UpdateBalance(Guid playerId, double balance)
     {
         if (balance < 0)
             throw new ArgumentException("Player balance can not be negative.");
         
-        players.Single(p => p.Mac == playerId).Balance = balance;
+        players.Single(p => p.Id == playerId).Balance = balance;
     }
-    
-    public void UpdatePlayerConnectionId(MacAddress playerId, string connectionId) => players.Single(p => p.Mac == playerId).ConnectionId = connectionId;
+
+    public void UpdatePlayerConnectionId(MacAddress playerId, string connectionId) => players.Single(p => p.Id == macToPlayerGuid[playerId]).ConnectionId = connectionId;
 }

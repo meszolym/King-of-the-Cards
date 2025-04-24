@@ -20,7 +20,7 @@ public class PlayerController(IPlayerLogic playerLogic) : Controller
     // public void AddPlayer([FromBody] PlayerDto playerDto) => playerLogic.AddPlayer(playerDto.ToModel());
 
     [HttpPost] 
-    public void AddPlayer([FromBody] PlayerRegisterDto dto) => playerLogic.AddPlayer(dto.ToDomain());
+    public void AddPlayer([FromBody] PlayerRegisterDto dto) => playerLogic.AddPlayer(dto.Mac,dto.ToDomain());
 
     [HttpPut]
     [Route("update-conn-id")]

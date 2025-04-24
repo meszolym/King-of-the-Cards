@@ -34,10 +34,14 @@ namespace KC.Backend.API
 
             List<Player> players = [];
             List<Session> sessions = [];
+            Dictionary<MacAddress, Guid> macToPlayerId = [];
             
+            //repositories
             builder.Services.AddSingleton<IList<Player>>(players);
             builder.Services.AddSingleton<IList<Session>>(sessions);
+            builder.Services.AddSingleton<IDictionary<MacAddress, Guid>>(macToPlayerId);
             
+            //logic layer
             builder.Services.AddTransient<IBettingBoxLogic, BettingBoxLogic>();
             builder.Services.AddTransient<IGamePlayLogic, GamePlayLogic>();
             builder.Services.AddTransient<IPlayerLogic, PlayerLogic>();
@@ -45,8 +49,10 @@ namespace KC.Backend.API
             builder.Services.AddTransient<ISessionLogic, SessionLogic>();
             builder.Services.AddTransient<ISessionTerminatorService, SessionTerminatorService>();
             
+            //other services in API layer
             builder.Services.AddSignalR().AddNewtonsoftJsonProtocol();
             builder.Services.AddSingleton<IClientCommunicator, SignalRHub>();
+            builder.Services.AddTransient<ISessionCreationOrchestrator, SessionCreationOrchestrator>();
 
             var app = builder.Build();
             

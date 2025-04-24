@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using KC.Frontend.Client.Models;
 using KC.Shared.Models.Dtos;
@@ -10,7 +11,7 @@ public static class ConversionExtensions
     public static SessionListItem ToSessionListItem(this SessionReadDto s) =>
         new()
         {
-            Id = s.Id, CurrentOccupancy = s.Table.BettingBoxes.Count(b => b.OwnerId != MacAddress.None),
+            Id = s.Id, CurrentOccupancy = s.Table.BettingBoxes.Count(b => b.OwnerId != Guid.Empty),
             MaxOccupancy = s.Table.BettingBoxes.Count()
         };
 }

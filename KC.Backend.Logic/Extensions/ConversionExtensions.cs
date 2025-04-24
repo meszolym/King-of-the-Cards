@@ -7,7 +7,7 @@ namespace KC.Backend.Logic.Extensions;
 
 public static class ConversionExtensions
 {
-    public static Player ToDomain(this PlayerRegisterDto registerDto) => new Player(registerDto.Mac, registerDto.Name, 0, string.Empty);
+    public static Player ToDomain(this PlayerRegisterDto registerDto) => new Player(registerDto.Name, 0, string.Empty);
 
     public static PlayerReadDto ToDto(this Player player) => new PlayerReadDto(player.Id, player.Name, player.Balance);
     public static HandReadDto ToDto(this Hand hand) => new HandReadDto(hand.Cards, hand.Bet);

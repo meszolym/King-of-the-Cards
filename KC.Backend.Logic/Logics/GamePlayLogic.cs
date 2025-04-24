@@ -11,7 +11,7 @@ using KC.Shared.Models.Misc;
 namespace KC.Backend.Logic.Logics;
 
 //TODO: Make the logic more atomic, chaining them together will be handled by the API layer.
-public class GamePlayLogic(IList<Session> sessions, IRuleBook ruleBook) : IGamePlayLogic
+public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid> macToPlayerGuid, IRuleBook ruleBook) : IGamePlayLogic
 {
     /// <summary>
     /// Shuffles the shoe of the table in the session.
@@ -130,7 +130,7 @@ public class GamePlayLogic(IList<Session> sessions, IRuleBook ruleBook) : IGameP
             throw new InvalidOperationException("This hand is not in turn.");
         
         var box = session.Table.BettingBoxes[boxIdx];
-        if (box.OwnerId != playerId) throw new InvalidOperationException("Box is not owned by player.");
+        if (box.OwnerId != macToPlayerGuid[playerId]) throw new InvalidOperationException("Box is not owned by player.");
         
         var hand = box.Hands[handIdx];
         if (!ruleBook.GetPossibleActionsOnHand(hand).Contains(move)) throw new InvalidOperationException("Action not possible.");

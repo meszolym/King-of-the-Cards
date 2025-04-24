@@ -1,4 +1,4 @@
-﻿using System.Net.NetworkInformation;
+using System;
 using KC.Backend.Models.GameItems;
 using KC.Shared.Models.Misc;
 
@@ -6,10 +6,12 @@ namespace KC.Backend.Logic.Logics.Interfaces;
 
 public interface IPlayerLogic
 {
-    void AddPlayer(Player player);
+    void AddPlayer(MacAddress mac, Player player);
     void RemovePlayer(MacAddress playerId);
     Player Get(MacAddress playerId);
+    Player Get(Guid playerId);
     void UpdateName(MacAddress playerId, string name);
     void UpdateBalance(MacAddress playerId, double balance);
+    void UpdateBalance(Guid playerId, double balance);
     void UpdatePlayerConnectionId(MacAddress playerId, string connectionId);
 }

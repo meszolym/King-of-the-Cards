@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Logics.Interfaces;
+using KC.Backend.Models.GameItems;
 using KC.Backend.Models.GameManagement;
 using KC.Shared.Models.Misc;
 
 namespace KC.Backend.Logic.Logics;
 
 //This is done.
-public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic
+public class BettingBoxLogic(IList<Session> sessions, IDictionary<MacAddress, Guid> macToPlayerGuid) : IBettingBoxLogic
 {
     /// <summary>
     /// Claims box for a given player.
@@ -24,8 +25,8 @@ public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic
         var session = sessions.Single(s => s.Id == sessionId);
         if (!session.CanPlaceBets) throw new InvalidOperationException("Cannot claim boxes at this time.");
         var box = session.Table.BettingBoxes[boxIdx];
-        if (box.OwnerId != MacAddress.None ) throw new InvalidOperationException("Box already has an owner.");
-        box.OwnerId = playerId;
+        if (box.OwnerId != Guid.Empty ) throw new InvalidOperationException("Box already has an owner.");
+        box.OwnerId = macToPlayerGuid[playerId];
         session.DestructionTimer.Reset();
     }
 
@@ -42,8 +43,8 @@ public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic
         var session = sessions.Single(s => s.Id == sessionId);
         if (!session.CanPlaceBets) throw new InvalidOperationException("Cannot disclaim boxes at this time.");
         var box = session.Table.BettingBoxes[boxIdx];
-        if (box.OwnerId != playerId) throw new InvalidOperationException("Box is not owned by player.");
-        box.OwnerId = MacAddress.None;
+        if (box.OwnerId != macToPlayerGuid[playerId]) throw new InvalidOperationException("Box is not owned by player.");
+        box.OwnerId = Guid.Empty;
         session.DestructionTimer.Reset();
     }
     
@@ -66,7 +67,7 @@ public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic
         var box = session.Table.BettingBoxes[boxIdx];
         if (amount < 0) throw new ArgumentException("Bet cannot be less than 0.");
         
-        if (box.OwnerId != playerId) throw new InvalidOperationException("Box is not owned by player.");
+        if (box.OwnerId != macToPlayerGuid[playerId]) throw new InvalidOperationException("Box is not owned by player.");
 
         box.Hands[handIdx].Bet = amount;
 
