@@ -15,7 +15,7 @@ public static class DealerExtensions
         var visibleCards = new List<Card>();
         visibleCards.AddRange(dealer.DealerHand.Cards.Take(1));
 
-        if (visibleCards.Count != 0)
+        if (visibleCards.Count != 0 && dealer.DealerHand.Cards.Count > 1)
             visibleCards.Add(Card.WithSuitAndFace(Card.CardSuit.None, Card.CardFace.None));
         
         return visibleCards;

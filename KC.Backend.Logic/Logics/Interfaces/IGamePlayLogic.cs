@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.NetworkInformation;
+using System;
 using KC.Backend.Models.GameItems;
 using KC.Shared.Models.GameItems;
 using KC.Shared.Models.Misc;
@@ -31,10 +30,11 @@ public interface IGamePlayLogic
     void DealerPlayHand(Guid sessionId);
 
     /// <summary>
-    /// Deals cards to the players and the dealer at the start of a round.
+    /// Deals cards to the players and the dealer at the start of a round (only 1 per hand, so THIS HAS TO BE CALLED TWICE).
     /// </summary>
     /// <param name="sessionId"></param>
-    void DealStartingCards(Guid sessionId);
+    /// <exception cref="InvalidOperationException">Shoe needs shuffling.</exception>
+    void DealHalfOfStartingCards(Guid sessionId, bool checkShuffle);
 
     /// <summary>
     /// Checks for dealer blackjack.

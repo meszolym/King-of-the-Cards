@@ -29,8 +29,10 @@ public class SessionCreationOrchestrator(ISessionLogic sessionLogic, IPlayerLogi
     private async Task OnBettingTimerElapsed(Guid sessId)
     {
         await hub.SendMessageToGroupAsync(sessId.ToString(), SignalRMethods.BettingTimerElapsed, sessId);
-        gamePlayLogic.DealStartingCards(sessId);
+        gamePlayLogic.DealHalfOfStartingCards(sessId, true);
         var session = sessionLogic.Get(sessId);
+        await hub.SendMessageToGroupAsync(sessId.ToString(), SignalRMethods.HandsUpdated, session.ToDto(g => playerLogic.Get(g).Name));
+        await Task.Delay(2000).ContinueWith(_ => gamePlayLogic.DealHalfOfStartingCards(sessId,false));
         await hub.SendMessageToGroupAsync(sessId.ToString(), SignalRMethods.HandsUpdated, session.ToDto(g => playerLogic.Get(g).Name));
     }
     private async Task OnBettingTimerTicked(Guid sessionId, int remainingSeconds) => await hub.SendMessageToGroupAsync(sessionId.ToString(), SignalRMethods.BettingTimerTicked, (sessionId, remainingSeconds));

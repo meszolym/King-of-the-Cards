@@ -67,34 +67,29 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
         }
         
         dealerHand.Finished = true;
-        
     }
     
     /// <summary>
-    /// Deals cards to the players and the dealer at the start of a round.
+    /// Deals cards to the players and the dealer at the start of a round (only 1 per hand, so THIS HAS TO BE CALLED TWICE).
     /// </summary>
     /// <param name="sessionId"></param>
-    public void DealStartingCards(Guid sessionId)
+    /// <exception cref="InvalidOperationException">Shoe needs shuffling.</exception>
+    public void DealHalfOfStartingCards(Guid sessionId, bool checkShuffle)
     {
         var session = sessions.Single(s => s.Id == sessionId);
-        
         session.DestructionTimer.Reset();
         
         //if shoe needs shuffling, throw exception
-        if (session.Table.Shoe.ShuffleCardIdx <= session.Table.Shoe.NextCardIdx)
+        if (checkShuffle && session.Table.Shoe.ShuffleCardIdx <= session.Table.Shoe.NextCardIdx)
         {
             throw new InvalidOperationException("Shoe needs shuffling.");
         }
-
-        //deal cards
-        for (int i = 0; i < 2; i++)
+        
+        foreach (var box in session.Table.BettingBoxes.Where(b => b.Hands[0].Bet > 0))
         {
-            foreach (BettingBox box in session.Table.BettingBoxes.Where(b => b.Hands[0].Bet > 0))
-            {
-                box.Hands[0].Cards.Add(GiveCard(sessionId));
-            }
-            session.Table.Dealer.DealerHand.Cards.Add(GiveCard(sessionId));
+            box.Hands[0].Cards.Add(GiveCard(sessionId));
         }
+        session.Table.Dealer.DealerHand.Cards.Add(GiveCard(sessionId));
     }
 
     /// <summary>
