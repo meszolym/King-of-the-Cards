@@ -20,7 +20,7 @@ public class SessionCreationOrchestrator(ISessionLogic sessionLogic, IPlayerLogi
     {
         var sess = sessionLogic.CreateSession(DefaultBoxes, DefaultDecks, DefaultShuffleCardPlacement, DefaultShuffleCardRange, TimeSpan.FromSeconds(DefaultBettingTimeSpanSecs), TimeSpan.FromSeconds(DefaultSessionDestructionTimeSpanSecs));
         sess.DestructionTimer.Elapsed += async (sender, args) => await OnDestructionTimerElapsed(sess.Id);
-        await hub.SendMessageToGroupAsync("lobby", "SessionCreated", sess.ToDto(g => playerLogic.Get(g).Name));
+        await hub.SendMessageToGroupAsync(hub.BaseGroup, "SessionCreated", sess.ToDto(g => playerLogic.Get(g).Name));
         sess.BettingTimer.Tick += async (sender, args) => await OnBettingTimerTicked(sess.Id);
         sess.BettingTimer.Elapsed += async (sender, args) => await OnBettingTimerElapsed(sess.Id);
     }
@@ -41,9 +41,9 @@ public class SessionCreationOrchestrator(ISessionLogic sessionLogic, IPlayerLogi
         var connected = hub.ConnectionsAndGroups.Where(x => x.Value == id.ToString()).ToList();
         foreach (var conn in connected)
         {
-            await hub.MoveToGroupAsync(conn.Key, "lobby");
+            await hub.MoveToGroupAsync(conn.Key, hub.BaseGroup);
         }
-        await hub.SendMessageToGroupAsync("lobby", "SessionDeleted", id);
+        await hub.SendMessageToGroupAsync(hub.BaseGroup, "SessionDeleted", id);
         
         foreach (var p in refundedPlayers)
         {

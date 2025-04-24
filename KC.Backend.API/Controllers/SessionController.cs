@@ -41,7 +41,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     public async Task LeaveSession(SessionJoinLeaveDto dto)
     {
         var connId = playerLogic.Get(dto.Address).ConnectionId;
-        await hub.MoveToGroupAsync(connId, "lobby");
+        await hub.MoveToGroupAsync(connId, hub.BaseGroup);
     }
 
     [HttpPost]

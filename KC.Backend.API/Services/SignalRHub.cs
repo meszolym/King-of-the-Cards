@@ -15,7 +15,7 @@ public class SignalRHub(IHubContext<SignalRHub> hubContext) : Hub, IClientCommun
     public override async Task OnConnectedAsync()
     {
         await Clients.Caller.SendAsync("Connected", Context.ConnectionId);
-        await MoveToGroupAsync(Context.ConnectionId, "lobby");
+        await MoveToGroupAsync(Context.ConnectionId, BaseGroup);
         await base.OnConnectedAsync();
     }
 
@@ -42,7 +42,13 @@ public class SignalRHub(IHubContext<SignalRHub> hubContext) : Hub, IClientCommun
         await hubContext.Groups.AddToGroupAsync(connectionId, group);
     }
 
-    public Task SendMessageAsync(string connectionId, string method, object? message) => hubContext.Clients.Client(connectionId).SendAsync(method, message);
+    public Task SendMessageAsync(string connectionId, string method, object? message) 
+        => !ConnectionsAndGroups.ContainsKey(connectionId) 
+            ? throw new Exception($"ConnectionId: {connectionId} does not exist") 
+            : hubContext.Clients.Client(connectionId).SendAsync(method, message);
 
-    public Task SendMessageToGroupAsync(string group, string method, object? message) => hubContext.Clients.Group(group).SendAsync(method, message);
+    public Task SendMessageToGroupAsync(string group, string method, object? message)
+        => ConnectionsAndGroups.All(x => x.Value != group)
+                ? throw new Exception($"Group: {group} does not exist")
+            : hubContext.Clients.Group(group).SendAsync(method, message);
 }

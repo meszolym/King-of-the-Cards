@@ -46,7 +46,9 @@ namespace KC.Frontend.Client.ViewModels
                 if (HostScreen.Router.GetCurrentViewModel() is SessionViewModel)
                     HostScreen.Router.NavigateBack.Execute();
             });
-
+            ExternalCommunicatorService.SignalREvents.SessionOccupancyChanged.ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(dto => Sessions.First(s => s.Id == dto.sessionId).CurrentOccupancy += dto.change);
+            
             Sessions.CollectionChanged += (_, __) =>
                 this.RaisePropertyChanged(nameof(Sessions.Count));
 
