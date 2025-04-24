@@ -27,14 +27,14 @@ namespace KC.Frontend.Client.Views.Components
                         vm => vm.RightHand, 
                         view => view.RightHandView.ViewModel)
                     .DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.TurnInfo, v => v.TurnIndicatorRightImage.IsVisible, t => t == BoxViewModel.TurnState.Right).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.BoxTurnState, v => v.TurnIndicatorRightImage.IsVisible, t => t == BoxViewModel.TurnState.Right).DisposeWith(d);
                 
                 // Bind the left hand view model
                 this.OneWayBind(ViewModel, 
                     vm => vm.LeftHand, 
                     view => view.LeftHandView.ViewModel)
                     .DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.TurnInfo, v => v.TurnIndicatorLeftImage.IsVisible, t => t == BoxViewModel.TurnState.Left).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.BoxTurnState, v => v.TurnIndicatorLeftImage.IsVisible, t => t == BoxViewModel.TurnState.Left).DisposeWith(d);
                 
                 // Bind player name
                 this.Bind(ViewModel, 

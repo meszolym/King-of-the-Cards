@@ -6,6 +6,7 @@ using KC.Shared.Models.Dtos;
 using KC.Shared.Models.Misc;
 using Microsoft.AspNetCore.SignalR.Client;
 using KC.Frontend.Client.Extensions;
+using KC.Shared.Models.GameManagement;
 using ReactiveUI;
 
 namespace KC.Frontend.Client.Services;
@@ -24,6 +25,7 @@ public partial class ExternalCommunicatorService
         public static IObservable<BettingBoxReadDto> BetUpdated => BetUpdatedSubject.AsObservable();
         public static IObservable<BettingBoxReadDto> BoxOwnerChanged => BoxOwnerChangedSubject.AsObservable();
         public static IObservable<(Guid sessionId, int change)> SessionOccupancyChanged => SessionOccupancyChangedSubject.AsObservable();
+        public static IObservable<TurnInfo> TurnChanged => TurnChangedSubject.AsObservable();
     
         private static readonly Subject<SessionReadDto> SessionCreatedSubject = new();
         private static readonly Subject<Guid> SessionDeletedSubject = new();
@@ -35,7 +37,7 @@ public partial class ExternalCommunicatorService
         private static readonly Subject<BettingBoxReadDto> BetUpdatedSubject = new();
         private static readonly Subject<BettingBoxReadDto> BoxOwnerChangedSubject = new();
         private static readonly Subject<(Guid sessionId, int change)> SessionOccupancyChangedSubject = new();
-        
+        private static readonly Subject<TurnInfo> TurnChangedSubject = new();
         
         public static void Init(HubConnection conn)
         {
@@ -49,6 +51,7 @@ public partial class ExternalCommunicatorService
             conn.On(SignalRMethods.BetUpdated, dto => BetUpdatedSubject.OnNext(dto));
             conn.On(SignalRMethods.BoxOwnerChanged, dto => BoxOwnerChangedSubject.OnNext(dto));
             conn.On(SignalRMethods.SessionOccupancyChanged, dto => SessionOccupancyChangedSubject.OnNext(dto));
+            conn.On(SignalRMethods.TurnChanged, dto => TurnChangedSubject.OnNext(dto));
             
         }
     }

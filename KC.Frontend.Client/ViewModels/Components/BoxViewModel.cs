@@ -11,6 +11,7 @@ using KC.Frontend.Client.Services;
 using KC.Frontend.Client.Utilities;
 using KC.Shared.Models.Dtos;
 using KC.Shared.Models.GameItems;
+using KC.Shared.Models.GameManagement;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using Splat;
@@ -28,7 +29,7 @@ public partial class BoxViewModel : ReactiveObject
     }
 
     [Reactive]
-    private TurnState _turnInfo; 
+    private TurnState _boxTurnState; 
     
     [Reactive]
     private HandViewModel _leftHand;
@@ -46,7 +47,7 @@ public partial class BoxViewModel : ReactiveObject
     [Reactive]
     private Guid _ownerId = Guid.Empty;
 
-    private readonly ExternalCommunicatorService _externalCommunicator;
+    private readonly ExternalCommunicatorService _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
     private readonly int _boxIdx;
 
     
@@ -110,7 +111,7 @@ public partial class BoxViewModel : ReactiveObject
         }
     }
     public PlayerViewModel LocalPlayer => Locator.Current.GetRequiredService<PlayerViewModel>();
-    public BoxViewModel(Guid sessionId, BettingBoxReadDto sourceDto, bool bettingPhase)
+    public BoxViewModel(Guid sessionId, BettingBoxReadDto sourceDto, TurnInfo turnInfo, bool bettingPhase)
     {
         _sessionId = sessionId;
         _boxIdx = sourceDto.BoxIdx;
@@ -121,11 +122,11 @@ public partial class BoxViewModel : ReactiveObject
         
         BettingPhase = bettingPhase;
         IsSplit = hands.Length > 1;
+        
         PlayerName = sourceDto.OwnerName == string.Empty ? "Unclaimed" : sourceDto.OwnerName;
         OwnerId = sourceDto.OwnerId;
-        
-        _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
-
+        BoxTurnState = GetTurnState(turnInfo);
+            
         ExternalCommunicatorService.SignalREvents.BoxOwnerChanged.ObserveOn(RxApp.MainThreadScheduler).Subscribe(dto =>
         {
             if (dto.BoxIdx != _boxIdx) return;
@@ -140,9 +141,9 @@ public partial class BoxViewModel : ReactiveObject
                 PlayerName = dto.OwnerName;
                 OwnerId = dto.OwnerId;
             }
-            
         });
         
+        //TODO: Mind this when working, might have to change this later / move it to hand?
         ExternalCommunicatorService.SignalREvents.BetUpdated.ObserveOn(RxApp.MainThreadScheduler).Subscribe(dto =>
         {
             if (dto.BoxIdx != _boxIdx || dto.Hands.Count() > 1) return;
@@ -156,9 +157,21 @@ public partial class BoxViewModel : ReactiveObject
         
         ExternalCommunicatorService.SignalREvents.HandsUpdated.ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe(s => UpdateHands(s.Table.BettingBoxes.First(b => b.BoxIdx == _boxIdx)));
+        
+        ExternalCommunicatorService.SignalREvents.TurnChanged.ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(dto => BoxTurnState = GetTurnState(dto));
     }
 
     private readonly Guid _sessionId;
+
+    private TurnState GetTurnState(TurnInfo turnInfo) => turnInfo switch
+    {
+        { PlayersTurn: false } => TurnState.None,
+        _ when turnInfo.BoxIdx != _boxIdx => TurnState.None,
+        { HandIdx: 0 } => TurnState.Right,
+        { HandIdx: 1 } => TurnState.Left,
+        _ => TurnState.None
+    };
 
 
     //TODO: Take a look, this is more complex and needs to involve the server probably.
