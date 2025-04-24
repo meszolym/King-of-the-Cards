@@ -133,6 +133,14 @@ public partial class BoxViewModel : ReactiveObject
             }
             
         });
+        
+        ExternalCommunicatorService.SignalREvents.BetUpdated.ObserveOn(RxApp.MainThreadScheduler).Subscribe(dto =>
+        {
+            if (dto.BoxIdx != _boxIdx || dto.Hands.Count() > 1) return;
+            
+            RightHand.BetAmount = (decimal)dto.Hands.First().Bet;
+            
+        });
     }
 
     private readonly Guid _sessionId;
@@ -163,6 +171,8 @@ public partial class BoxViewModel : ReactiveObject
     {
         if (newVal is null) return false;
         if (oldVal == newVal) return true;
+        
+        
 
         try
         {

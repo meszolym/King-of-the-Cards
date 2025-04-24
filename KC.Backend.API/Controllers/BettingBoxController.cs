@@ -29,5 +29,5 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
 
     [HttpPut]
     [Route("update-bet")]
-    public void UpdateBet([FromBody] BoxBetUpdateDto dto) => betOrchestrator.UpdateBet(dto);
+    public async Task UpdateBet([FromBody] BoxBetUpdateDto dto) => await betOrchestrator.UpdateBet(dto);
 }

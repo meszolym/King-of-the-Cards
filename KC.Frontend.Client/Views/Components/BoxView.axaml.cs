@@ -64,6 +64,7 @@ namespace KC.Frontend.Client.Views.Components
                 this.Bind(ViewModel, vm => vm.RightHand.BetAmount, v => v.BetNumericUpDownFound.Value).DisposeWith(d);
                 BetNumericUpDownFound.ValueChanged += async (sender, args) =>
                 {
+                    if (!BetNumericUpDownFound.IsVisible) return;
                     var succ = await ViewModel.UpdateBetAmount(args.OldValue, args.NewValue);
                     if (!succ)
                         BetNumericUpDownFound.Value = args.OldValue;
