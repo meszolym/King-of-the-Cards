@@ -53,6 +53,7 @@ namespace KC.Backend.API
             builder.Services.AddSignalR().AddNewtonsoftJsonProtocol();
             builder.Services.AddSingleton<IClientCommunicator, SignalRHub>();
             builder.Services.AddTransient<ISessionCreationOrchestrator, SessionCreationOrchestrator>();
+            builder.Services.AddTransient<IBetOrchestrator, BetOrchestrator>();
 
             var app = builder.Build();
             
