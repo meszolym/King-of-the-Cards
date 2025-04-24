@@ -1,4 +1,5 @@
 using KC.Backend.API.Services;
+using KC.Backend.API.Services.Interfaces;
 using Microsoft.AspNetCore.Diagnostics;
 using KC.Backend.Logic;
 using KC.Backend.Logic.Logics;
@@ -45,7 +46,7 @@ namespace KC.Backend.API
             builder.Services.AddTransient<ISessionTerminatorService, SessionTerminatorService>();
             
             builder.Services.AddSignalR().AddNewtonsoftJsonProtocol();
-            builder.Services.AddTransient<IClientCommunicator, SignalRHub>();
+            builder.Services.AddSingleton<IClientCommunicator, SignalRHub>();
 
             var app = builder.Build();
             

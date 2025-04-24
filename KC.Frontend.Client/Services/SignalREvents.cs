@@ -17,12 +17,14 @@ public partial class ExternalCommunicatorService
         public static IObservable<PlayerReadDto> PlayerBalanceUpdated => PlayerBalanceUpdatedSubject.AsObservable();
         public static IObservable<Guid> BettingTimerTicked => BettingTimerTickedSubject.AsObservable();
         public static IObservable<Guid> BettingTimerElapsed => BettingTimerElapsedSubject.AsObservable();
+        public static IObservable<SessionReadDto> HandsUpdated => HandsUpdatedSubject.AsObservable();
     
         private static readonly Subject<SessionReadDto> SessionCreatedSubject = new Subject<SessionReadDto>();
         private static readonly Subject<Guid> SessionDeletedSubject = new Subject<Guid>();
         private static readonly Subject<PlayerReadDto> PlayerBalanceUpdatedSubject = new Subject<PlayerReadDto>();
         private static readonly Subject<Guid> BettingTimerTickedSubject = new Subject<Guid>();
         private static readonly Subject<Guid> BettingTimerElapsedSubject = new Subject<Guid>();
+        private static readonly Subject<SessionReadDto> HandsUpdatedSubject = new Subject<SessionReadDto>();
         
         public static void Init(HubConnection conn)
         {
@@ -31,6 +33,7 @@ public partial class ExternalCommunicatorService
             conn.On<PlayerReadDto>("PlayerBalanceUpdated", dto => PlayerBalanceUpdatedSubject.OnNext(dto));
             conn.On<Guid>("BettingTimerTicked", id => BettingTimerTickedSubject.OnNext(id));
             conn.On<Guid>("BettingTimerElapsed", id => BettingTimerElapsedSubject.OnNext(id));
+            conn.On<SessionReadDto>("HandsUpdated", dto => HandsUpdatedSubject.OnNext(dto));
         }
     }
 }

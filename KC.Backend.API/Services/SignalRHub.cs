@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using System.Collections.Concurrent;
+using KC.Backend.API.Services.Interfaces;
+using Microsoft.AspNetCore.SignalR;
 
 namespace KC.Backend.API.Services;
 
@@ -6,9 +8,7 @@ public class SignalRHub(IHubContext<SignalRHub> hubContext) : Hub, IClientCommun
 {
     public string BaseGroup { get; } = "lobby";
     
-    public Dictionary<string, string> ConnectionsAndGroups { get; private init; } = new();
-    
-    private IHubContext<SignalRHub> _hubContext = hubContext;
+    public ConcurrentDictionary<string, string> ConnectionsAndGroups { get; private init; } = new();
 
     #region Base Hub Methods
     
@@ -32,17 +32,17 @@ public class SignalRHub(IHubContext<SignalRHub> hubContext) : Hub, IClientCommun
     {
         if (ConnectionsAndGroups.TryGetValue(connectionId, out var oldGroup))
         {
-            await _hubContext.Groups.RemoveFromGroupAsync(connectionId, oldGroup);
-            ConnectionsAndGroups.Remove(connectionId);
+            await hubContext.Groups.RemoveFromGroupAsync(connectionId, oldGroup);
+            ConnectionsAndGroups.TryRemove(connectionId, out var _);
         }
 
         if (group is null) return;
         
-        ConnectionsAndGroups[connectionId] = group;
-        await _hubContext.Groups.AddToGroupAsync(connectionId, group);
+        ConnectionsAndGroups.TryAdd(connectionId, group);
+        await hubContext.Groups.AddToGroupAsync(connectionId, group);
     }
 
-    public Task SendMessageAsync(string connectionId, string method, object? message) => _hubContext.Clients.Client(connectionId).SendAsync(method, message);
+    public Task SendMessageAsync(string connectionId, string method, object? message) => hubContext.Clients.Client(connectionId).SendAsync(method, message);
 
-    public Task SendMessageToGroupAsync(string group, string method, object? message) => _hubContext.Clients.Group(group).SendAsync(method, message);
+    public Task SendMessageToGroupAsync(string group, string method, object? message) => hubContext.Clients.Group(group).SendAsync(method, message);
 }

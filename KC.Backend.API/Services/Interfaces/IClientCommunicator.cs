@@ -1,8 +1,10 @@
-namespace KC.Backend.API.Services;
+using System.Collections.Concurrent;
+
+namespace KC.Backend.API.Services.Interfaces;
 
 public interface IClientCommunicator
 {
-    Dictionary<string, string> ConnectionsAndGroups { get; }
+    ConcurrentDictionary<string, string> ConnectionsAndGroups { get; }
     Task MoveToGroupAsync(string connectionId, string group);
     Task SendMessageAsync(string connectionId, string method, object? message);
     Task SendMessageToGroupAsync(string group, string method, object message);
