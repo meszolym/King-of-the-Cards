@@ -7,7 +7,7 @@ public readonly partial struct MacAddress(string address) : IEquatable<MacAddres
     public static MacAddress Parse(string address) => new MacAddress(address);
     public readonly string Address { get; } = MacAddressRegex().IsMatch(address) ? address : throw new ArgumentException("Address is not standard", nameof(address));
 
-    [GeneratedRegex("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]
+    [GeneratedRegex("^([0-9A-F]{2}[:]){5}([0-9A-F]{2})$")]
     private static partial Regex MacAddressRegex();
 
     public static readonly MacAddress None = new MacAddress("00:00:00:00:00:00");
