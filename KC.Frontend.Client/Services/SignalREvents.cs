@@ -18,13 +18,18 @@ public partial class ExternalCommunicatorService
         public static IObservable<Guid> BettingTimerTicked => BettingTimerTickedSubject.AsObservable();
         public static IObservable<Guid> BettingTimerElapsed => BettingTimerElapsedSubject.AsObservable();
         public static IObservable<SessionReadDto> HandsUpdated => HandsUpdatedSubject.AsObservable();
+        public static IObservable<BettingBoxReadDto> BetUpdated => BetUpdatedSubject.AsObservable();
+        public static IObservable<BettingBoxReadDto> BoxOwnerChanged => BoxOwnerChangedSubject.AsObservable();
     
-        private static readonly Subject<SessionReadDto> SessionCreatedSubject = new Subject<SessionReadDto>();
-        private static readonly Subject<Guid> SessionDeletedSubject = new Subject<Guid>();
-        private static readonly Subject<PlayerReadDto> PlayerBalanceUpdatedSubject = new Subject<PlayerReadDto>();
-        private static readonly Subject<Guid> BettingTimerTickedSubject = new Subject<Guid>();
-        private static readonly Subject<Guid> BettingTimerElapsedSubject = new Subject<Guid>();
-        private static readonly Subject<SessionReadDto> HandsUpdatedSubject = new Subject<SessionReadDto>();
+        private static readonly Subject<SessionReadDto> SessionCreatedSubject = new();
+        private static readonly Subject<Guid> SessionDeletedSubject = new();
+        private static readonly Subject<PlayerReadDto> PlayerBalanceUpdatedSubject = new();
+        private static readonly Subject<Guid> BettingTimerTickedSubject = new();
+        private static readonly Subject<Guid> BettingTimerElapsedSubject = new();
+        private static readonly Subject<SessionReadDto> HandsUpdatedSubject = new();
+        private static readonly Subject<BettingBoxReadDto> BetUpdatedSubject = new();
+        private static readonly Subject<BettingBoxReadDto> BoxOwnerChangedSubject = new();
+
         
         public static void Init(HubConnection conn)
         {
@@ -34,6 +39,9 @@ public partial class ExternalCommunicatorService
             conn.On<Guid>("BettingTimerTicked", id => BettingTimerTickedSubject.OnNext(id));
             conn.On<Guid>("BettingTimerElapsed", id => BettingTimerElapsedSubject.OnNext(id));
             conn.On<SessionReadDto>("HandsUpdated", dto => HandsUpdatedSubject.OnNext(dto));
+            conn.On<BettingBoxReadDto>("BetUpdated", dto => BetUpdatedSubject.OnNext(dto));
+            conn.On<BettingBoxReadDto>("BoxOwnerChanged", dto => BoxOwnerChangedSubject.OnNext(dto));
+            
         }
     }
 }

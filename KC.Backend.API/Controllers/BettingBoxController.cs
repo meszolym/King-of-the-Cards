@@ -9,30 +9,25 @@ namespace KC.Backend.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic playerLogic, IClientCommunicator hub) : Controller
+public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IBetOrchestrator betOrchestrator, IClientCommunicator hub) : Controller
 {
     [HttpPost]
     [Route("claim-box")]
-    public void ClaimBox([FromBody] BoxOwnerUpdateDto dto) => bettingBoxLogic.ClaimBettingBox(dto.SessionId, dto.BoxIdx, dto.OwnerMac);
-    
+    public void ClaimBox([FromBody] BoxOwnerUpdateDto dto)
+    {
+        bettingBoxLogic.ClaimBettingBox(dto.SessionId, dto.BoxIdx, dto.OwnerMac);
+        hub.SendMessageToGroupAsync(dto.SessionId.ToString(), "BoxOwnerChanged", bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto());
+    }
+
     [HttpDelete]
     [Route("disclaim-box")]
-    public void DisclaimBox([FromBody] BoxOwnerUpdateDto dto) => bettingBoxLogic.DisclaimBettingBox(dto.SessionId, dto.BoxIdx, dto.OwnerMac);
+    public void DisclaimBox([FromBody] BoxOwnerUpdateDto dto)
+    {
+        bettingBoxLogic.DisclaimBettingBox(dto.SessionId, dto.BoxIdx, dto.OwnerMac);
+        hub.SendMessageToGroupAsync(dto.SessionId.ToString(), "BoxOwnerChanged", bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto());
+    }
 
     [HttpPut]
     [Route("update-bet")]
-    public void UpdateBet([FromBody] BoxBetUpdateDto dto)
-    {
-        var player = playerLogic.Get(dto.OwnerMac);
-
-        var alreadyPlaced = bettingBoxLogic.GetBetOnBox(dto.SessionId, dto.BoxIdx, dto.HandIdx);
-        
-        if (dto.Amount - alreadyPlaced > player.Balance)
-            throw new InvalidOperationException("Player balance does not cover the bet.");
-        
-        bettingBoxLogic.UpdateBetOnBox(dto.SessionId, dto.BoxIdx, dto.OwnerMac, dto.Amount, dto.HandIdx);
-        playerLogic.UpdateBalance(dto.OwnerMac, player.Balance - (dto.Amount - alreadyPlaced));
-        
-        hub.SendMessageAsync(player.ConnectionId, "PlayerBalanceUpdated", player.ToDto());
-    }
+    public void UpdateBet([FromBody] BoxBetUpdateDto dto) => betOrchestrator.UpdateBet(dto);
 }
