@@ -2,6 +2,7 @@ using KC.Backend.API.Services.Interfaces;
 using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Logics.Interfaces;
 using KC.Backend.Logic.Services.Interfaces;
+using KC.Shared.Models.Misc;
 
 namespace KC.Backend.API.Services;
 
@@ -20,19 +21,19 @@ public class SessionCreationOrchestrator(ISessionLogic sessionLogic, IPlayerLogi
     {
         var sess = sessionLogic.CreateSession(DefaultBoxes, DefaultDecks, DefaultShuffleCardPlacement, DefaultShuffleCardRange, TimeSpan.FromSeconds(DefaultBettingTimeSpanSecs), TimeSpan.FromSeconds(DefaultSessionDestructionTimeSpanSecs));
         sess.DestructionTimer.Elapsed += async (sender, args) => await OnDestructionTimerElapsed(sess.Id);
-        await hub.SendMessageToGroupAsync(hub.BaseGroup, "SessionCreated", sess.ToDto(g => playerLogic.Get(g).Name));
+        await hub.SendMessageToGroupAsync(hub.BaseGroup, SignalRMethods.SessionCreated, sess.ToDto(g => playerLogic.Get(g).Name));
         sess.BettingTimer.Tick += async (sender, args) => await OnBettingTimerTicked(sess.Id);
         sess.BettingTimer.Elapsed += async (sender, args) => await OnBettingTimerElapsed(sess.Id);
     }
 
     private async Task OnBettingTimerElapsed(Guid sessId)
     {
-        await hub.SendMessageToGroupAsync(sessId.ToString(), "BettingTimerElapsed", sessId);
+        await hub.SendMessageToGroupAsync(sessId.ToString(), SignalRMethods.BettingTimerElapsed, sessId);
         gamePlayLogic.DealStartingCards(sessId);
         var session = sessionLogic.Get(sessId);
-        await hub.SendMessageToGroupAsync(sessId.ToString(), "HandsUpdated", session.ToDto(g => playerLogic.Get(g).Name));
+        await hub.SendMessageToGroupAsync(sessId.ToString(), SignalRMethods.HandsUpdated, session.ToDto(g => playerLogic.Get(g).Name));
     }
-    private async Task OnBettingTimerTicked(Guid sessionId) => await hub.SendMessageToGroupAsync(sessionId.ToString(), "BettingTimerTicked", sessionId);
+    private async Task OnBettingTimerTicked(Guid sessionId) => await hub.SendMessageToGroupAsync(sessionId.ToString(), SignalRMethods.BettingTimerTicked, sessionId);
     
     private async Task OnDestructionTimerElapsed(Guid id)
     {
@@ -43,11 +44,11 @@ public class SessionCreationOrchestrator(ISessionLogic sessionLogic, IPlayerLogi
         {
             await hub.MoveToGroupAsync(conn.Key, hub.BaseGroup);
         }
-        await hub.SendMessageToGroupAsync(hub.BaseGroup, "SessionDeleted", id);
+        await hub.SendMessageToGroupAsync(hub.BaseGroup, SignalRMethods.SessionDeleted, id);
         
         foreach (var p in refundedPlayers)
         {
-            await hub.SendMessageAsync(p.ConnectionId, "PlayerBalanceUpdated", p.ToDto());
+            await hub.SendMessageAsync(p.ConnectionId, SignalRMethods.PlayerBalanceUpdated, p.ToDto());
         }
     }
 }

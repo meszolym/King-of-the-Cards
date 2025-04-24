@@ -39,7 +39,7 @@ public partial class BoxViewModel : ReactiveObject
     private bool _isClaimed;
 
     private readonly ExternalCommunicatorService _externalCommunicator;
-    private readonly int _boxIdx;
+    public int BoxIdx { get; }
     
     [Reactive]
     private bool _bettingPhase = true;
@@ -70,7 +70,7 @@ public partial class BoxViewModel : ReactiveObject
     {
         try
         {
-            await _externalCommunicator.ClaimBox(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress);
+            await _externalCommunicator.ClaimBox(_sessionId, BoxIdx, ClientMacAddressHandler.PrimaryMacAddress);
             PlayerName = LocalPlayer.PlayerName;
             OwnerId = LocalPlayer.Id;
             IsClaimed = true;
@@ -90,7 +90,7 @@ public partial class BoxViewModel : ReactiveObject
         try
         {
             RightHand.BetAmount = 0; //This goes through UpdateBetAmount (and thus the server) as it is bound to the UI!
-            await _externalCommunicator.DisclaimBox(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress);
+            await _externalCommunicator.DisclaimBox(_sessionId, BoxIdx, ClientMacAddressHandler.PrimaryMacAddress);
             PlayerName = "Unclaimed";
             OwnerId = Guid.Empty;
             IsClaimed = false;
@@ -103,13 +103,14 @@ public partial class BoxViewModel : ReactiveObject
         }
     }
     public static PlayerViewModel LocalPlayer => Locator.Current.GetRequiredService<PlayerViewModel>();
-    public BoxViewModel(Guid sessionId, BettingBoxReadDto sourceDto)
+    public BoxViewModel(Guid sessionId, BettingBoxReadDto sourceDto, bool bettingPhase)
     {
         _sessionId = sessionId;
-        _boxIdx = sourceDto.BoxIdx;
+        BoxIdx = sourceDto.BoxIdx;
         var hands = sourceDto.Hands.ToImmutableArray();
         RightHand = new HandViewModel(hands[0]);
         LeftHand = hands.Length > 1 ?  new HandViewModel(hands[1]) : new HandViewModel();
+        BettingPhase = bettingPhase;
         
         IsSplit = false;
         PlayerName = "Unclaimed";
@@ -117,7 +118,7 @@ public partial class BoxViewModel : ReactiveObject
 
         ExternalCommunicatorService.SignalREvents.BoxOwnerChanged.ObserveOn(RxApp.MainThreadScheduler).Subscribe(dto =>
         {
-            if (dto.BoxIdx != _boxIdx) return;
+            if (dto.BoxIdx != BoxIdx) return;
             
             if (dto.OwnerId == Guid.Empty)
             {
@@ -136,7 +137,7 @@ public partial class BoxViewModel : ReactiveObject
         
         ExternalCommunicatorService.SignalREvents.BetUpdated.ObserveOn(RxApp.MainThreadScheduler).Subscribe(dto =>
         {
-            if (dto.BoxIdx != _boxIdx || dto.Hands.Count() > 1) return;
+            if (dto.BoxIdx != BoxIdx || dto.Hands.Count() > 1) return;
             
             RightHand.BetAmount = (decimal)dto.Hands.First().Bet;
             
@@ -176,7 +177,7 @@ public partial class BoxViewModel : ReactiveObject
 
         try
         {
-            await _externalCommunicator.UpdateBet(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress, (double) newVal);
+            await _externalCommunicator.UpdateBet(_sessionId, BoxIdx, ClientMacAddressHandler.PrimaryMacAddress, (double) newVal);
             return true;
         }
         catch (Exception e)
@@ -184,6 +185,31 @@ public partial class BoxViewModel : ReactiveObject
             //TODO: Show dialog
             Debug.WriteLine(e);
             return false;
+        }
+    }
+
+    public void UpdateHands(BettingBoxReadDto boxDto)
+    {
+        ImmutableArray<HandReadDto> hands = [..boxDto.Hands];
+        if (hands.Length > 0)
+        {
+            RightHand = new HandViewModel(hands[0]);
+            if (hands.Length > 1)
+            {
+                LeftHand = new HandViewModel(hands[1])
+                {
+                    IsPartOfSplit = true
+                };
+                IsSplit = true;
+                RightHand.IsPartOfSplit = true;
+            }
+            else
+                LeftHand = new HandViewModel();
+        }
+        else
+        {
+            RightHand = new HandViewModel();
+            LeftHand = new HandViewModel();
         }
     }
 }

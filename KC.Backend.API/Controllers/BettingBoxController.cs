@@ -3,6 +3,7 @@ using KC.Backend.API.Services.Interfaces;
 using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Logics.Interfaces;
 using KC.Shared.Models.Dtos;
+using KC.Shared.Models.Misc;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KC.Backend.API.Controllers;
@@ -16,8 +17,8 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
     public void ClaimBox([FromBody] BoxOwnerUpdateDto dto)
     {
         bettingBoxLogic.ClaimBettingBox(dto.SessionId, dto.BoxIdx, dto.OwnerMac);
-        hub.SendMessageToGroupAsync(dto.SessionId.ToString(), "BoxOwnerChanged", bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name));
-        hub.SendMessageToGroupAsync(hub.BaseGroup, "SessionOccupancyChanged", (dto.SessionId,1));
+        hub.SendMessageToGroupAsync(dto.SessionId.ToString(), SignalRMethods.BoxOwnerChanged, bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name));
+        hub.SendMessageToGroupAsync(hub.BaseGroup, SignalRMethods.SessionOccupancyChanged, (dto.SessionId,1));
     }
 
     [HttpDelete]
@@ -25,8 +26,8 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
     public void DisclaimBox([FromBody] BoxOwnerUpdateDto dto)
     {
         bettingBoxLogic.DisclaimBettingBox(dto.SessionId, dto.BoxIdx, dto.OwnerMac);
-        hub.SendMessageToGroupAsync(dto.SessionId.ToString(), "BoxOwnerChanged", bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name));
-        hub.SendMessageToGroupAsync(hub.BaseGroup, "SessionOccupancyChanged", (dto.SessionId,-1));
+        hub.SendMessageToGroupAsync(dto.SessionId.ToString(), SignalRMethods.BoxOwnerChanged, bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name));
+        hub.SendMessageToGroupAsync(hub.BaseGroup, SignalRMethods.SessionOccupancyChanged, (dto.SessionId,-1));
     }
 
     [HttpPut]

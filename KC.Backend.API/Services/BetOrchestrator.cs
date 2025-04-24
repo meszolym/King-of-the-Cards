@@ -2,6 +2,7 @@ using KC.Backend.API.Services.Interfaces;
 using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Logics.Interfaces;
 using KC.Shared.Models.Dtos;
+using KC.Shared.Models.Misc;
 
 namespace KC.Backend.API.Services;
 
@@ -19,9 +20,9 @@ public class BetOrchestrator(IBettingBoxLogic bettingBoxLogic, IPlayerLogic play
         bettingBoxLogic.UpdateBetOnBox(dto.SessionId, dto.BoxIdx, dto.OwnerMac, dto.Amount, dto.HandIdx);
         playerLogic.UpdateBalance(dto.OwnerMac, player.Balance - (dto.Amount - alreadyPlaced));
         
-        await hub.SendMessageAsync(player.ConnectionId, "PlayerBalanceUpdated", player.ToDto());
+        await hub.SendMessageAsync(player.ConnectionId, SignalRMethods.PlayerBalanceUpdated, player.ToDto());
         var dtoToSend = bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name);
-        await hub.SendMessageToGroupAsync(dto.SessionId.ToString(), "BetUpdated", dtoToSend);
+        await hub.SendMessageToGroupAsync(dto.SessionId.ToString(), SignalRMethods.BetUpdated, dtoToSend);
         
         sessionLogic.UpdateBettingTimer(dto.SessionId);
     }
