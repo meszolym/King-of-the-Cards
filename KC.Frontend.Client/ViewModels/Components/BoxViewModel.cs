@@ -34,9 +34,6 @@ public partial class BoxViewModel : ReactiveObject
     
     [Reactive]
     private Guid _ownerId = Guid.Empty;
-    
-    [Reactive]
-    private bool _isClaimed;
 
     private readonly ExternalCommunicatorService _externalCommunicator;
     private readonly int _boxIdx;
@@ -74,7 +71,6 @@ public partial class BoxViewModel : ReactiveObject
             await _externalCommunicator.ClaimBox(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress);
             PlayerName = LocalPlayer.PlayerName;
             OwnerId = LocalPlayer.Id;
-            IsClaimed = true;
             BoxClaimStatusChangedSub.OnNext(Unit.Default);
             
         }
@@ -94,7 +90,6 @@ public partial class BoxViewModel : ReactiveObject
             await _externalCommunicator.DisclaimBox(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress);
             PlayerName = "Unclaimed";
             OwnerId = Guid.Empty;
-            IsClaimed = false;
             BoxClaimStatusChangedSub.OnNext(Unit.Default);
         }
         catch (Exception e)
@@ -103,18 +98,21 @@ public partial class BoxViewModel : ReactiveObject
             Debug.WriteLine(e.Message + "at DisclaimBox in BoxViewModel");
         }
     }
-    public static PlayerViewModel LocalPlayer => Locator.Current.GetRequiredService<PlayerViewModel>();
+    public PlayerViewModel LocalPlayer => Locator.Current.GetRequiredService<PlayerViewModel>();
     public BoxViewModel(Guid sessionId, BettingBoxReadDto sourceDto, bool bettingPhase)
     {
         _sessionId = sessionId;
         _boxIdx = sourceDto.BoxIdx;
+        
         var hands = sourceDto.Hands.ToImmutableArray();
         RightHand = new HandViewModel(hands[0]);
         LeftHand = hands.Length > 1 ?  new HandViewModel(hands[1]) : new HandViewModel();
-        BettingPhase = bettingPhase;
         
+        BettingPhase = bettingPhase;
         IsSplit = hands.Length > 1;
-        PlayerName = sourceDto.OwnerName;
+        PlayerName = sourceDto.OwnerName == string.Empty ? "Unclaimed" : sourceDto.OwnerName;
+        OwnerId = sourceDto.OwnerId;
+        
         _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
 
         ExternalCommunicatorService.SignalREvents.BoxOwnerChanged.ObserveOn(RxApp.MainThreadScheduler).Subscribe(dto =>
@@ -125,13 +123,11 @@ public partial class BoxViewModel : ReactiveObject
             {
                 PlayerName = "Unclaimed";
                 OwnerId = Guid.Empty;
-                IsClaimed = false;
             }
             else
             {
                 PlayerName = dto.OwnerName;
                 OwnerId = dto.OwnerId;
-                IsClaimed = true;
             }
             
         });

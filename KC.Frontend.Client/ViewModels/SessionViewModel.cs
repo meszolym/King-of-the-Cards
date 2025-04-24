@@ -26,11 +26,12 @@ namespace KC.Frontend.Client.ViewModels
         [Reactive]
         private DealerViewModel _dealer;
 
-        private readonly ExternalCommunicatorService _externalCommunicator;
+        private readonly ExternalCommunicatorService _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
+
         private IObservable<bool> CanGoBack => BoxViewModel.BoxClaimStatusChanged.Select(_ =>
         {
             return Boxes.All(x => x.OwnerId != _player.Id);
-        }).StartWith(true);
+        }).StartWith(Boxes.All(x => x.OwnerId != _player.Id));
 
         [ReactiveCommand(CanExecute = nameof(CanGoBack))]
         private async Task NavBack()
@@ -52,8 +53,6 @@ namespace KC.Frontend.Client.ViewModels
             BettingPhase = session.CanPlaceBets;
             Boxes = new ObservableCollection<BoxViewModel>(session.Table.BettingBoxes.Select(x => new BoxViewModel(Id, x, session.CanPlaceBets)));
             Dealer = new DealerViewModel(session.Table.DealerVisibleCards);
-            _player = Locator.Current.GetRequiredService<PlayerViewModel>();
-            _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
             
             ExternalCommunicatorService.SignalREvents.BettingTimerTicked.ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(dto => BettingTimeLeft = $"Time left: {dto.remainingSeconds} seconds");
@@ -63,6 +62,8 @@ namespace KC.Frontend.Client.ViewModels
             
             ExternalCommunicatorService.SignalREvents.BettingTimerElapsed.ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(_ => BettingPhase = false);
+            
+            
         }
 
         [Reactive]
@@ -72,6 +73,6 @@ namespace KC.Frontend.Client.ViewModels
 
         public IScreen HostScreen { get; }
 
-        private readonly PlayerViewModel _player;
+        private readonly PlayerViewModel _player = Locator.Current.GetRequiredService<PlayerViewModel>();
     }
 }

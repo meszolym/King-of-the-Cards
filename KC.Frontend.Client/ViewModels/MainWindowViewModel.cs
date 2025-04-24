@@ -35,17 +35,10 @@ namespace KC.Frontend.Client.ViewModels
             PlayerViewModel = Locator.Current.GetRequiredService<PlayerViewModel>();
             _externalCommunicator.ConnectionStatus.ObserveOn(RxApp.MainThreadScheduler).Subscribe(b => IsConnected = b);
             ClientMacAddress = ClientMacAddressHandler.PrimaryMacAddress.ToString();
-            Router.NavigationChanged.ObserveOn(RxApp.MainThreadScheduler).Subscribe(_ =>
-            {
-                IsFullScreen = Router.GetCurrentViewModel() is SessionViewModel;
-            });
-            ExternalCommunicatorService.SignalREvents.PlayerBalanceUpdated.ObserveOn(RxApp.MainThreadScheduler).Subscribe(player =>
-            {
-                if (player.Id == PlayerViewModel.Id)
-                {
-                    PlayerViewModel.PlayerBalance = player.Balance;
-                }
-            });
+            
+            Router.NavigationChanged.ObserveOn(RxApp.MainThreadScheduler).Subscribe(_ => IsFullScreen = Router.GetCurrentViewModel() is SessionViewModel);
+            
+            ExternalCommunicatorService.SignalREvents.PlayerBalanceUpdated.ObserveOn(RxApp.MainThreadScheduler).Subscribe(player => PlayerViewModel.PlayerBalance = player.Balance);
         }
         
         [Reactive]

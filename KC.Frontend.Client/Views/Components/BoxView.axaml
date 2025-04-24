@@ -9,9 +9,13 @@
                           xmlns:local="using:KC.Frontend.Client.Views.Components"
                           mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="400"
                           x:Class="KC.Frontend.Client.Views.Components.BoxView">
-    <Border BorderBrush="#498840" BorderThickness="2" CornerRadius="5" Padding="10" Background="#529848"
+    <Border BorderBrush="#498840" BorderThickness="2" CornerRadius="5" Margin="10" Background="#529848"
             HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid HorizontalAlignment="Stretch" x:Name="MainGrid" ColumnDefinitions="*,*" RowDefinitions="*,Auto,Auto,Auto">
+            <Image Grid.Column="1" Source="avares://KC.Frontend.Client/Assets/Pieces/pieceBlue_border03.png"
+                   VerticalAlignment="Top" HorizontalAlignment="Right" Height="64" Width="64"/>
+            <Image Grid.Column="0" Source="avares://KC.Frontend.Client/Assets/Pieces/pieceBlue_border03.png"
+                   VerticalAlignment="Top" HorizontalAlignment="Left" Height="64" Width="64"/>
             <local:HandView Grid.Column="1" x:Name="RightHandView" Margin="0,5,0,0" HorizontalAlignment="Stretch"/>
             <local:HandView Grid.Column="0" x:Name="LeftHandView" Margin="0,0,0,5" HorizontalAlignment="Stretch"/>
             
