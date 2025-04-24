@@ -4,6 +4,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using KC.Frontend.Client.Extensions;
@@ -46,6 +47,22 @@ namespace KC.Frontend.Client.ViewModels
             Dealer = new DealerViewModel(session.Table.DealerVisibleCards);
             _player = Locator.Current.GetRequiredService<PlayerViewModel>();
             _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
+            
+            //Subscribe to tick (TODO: should let user know how long they have to bet at a later time)
+            ExternalCommunicatorService.SignalREvents.BettingTimerTicked.ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => { });
+            
+            //Subscribe to betting timer elapsed (no more bets)
+            ExternalCommunicatorService.SignalREvents.BettingTimerElapsed.ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(id =>
+                {
+                    if (id != Id) return;
+                    
+                    foreach (var box in _boxes)
+                    {
+                        box.BettingPhase = false;
+                    }
+                });
         }
         
         public Guid Id { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.NetworkInformation;
+using KC.Backend.Models.GameItems;
 using KC.Shared.Models.Misc;
 
 namespace KC.Backend.Logic.Logics.Interfaces;
@@ -40,4 +41,6 @@ public interface IBettingBoxLogic
     void UpdateBetOnBox(Guid sessionId, int boxIdx, MacAddress playerId, double amount, int handIdx = 0);
 
     public double GetBetOnBox(Guid sessionId, int boxIdx, int handIdx = 0);
+
+    public BettingBox Get(Guid sessionId, int boxIdx);
 }

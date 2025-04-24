@@ -55,6 +55,8 @@ namespace KC.Frontend.Client.ViewModels
                 .Select(count => count == 0)
                 .BindTo(this, x => x.NoSessions);
 
+            CreateSessionCommand.ThrownExceptions.Subscribe(ex => Debug.WriteLine($"{ex.Message} in {nameof(CreateSessionCommand)}"));
+
         }
 
         [Reactive]

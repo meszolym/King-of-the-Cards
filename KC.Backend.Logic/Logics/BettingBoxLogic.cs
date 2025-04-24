@@ -76,5 +76,7 @@ public class BettingBoxLogic(IList<Session> sessions, IDictionary<MacAddress, Gu
 
     public double GetBetOnBox(Guid sessionId, int boxIdx, int handIdx = 0) 
         => sessions.Single(s => s.Id == sessionId).Table.BettingBoxes[boxIdx].Hands[handIdx].Bet;
+    
+    public BettingBox Get(Guid sessionId, int boxIdx) => sessions.Single(s => s.Id == sessionId).Table.BettingBoxes[boxIdx];
 
 }
