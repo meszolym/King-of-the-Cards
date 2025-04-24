@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
 using KC.Backend.Logic.Extensions;
-using KC.Backend.Logic.Interfaces;
-using KC.Backend.Models.GameItems;
+using KC.Backend.Logic.Logics.Interfaces;
 using KC.Backend.Models.GameManagement;
 using KC.Shared.Models.Misc;
 
-namespace KC.Backend.Logic;
+namespace KC.Backend.Logic.Logics;
 
 //This is done.
 public class BettingBoxLogic(IList<Session> sessions) : IBettingBoxLogic

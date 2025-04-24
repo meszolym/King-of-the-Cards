@@ -4,7 +4,7 @@ using KC.Backend.Models.GameItems;
 using KC.Shared.Models.GameItems;
 using KC.Shared.Models.Misc;
 
-namespace KC.Backend.Logic.Interfaces;
+namespace KC.Backend.Logic.Logics.Interfaces;
 
 public interface IGamePlayLogic
 {

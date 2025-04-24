@@ -2,7 +2,7 @@
 using System.Net.NetworkInformation;
 using KC.Shared.Models.Misc;
 
-namespace KC.Backend.Logic.Interfaces;
+namespace KC.Backend.Logic.Logics.Interfaces;
 
 public interface IBettingBoxLogic
 {

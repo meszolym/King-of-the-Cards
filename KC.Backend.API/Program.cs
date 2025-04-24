@@ -1,7 +1,8 @@
 using KC.Backend.API.Services;
 using Microsoft.AspNetCore.Diagnostics;
 using KC.Backend.Logic;
-using KC.Backend.Logic.Interfaces;
+using KC.Backend.Logic.Logics;
+using KC.Backend.Logic.Logics.Interfaces;
 using KC.Backend.Logic.Services;
 using KC.Backend.Logic.Services.Interfaces;
 using KC.Backend.Models;

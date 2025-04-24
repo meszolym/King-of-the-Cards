@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
 using KC.Backend.Logic.Extensions;
-using KC.Backend.Logic.Interfaces;
+using KC.Backend.Logic.Logics.Interfaces;
 using KC.Backend.Models.GameItems;
 using KC.Backend.Models.GameManagement;
 using KC.Shared.Models.GameItems;
 using KC.Shared.Models.Misc;
 
-namespace KC.Backend.Logic;
+namespace KC.Backend.Logic.Logics;
 
 //TODO: Make the logic more atomic, chaining them together will be handled by the API layer.
 public class GamePlayLogic(IList<Session> sessions, IRuleBook ruleBook) : IGamePlayLogic
