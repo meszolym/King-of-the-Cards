@@ -14,6 +14,7 @@ partial class MenuView : ReactiveUserControl<MenuViewModel>
 {
     public MenuView()
     {
+        InitializeComponent();
         this.WhenActivated(async d =>
         {
             this.OneWayBind(ViewModel, vm => vm.Sessions, v => v.SessionsListBox.ItemsSource).DisposeWith(d);
@@ -29,6 +30,5 @@ partial class MenuView : ReactiveUserControl<MenuViewModel>
             }
             
         });
-        InitializeComponent();
     }
 }

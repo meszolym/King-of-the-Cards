@@ -10,14 +10,13 @@ namespace KC.Frontend.Client.Views.Components;
 
 public partial class DealerView : ReactiveUserControl<DealerViewModel>
 {
-    private ItemsControl _cardsItemsControl => this.FindControl<ItemsControl>("CardsItemsControl")!;
     public DealerView()
     {
         InitializeComponent();
         
         this.WhenActivated(disposables =>
         {
-            this.OneWayBind(ViewModel, vm => vm.Cards, v => v._cardsItemsControl.ItemsSource).DisposeWith(disposables);
+            this.OneWayBind(ViewModel, vm => vm.Cards, v => v.CardsItemsControl.ItemsSource).DisposeWith(disposables);
         });
     }
 }

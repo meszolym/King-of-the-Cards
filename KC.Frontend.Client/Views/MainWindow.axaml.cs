@@ -13,6 +13,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
 {
     public MainWindow()
     {
+        InitializeComponent();
         this.WhenActivated(async d =>
         {
             this.OneWayBind(ViewModel, vm=> vm.IsFullScreen, v=> v.WindowState, b => b ? WindowState.FullScreen : WindowState.Normal).DisposeWith(d); 
@@ -29,7 +30,6 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             
             
         });
-        InitializeComponent();
         
     }
     private async Task HandleNameChange(IInteractionContext<string?, string?> arg)

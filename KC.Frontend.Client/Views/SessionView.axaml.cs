@@ -13,6 +13,7 @@ partial class SessionView : ReactiveUserControl<SessionViewModel>
     // private Button _testSplitButton => this.FindControl<Button>("TestSplitButton");
     public SessionView()
     {
+        InitializeComponent();
         this.WhenActivated(d =>
         {
             // this.BindCommand(ViewModel, vm => vm.TestSplitCommand, v => v._testSplitButton).DisposeWith(d);
@@ -31,7 +32,5 @@ partial class SessionView : ReactiveUserControl<SessionViewModel>
             this.OneWayBind(ViewModel, vm => vm.BettingTimeLeft, v => v.BetTimerTextBlock.Text).DisposeWith(d);
             
         });
-        InitializeComponent();
-
     }
 }

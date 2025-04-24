@@ -13,7 +13,7 @@ public partial class SessionBoxControlsView : ReactiveUserControl<SessionBoxCont
 {
     public SessionBoxControlsView()
     {
-        ViewModel = new SessionBoxControlsViewModel();
+        InitializeComponent();
         this.WhenActivated(d =>
         {
             this.BindCommand(ViewModel, vm => vm.HitOnHandCommand, v => v.HitButton).DisposeWith(d);
@@ -21,6 +21,6 @@ public partial class SessionBoxControlsView : ReactiveUserControl<SessionBoxCont
             this.BindCommand(ViewModel, vm => vm.DoubleDownOnHandCommand, v => v.DoubleButton).DisposeWith(d);
             this.BindCommand(ViewModel, vm => vm.SplitOnHandCommand, v => v.SplitButton).DisposeWith(d);
         });
-        InitializeComponent();
+        
     }
 }

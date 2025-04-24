@@ -19,6 +19,17 @@ namespace KC.Frontend.Client.ViewModels.Components;
 
 public partial class BoxViewModel : ReactiveObject
 {
+
+    public enum TurnState
+    {
+        None,
+        Right,
+        Left
+    }
+
+    [Reactive]
+    private TurnState _turnInfo; 
+    
     [Reactive]
     private HandViewModel _leftHand;
     
