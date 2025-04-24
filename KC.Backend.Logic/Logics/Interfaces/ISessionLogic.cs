@@ -28,15 +28,4 @@ public interface ISessionLogic
     /// <param name="sessionId"></param>
     /// <returns>Whether the betting timer is enabled after the update.</returns>
     bool UpdateBettingTimer(Guid sessionId);
-
-    void TransferTurn(Guid sessionId);
-    void FinishAllHandsInPlay(Guid sessionId);
-
-    /// <summary>
-    /// Ends the turn, pays out bets TO THE BOXES.
-    /// Make sure to handle player balance changes.
-    /// </summary>
-    void PayOutBets(Guid sessionId);
-
-    void ClearHands(Guid sessionId);
 }

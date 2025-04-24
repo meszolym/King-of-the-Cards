@@ -1,4 +1,5 @@
 using KC.Shared.Models.Dtos;
+using KC.Shared.Models.GameManagement;
 
 namespace KC.Shared.Models.Misc;
 
@@ -14,4 +15,5 @@ public static class SignalRMethods
     public static SignalRMethod<BettingBoxReadDto> BetUpdated { get; } = new("BetUpdated");
     public static SignalRMethod<BettingBoxReadDto> BoxOwnerChanged { get; } = new("BoxOwnerChanged");
     public static SignalRMethod<(Guid sessionId, int change)> SessionOccupancyChanged { get; } = new("SessionOccupancyChanged");
+    public static SignalRMethod<TurnInfo> TurnChanged { get; } = new("TurnChanged");
 }

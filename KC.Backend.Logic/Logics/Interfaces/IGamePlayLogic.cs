@@ -56,4 +56,15 @@ public interface IGamePlayLogic
     /// <exception cref="InvalidOperationException">"Action not possible." if the rulebook states that this action is not possible.</exception>
     /// <exception cref="ArgumentOutOfRangeException">If move is not handled.</exception>
     void MakeMove(Guid sessionId, int boxIdx, MacAddress playerId, Move move, int handIdx = 0);
+
+    void TransferTurn(Guid sessionId);
+    void FinishAllHandsInPlay(Guid sessionId);
+
+    /// <summary>
+    /// Ends the turn, pays out bets TO THE BOXES.
+    /// Make sure to handle player balance changes.
+    /// </summary>
+    void PayOutBets(Guid sessionId);
+
+    void ClearHands(Guid sessionId);
 }
