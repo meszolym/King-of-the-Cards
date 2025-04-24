@@ -60,4 +60,8 @@
     <ItemGroup>
       <ProjectReference Include="..\KC.Shared.Models\KC.Shared.Models.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\" />
+    </ItemGroup>
 </Project>

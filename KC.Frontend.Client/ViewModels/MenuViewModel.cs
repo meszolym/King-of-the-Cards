@@ -1,5 +1,4 @@
-﻿using KC.Frontend.Client.Models;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,6 +12,7 @@ using Avalonia.Controls.Templates;
 using KC.Frontend.Client.Extensions;
 using KC.Frontend.Client.Services;
 using KC.Frontend.Client.Utilities;
+using KC.Frontend.Client.ViewModels.Components;
 using KC.Shared.Models.Dtos;
 using Microsoft.AspNetCore.SignalR.Client;
 using Splat;
@@ -32,7 +32,7 @@ namespace KC.Frontend.Client.ViewModels
         public MenuViewModel(IScreen host)
         {
             HostScreen = host;
-            _joinCanExecute = this.WhenAnyValue(x => x.SelectedItem).Select(x => x != null!);
+            _joinCanExecute = this.WhenAnyValue(x => x.SelectedItemViewModel).Select(x => x != null!);
             
             _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
 
@@ -63,14 +63,14 @@ namespace KC.Frontend.Client.ViewModels
 
         [Reactive]
         //Can't be null, but compiler gives warning :)
-        private SessionListItem _selectedItem = null!;
+        private SessionListItemViewModel _selectedItemViewModel = null!;
 
         [ReactiveCommand(CanExecute = nameof(_joinCanExecute))]
         private async Task JoinSession()
         {
             Debug.WriteLine("Joining session");
-            await _externalCommunicator.JoinSession(SelectedItem.Id, ClientMacAddressHandler.PrimaryMacAddress);
-            var session = await _externalCommunicator.GetSession(SelectedItem.Id);
+            await _externalCommunicator.JoinSession(SelectedItemViewModel.Id, ClientMacAddressHandler.PrimaryMacAddress);
+            var session = await _externalCommunicator.GetSession(SelectedItemViewModel.Id);
             await HostScreen.Router.Navigate.Execute(new SessionViewModel(HostScreen, session));
         }
 
@@ -95,7 +95,7 @@ namespace KC.Frontend.Client.ViewModels
         // private List<SessionListItem> _sessions = new List<SessionListItem>();
         
         [Reactive]
-        private ObservableCollection<SessionListItem> _sessions = [];
+        private ObservableCollection<SessionListItemViewModel> _sessions = [];
 
         public string? UrlPathSegment { get; } = "menu";
 

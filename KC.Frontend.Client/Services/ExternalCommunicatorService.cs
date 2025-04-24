@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using KC.Frontend.Client.Extensions;
-using KC.Frontend.Client.Models;
+using KC.Frontend.Client.ViewModels.Components;
 using KC.Shared.Models.Dtos;
 using KC.Shared.Models.Misc;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -88,7 +88,7 @@ public partial class ExternalCommunicatorService
                 _signalRHubConnection.ConnectionId!)));
     }
 
-    public async Task<IEnumerable<SessionListItem>> GetSessionList()
+    public async Task<IEnumerable<SessionListItemViewModel>> GetSessionList()
     {
         return (await _client.GetAsync<List<SessionReadDto>>(ApiEndpoints.GetSessions)
                 ?? throw new ExternalCommunicationException("Could not get sessions"))

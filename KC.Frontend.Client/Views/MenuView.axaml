@@ -8,7 +8,7 @@
 			mc:Ignorable="d" d:DesignHeight="1080" d:DesignWidth="1920"
 			x:Class="KC.Frontend.Client.Views.MenuView"
 			xmlns:rxui="http://reactiveui.net"
-			xmlns:models="using:KC.Frontend.Client.Models">
+			xmlns:components="clr-namespace:KC.Frontend.Client.ViewModels.Components">
 
 	<Grid>
 		<Grid.ColumnDefinitions>
@@ -18,7 +18,7 @@
 
 		<ListBox Grid.Column="0" Grid.Row="0" x:Name="SessionsListBox">
 			<ListBox.ItemTemplate>
-				<DataTemplate DataType="{x:Type models:SessionListItem}">
+				<DataTemplate DataType="{x:Type components:SessionListItemViewModel}">
 					<Grid>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto"/>

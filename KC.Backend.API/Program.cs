@@ -50,8 +50,11 @@ namespace KC.Backend.API
             builder.Services.AddTransient<ISessionTerminatorService, SessionTerminatorService>();
             
             //other services in API layer
+            Dictionary<string, string> connectionsAndGroups = [];
+            builder.Services.AddSingleton<IDictionary<string, string>>(connectionsAndGroups);
             builder.Services.AddSignalR().AddNewtonsoftJsonProtocol();
-            builder.Services.AddSingleton<IClientCommunicator, SignalRHub>();
+            builder.Services.AddTransient<IClientCommunicator, SignalRHub>();
+            
             builder.Services.AddTransient<ISessionCreationOrchestrator, SessionCreationOrchestrator>();
             builder.Services.AddTransient<IBetOrchestrator, BetOrchestrator>();
 

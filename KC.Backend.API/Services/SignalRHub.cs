@@ -4,11 +4,10 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace KC.Backend.API.Services;
 
-public class SignalRHub(IHubContext<SignalRHub> hubContext) : Hub, IClientCommunicator
+public class SignalRHub(IHubContext<SignalRHub> hubContext, IDictionary<string, string> connectionsAndGroups) : Hub, IClientCommunicator
 {
+    public IDictionary<string, string> ConnectionsAndGroups { get; } = connectionsAndGroups;
     public string BaseGroup { get; } = "lobby";
-    
-    public ConcurrentDictionary<string, string> ConnectionsAndGroups { get; private init; } = new();
 
     #region Base Hub Methods
     
@@ -33,7 +32,7 @@ public class SignalRHub(IHubContext<SignalRHub> hubContext) : Hub, IClientCommun
         if (ConnectionsAndGroups.TryGetValue(connectionId, out var oldGroup))
         {
             await hubContext.Groups.RemoveFromGroupAsync(connectionId, oldGroup);
-            ConnectionsAndGroups.TryRemove(connectionId, out var _);
+            ConnectionsAndGroups.Remove(connectionId, out var _);
         }
 
         if (group is null) return;
@@ -48,7 +47,5 @@ public class SignalRHub(IHubContext<SignalRHub> hubContext) : Hub, IClientCommun
             : hubContext.Clients.Client(connectionId).SendAsync(method, message);
 
     public Task SendMessageToGroupAsync(string group, string method, object? message)
-        => ConnectionsAndGroups.All(x => x.Value != group)
-                ? throw new Exception($"Group: {group} does not exist")
-            : hubContext.Clients.Group(group).SendAsync(method, message);
+        => hubContext.Clients.Group(group).SendAsync(method, message);
 }
