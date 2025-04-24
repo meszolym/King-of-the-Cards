@@ -45,7 +45,6 @@ namespace KC.Backend.API
             builder.Services.AddTransient<IBettingBoxLogic, BettingBoxLogic>();
             builder.Services.AddTransient<IGamePlayLogic, GamePlayLogic>();
             builder.Services.AddTransient<IPlayerLogic, PlayerLogic>();
-            builder.Services.AddTransient<IRuleBook, RuleBook>();
             builder.Services.AddTransient<ISessionLogic, SessionLogic>();
             builder.Services.AddTransient<ISessionTerminatorService, SessionTerminatorService>();
             

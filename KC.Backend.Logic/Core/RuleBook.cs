@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using KC.Backend.Logic.Core.Interfaces;
 using KC.Backend.Logic.Logics.Interfaces;
 using KC.Backend.Models.GameItems;
 using KC.Shared.Models.GameItems;
 
-namespace KC.Backend.Logic.Logics;
+namespace KC.Backend.Logic.Core;
 
 //This is done.
 public class RuleBook : IRuleBook

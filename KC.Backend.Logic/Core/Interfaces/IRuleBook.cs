@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using KC.Backend.Models.GameItems;
 
-namespace KC.Backend.Logic.Logics.Interfaces;
+namespace KC.Backend.Logic.Core.Interfaces;
 
 public interface IRuleBook
 {
