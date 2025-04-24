@@ -1,6 +1,6 @@
 using KC.Backend.API.Services;
 using KC.Backend.Logic.Extensions;
-using KC.Backend.Logic.Interfaces;
+using KC.Backend.Logic.Logics.Interfaces;
 using KC.Shared.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
 

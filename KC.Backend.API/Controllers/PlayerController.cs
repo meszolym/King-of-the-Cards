@@ -1,7 +1,7 @@
 using System.Net.NetworkInformation;
 using KC.Backend.Logic;
 using KC.Backend.Logic.Extensions;
-using KC.Backend.Logic.Interfaces;
+using KC.Backend.Logic.Logics.Interfaces;
 using KC.Backend.Models.GameItems;
 using KC.Shared.Models.Dtos;
 using KC.Shared.Models.Misc;

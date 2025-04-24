@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using KC.Backend.API.Services;
 using KC.Backend.Logic.Extensions;
-using KC.Backend.Logic.Interfaces;
+using KC.Backend.Logic.Logics.Interfaces;
 using KC.Backend.Logic.Services.Interfaces;
 using KC.Backend.Models.GameManagement;
 using KC.Frontend.Client.Services;
