@@ -44,13 +44,13 @@ public static class ClientMacAddressHandler
     
     private static MacAddress GetPrimaryMacAddress()
     {
-        IPAddress localIP;
+        IPAddress localIp;
 
         // Step 1: Determine the local IP address used to reach the internet
         using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
         {
             socket.Connect("8.8.8.8", 65530); // Google's public DNS - no actual data sent
-            localIP = ((IPEndPoint)socket.LocalEndPoint).Address;
+            localIp = ((IPEndPoint)socket.LocalEndPoint!).Address;
         }
 
         // Step 2: Find the NIC that has this IP assigned
@@ -58,7 +58,7 @@ public static class ClientMacAddressHandler
             .FirstOrDefault(n =>
                 n.OperationalStatus == OperationalStatus.Up &&
                 n.GetIPProperties().UnicastAddresses
-                    .Any(a => a.Address.Equals(localIP)));
+                    .Any(a => a.Address.Equals(localIp)));
 
         if (nic == null)
             throw new InvalidOperationException("No network adapter found for internet connection.");
