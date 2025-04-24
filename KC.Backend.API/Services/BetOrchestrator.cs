@@ -27,6 +27,6 @@ public class BetOrchestrator(IBettingBoxLogic bettingBoxLogic, IPlayerLogic play
         var running = sessionLogic.UpdateBettingTimer(dto.SessionId);
 
         if (!running)
-            await hub.SendMessageAsync(dto.SessionId.ToString(), SignalRMethods.BettingTimerStopped, dto.SessionId);
+            await hub.SendMessageToGroupAsync(dto.SessionId.ToString(), SignalRMethods.BettingTimerStopped, dto.SessionId);
     }
 }

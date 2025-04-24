@@ -17,7 +17,7 @@ public static class ConversionExtensions
         new BettingBoxReadDto(bettingBox.IdxOnTable, bettingBox.OwnerId, getPlayerName(bettingBox.OwnerId), bettingBox.Hands.Select(h => h.ToDto()));
 
     public static TableReadDto ToDto(this Table table, Func<Guid, string> getPlayerName) =>
-        new TableReadDto(table.Dealer.DealerVisibleCards, table.BettingBoxes.Select(b => b.ToDto(getPlayerName)).OrderBy(b => b.BoxIdx));
+        new TableReadDto(table.Dealer.GetVisibleCards(), table.BettingBoxes.Select(b => b.ToDto(getPlayerName)).OrderBy(b => b.BoxIdx));
     
     public static SessionReadDto ToDto(this Session session, Func<Guid, string> getPlayerName) => new SessionReadDto(session.Id, session.Table.ToDto(getPlayerName),
         session.CurrentTurnInfo, session.CanPlaceBets);

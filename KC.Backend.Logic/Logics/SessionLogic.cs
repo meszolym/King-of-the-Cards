@@ -70,9 +70,15 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
     public bool UpdateBettingTimer(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
-        if (session.Table.BettingBoxes.Any(b => b.Hands[0].Bet > 0)
-            && !session.BettingTimer.Enabled) session.BettingTimer.Start();
-        else if (session.BettingTimer.Enabled) session.BettingTimer.Stop();
+        
+        if (session.Table.BettingBoxes.Any(b => b.Hands[0].Bet > 0))
+        {
+            if (!session.BettingTimer.Enabled) session.BettingTimer.Start();
+        }
+        else if (session.BettingTimer.Enabled)
+        {
+            session.BettingTimer.Stop();
+        }
         
         return session.BettingTimer.Enabled;
     }
