@@ -52,7 +52,7 @@ namespace KC.Frontend.Client.Views.Components
                 this.BindCommand(ViewModel, vm => vm.ClaimBoxCommand, view => view.ClaimButtonFound);
                 this.OneWayBind(ViewModel, vm => vm.IsClaimed, v=> v.ClaimButtonFound.IsVisible, b => !b && ViewModel!.OwnerId == Guid.Empty);
                 this.BindCommand(ViewModel, vm => vm.DisclaimBoxCommand, view => view.UnclaimButtonFound);
-                this.OneWayBind(ViewModel, vm => vm.IsClaimed, v=> v.UnclaimButtonFound.IsVisible, b => b && ViewModel!.OwnerId == ViewModel!.LocalPlayer.Id);
+                this.OneWayBind(ViewModel, vm => vm.IsClaimed, v=> v.UnclaimButtonFound.IsVisible, b => b && ViewModel!.OwnerId == BoxViewModel.LocalPlayer.Id);
                 
                 
                 this.OneWayBind(ViewModel, vm => vm.RightHand.BetAmount, v => v.BetTextBlockFound.Text, bet => $"${bet}").DisposeWith(d);
