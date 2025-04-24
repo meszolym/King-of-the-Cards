@@ -3,7 +3,9 @@ using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using KC.Shared.Models.Dtos;
+using KC.Shared.Models.Misc;
 using Microsoft.AspNetCore.SignalR.Client;
+using KC.Frontend.Client.Extensions;
 using ReactiveUI;
 
 namespace KC.Frontend.Client.Services;
@@ -35,15 +37,15 @@ public partial class ExternalCommunicatorService
         
         public static void Init(HubConnection conn)
         {
-            conn.On<SessionReadDto>("SessionCreated", dto => SessionCreatedSubject.OnNext(dto));
-            conn.On<Guid>("SessionDeleted", id => SessionDeletedSubject.OnNext(id));
-            conn.On<PlayerReadDto>("PlayerBalanceUpdated", dto => PlayerBalanceUpdatedSubject.OnNext(dto));
-            conn.On<Guid>("BettingTimerTicked", id => BettingTimerTickedSubject.OnNext(id));
-            conn.On<Guid>("BettingTimerElapsed", id => BettingTimerElapsedSubject.OnNext(id));
-            conn.On<SessionReadDto>("HandsUpdated", dto => HandsUpdatedSubject.OnNext(dto));
-            conn.On<BettingBoxReadDto>("BetUpdated", dto => BetUpdatedSubject.OnNext(dto));
-            conn.On<BettingBoxReadDto>("BoxOwnerChanged", dto => BoxOwnerChangedSubject.OnNext(dto));
-            conn.On<(Guid sessionId, int change)>("SessionOccupancyChanged", dto => SessionOccupancyChangedSubject.OnNext(dto));
+            conn.On(SignalRMethods.SessionCreated, dto => SessionCreatedSubject.OnNext(dto));
+            conn.On(SignalRMethods.SessionDeleted, id => SessionDeletedSubject.OnNext(id));
+            conn.On(SignalRMethods.PlayerBalanceUpdated, dto => PlayerBalanceUpdatedSubject.OnNext(dto));
+            conn.On(SignalRMethods.BettingTimerTicked, id => BettingTimerTickedSubject.OnNext(id));
+            conn.On(SignalRMethods.BettingTimerElapsed, id => BettingTimerElapsedSubject.OnNext(id));
+            conn.On(SignalRMethods.HandsUpdated, dto => HandsUpdatedSubject.OnNext(dto));
+            conn.On(SignalRMethods.BetUpdated, dto => BetUpdatedSubject.OnNext(dto));
+            conn.On(SignalRMethods.BoxOwnerChanged, dto => BoxOwnerChangedSubject.OnNext(dto));
+            conn.On(SignalRMethods.SessionOccupancyChanged, dto => SessionOccupancyChangedSubject.OnNext(dto));
             
         }
     }

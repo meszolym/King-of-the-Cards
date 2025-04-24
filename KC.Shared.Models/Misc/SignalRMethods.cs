@@ -1,0 +1,16 @@
+using KC.Shared.Models.Dtos;
+
+namespace KC.Shared.Models.Misc;
+
+public static class SignalRMethods
+{
+    public static SignalRMethod<SessionReadDto> SessionCreated { get; } = new("SessionCreated");
+    public static SignalRMethod<Guid> SessionDeleted { get; } = new("SessionDeleted");
+    public static SignalRMethod<PlayerReadDto> PlayerBalanceUpdated { get; } = new("PlayerBalanceUpdated");
+    public static SignalRMethod<Guid> BettingTimerTicked { get; } = new("BettingTimerTicked");
+    public static SignalRMethod<Guid> BettingTimerElapsed { get; } = new("BettingTimerElapsed");
+    public static SignalRMethod<SessionReadDto> HandsUpdated { get; } = new("HandsUpdated");
+    public static SignalRMethod<BettingBoxReadDto> BetUpdated { get; } = new("BetUpdated");
+    public static SignalRMethod<BettingBoxReadDto> BoxOwnerChanged { get; } = new("BoxOwnerChanged");
+    public static SignalRMethod<(Guid sessionId, int change)> SessionOccupancyChanged { get; } = new("SessionOccupancyChanged");
+}
