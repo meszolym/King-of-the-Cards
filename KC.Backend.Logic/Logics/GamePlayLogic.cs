@@ -33,6 +33,8 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
             (shoe.Cards[i], shoe.Cards[j]) = (shoe.Cards[j], shoe.Cards[i]);
         }
         shoe.NextCardIdx = 0;
+        
+        shoe.ResetShuffleCardPlacement();
     }
 
     /// <summary>

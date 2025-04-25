@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using KC.Backend.Logic.Core.Interfaces;
+using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Logics.Interfaces;
 using KC.Backend.Models.GameItems;
 using KC.Backend.Models.GameManagement;
@@ -11,10 +11,14 @@ using KC.Shared.Models.GameManagement;
 namespace KC.Backend.Logic.Logics;
 
 //TODO: Make the logic more atomic, chaining them together will be handled by the API layer.
-public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessionLogic
+public class SessionLogic(IList<Session> sessions) : ISessionLogic
 {
-    private static CardShoe CreateUnshuffledShoe(uint numberOfDecks) =>
-        new CardShoe([.. Enumerable.Range(0, (int)numberOfDecks).SelectMany(i => GetDeck())]);
+    private static CardShoe CreateUnshuffledShoe(uint numberOfDecks, int origSCardIdx, int origSCardRange) =>
+        new CardShoe([.. Enumerable.Range(0, (int)numberOfDecks).SelectMany(i => GetDeck())])
+        {
+            OriginalShuffleCardIdx = origSCardIdx,
+            OriginalShuffleCardRange = origSCardRange
+        };
 
     private static IEnumerable<Card> GetDeck() => Enum.GetValues<Card.CardSuit>().Where(s => s != Card.CardSuit.None)
         .SelectMany(suit => Enum.GetValues<Card.CardFace>().Where(face => face != Card.CardFace.None).Select(face => new Card {Face = face, Suit = suit}));
@@ -26,14 +30,10 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
     public Session CreateSession(uint numberOfBoxes, uint numberOfDecks, int shuffleCardPlacement, uint shuffleCardRange, TimeSpan bettingTimeSpan, TimeSpan sessionDestructionTimeSpan, Random? random = null)
     {
         random ??= Random.Shared;
-        var shoe = CreateUnshuffledShoe(numberOfDecks);
+        var shoe = CreateUnshuffledShoe(numberOfDecks, shuffleCardPlacement, (int)shuffleCardRange);
         
-        shuffleCardPlacement = random.Next((int)(shuffleCardPlacement - shuffleCardRange),(int)(shuffleCardPlacement + shuffleCardRange));
+        shoe.ResetShuffleCardPlacement();
         
-        if (shuffleCardPlacement < 0)
-            shuffleCardPlacement += shoe.Cards.Count;
-        
-        shoe.ShuffleCardIdx = shuffleCardPlacement;
         shoe.NextCardIdx = shuffleCardPlacement; //Makes shuffling necessary.
         
         var table = new Table((int)numberOfBoxes, shoe);
