@@ -45,6 +45,8 @@ public class MoveOrchestrator(IPlayerLogic playerLogic, IGamePlayLogic gamePlayL
             
             await hub.SendMessageToGroupAsync(dto.sessionId, SignalRMethods.BetUpdated, box.ToDto(g => playerLogic.Get(g).Name));
         }
+        
+        await TransferTurn(dto.sessionId);
     }
 
     public async Task TransferTurn(Guid sessionId)
