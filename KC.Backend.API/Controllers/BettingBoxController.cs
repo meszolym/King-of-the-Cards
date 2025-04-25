@@ -14,23 +14,23 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
 {
     [HttpPost]
     [Route("claim-box")]
-    public void ClaimBox([FromBody] BoxOwnerUpdateDto dto)
+    public void ClaimBox([FromHeader(Name = "Player-Mac-Address")] string macAddress, [FromBody] BoxOwnerUpdateDto dto)
     {
-        bettingBoxLogic.ClaimBettingBox(dto.SessionId, dto.BoxIdx, dto.OwnerMac);
+        bettingBoxLogic.ClaimBettingBox(dto.SessionId, dto.BoxIdx, MacAddress.Parse(macAddress));
         hub.SendMessageToGroupAsync(dto.SessionId.ToString(), SignalRMethods.BoxOwnerChanged, bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name));
         hub.SendMessageToGroupAsync(hub.BaseGroup, SignalRMethods.SessionOccupancyChanged, (dto.SessionId,1));
     }
 
     [HttpDelete]
     [Route("disclaim-box")]
-    public void DisclaimBox([FromBody] BoxOwnerUpdateDto dto)
+    public void DisclaimBox([FromHeader(Name = "Player-Mac-Address")] string macAddress, [FromBody] BoxOwnerUpdateDto dto)
     {
-        bettingBoxLogic.DisclaimBettingBox(dto.SessionId, dto.BoxIdx, dto.OwnerMac);
+        bettingBoxLogic.DisclaimBettingBox(dto.SessionId, dto.BoxIdx, MacAddress.Parse(macAddress));
         hub.SendMessageToGroupAsync(dto.SessionId.ToString(), SignalRMethods.BoxOwnerChanged, bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name));
         hub.SendMessageToGroupAsync(hub.BaseGroup, SignalRMethods.SessionOccupancyChanged, (dto.SessionId,-1));
     }
 
     [HttpPut]
     [Route("update-bet")]
-    public async Task UpdateBet([FromBody] BoxBetUpdateDto dto) => await betOrchestrator.UpdateBet(dto);
+    public async Task UpdateBet([FromHeader(Name = "Player-Mac-Address")] string macAddress, [FromBody] BoxBetUpdateDto dto) => await betOrchestrator.UpdateBet(MacAddress.Parse(macAddress), dto);
 }

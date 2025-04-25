@@ -83,7 +83,7 @@ public partial class BoxViewModel : ReactiveObject
     {
         try
         {
-            await _externalCommunicator.ClaimBox(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress);
+            await _externalCommunicator.ClaimBox(_sessionId, _boxIdx);
             PlayerName = LocalPlayer.PlayerName;
             OwnerId = LocalPlayer.Id;
             BoxClaimStatusChangedSub.OnNext(Unit.Default);
@@ -102,7 +102,7 @@ public partial class BoxViewModel : ReactiveObject
         try
         {
             RightHand.BetAmount = 0; //This goes through UpdateBetAmount (and thus the server) as it is bound to the UI!
-            await _externalCommunicator.DisclaimBox(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress);
+            await _externalCommunicator.DisclaimBox(_sessionId, _boxIdx);
             PlayerName = "Unclaimed";
             OwnerId = Guid.Empty;
             BoxClaimStatusChangedSub.OnNext(Unit.Default);
@@ -205,7 +205,7 @@ public partial class BoxViewModel : ReactiveObject
         
         try
         {
-            await _externalCommunicator.UpdateBet(_sessionId, _boxIdx, ClientMacAddressHandler.PrimaryMacAddress, (double) newVal);
+            await _externalCommunicator.UpdateBet(_sessionId, _boxIdx, (double) newVal);
             return true;
         }
         catch (Exception e)

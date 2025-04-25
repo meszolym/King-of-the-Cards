@@ -79,7 +79,7 @@ namespace KC.Frontend.Client.ViewModels
             var name = await PlayerNameInteraction.Handle(null);
             try
             {
-                await _externalCommunicator.RegisterPlayer(name!, ClientMacAddressHandler.PrimaryMacAddress);
+                await _externalCommunicator.RegisterPlayer(name!);
                 await CheckIfRegistered();
             }
             catch (Exception e)
@@ -94,7 +94,7 @@ namespace KC.Frontend.Client.ViewModels
         {
             try
             {
-                var player = await _externalCommunicator.GetPlayerByMac(ClientMacAddressHandler.PrimaryMacAddress);
+                var player = await _externalCommunicator.GetLocalPlayer();
                 PlayerViewModel.Id = player.Id;
                 PlayerViewModel.PlayerName = player.Name;
                 PlayerViewModel.PlayerBalance = player.Balance;

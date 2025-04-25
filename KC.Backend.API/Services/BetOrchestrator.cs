@@ -8,17 +8,17 @@ namespace KC.Backend.API.Services;
 
 public class BetOrchestrator(IBettingBoxLogic bettingBoxLogic, IPlayerLogic playerLogic, ISessionLogic sessionLogic, IClientCommunicator hub) : IBetOrchestrator
 {
-    public async Task UpdateBet(BoxBetUpdateDto dto)
+    public async Task UpdateBet(MacAddress address, BoxBetUpdateDto dto)
     {
-        var player = playerLogic.Get(dto.OwnerMac);
+        var player = playerLogic.Get(address);
 
         var alreadyPlaced = bettingBoxLogic.GetBetOnBox(dto.SessionId, dto.BoxIdx, dto.HandIdx);
         
         if (dto.Amount - alreadyPlaced > player.Balance)
             throw new InvalidOperationException("Player balance does not cover the bet.");
         
-        bettingBoxLogic.UpdateBetOnBox(dto.SessionId, dto.BoxIdx, dto.OwnerMac, dto.Amount, dto.HandIdx);
-        playerLogic.UpdateBalance(dto.OwnerMac, player.Balance - (dto.Amount - alreadyPlaced));
+        bettingBoxLogic.UpdateBetOnBox(dto.SessionId, dto.BoxIdx, address, dto.Amount, dto.HandIdx);
+        playerLogic.UpdateBalance(address, player.Balance - (dto.Amount - alreadyPlaced));
         
         await hub.SendMessageAsync(player.ConnectionId, SignalRMethods.PlayerBalanceUpdated, player.ToDto());
         var dtoToSend = bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name);

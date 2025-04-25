@@ -5,7 +5,6 @@ using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Logics.Interfaces;
 using KC.Backend.Logic.Services.Interfaces;
 using KC.Backend.Models.GameManagement;
-using KC.Frontend.Client.Services;
 using KC.Shared.Models.Dtos;
 using KC.Shared.Models.Misc;
 using Microsoft.AspNetCore.Mvc;
@@ -24,23 +23,22 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     public SessionReadDto GetSession(Guid id) =>
         sessionLogic.Get(id).ToDto(g => playerLogic.Get(g).Name);
 
-    [HttpPost]
-    [Route("join")]
-    public async Task JoinSession(SessionJoinLeaveDto dto)
+    [HttpPost("join/{sessionId:guid}")]
+    public async Task JoinSession([FromHeader(Name = "Player-Mac-Address")] string macAddress, Guid sessionId)
     {
-        var connId = playerLogic.Get(dto.Address).ConnectionId;
-        await hub.MoveToGroupAsync(connId, dto.SessionId.ToString());
+        var mac = MacAddress.Parse(macAddress);
+        var connId = playerLogic.Get(mac).ConnectionId;
+        await hub.MoveToGroupAsync(connId, sessionId.ToString());
         
-        var sess = sessionLogic.Get(dto.SessionId);
+        var sess = sessionLogic.Get(sessionId);
         sess.DestructionTimer.Reset();
         
     }
 
-    [HttpDelete]
-    [Route("leave")]
-    public async Task LeaveSession(SessionJoinLeaveDto dto)
+    [HttpDelete("leave/{sessionId:guid}")]
+    public async Task LeaveSession([FromHeader(Name = "Player-Mac-Address")] string macAddress, Guid sessionId)
     {
-        var connId = playerLogic.Get(dto.Address).ConnectionId;
+        var connId = playerLogic.Get(MacAddress.Parse(macAddress)).ConnectionId;
         await hub.MoveToGroupAsync(connId, hub.BaseGroup);
     }
 
