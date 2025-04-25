@@ -34,7 +34,7 @@ public class SessionLogic(IList<Session> sessions) : ISessionLogic
         
         shoe.ResetShuffleCardPlacement();
         
-        shoe.NextCardIdx = shuffleCardPlacement; //Makes shuffling necessary.
+        shoe.NextCardIdx = shoe.ShuffleCardIdx; //Makes shuffling necessary.
         
         var table = new Table((int)numberOfBoxes, shoe);
         
