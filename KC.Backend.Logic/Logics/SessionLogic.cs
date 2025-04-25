@@ -22,12 +22,6 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
     /// <summary>
     /// Creates an empty session. Make sure to subscribe to events of the timers.
     /// </summary>
-    /// <param name="numberOfBoxes"></param>
-    /// <param name="numberOfDecks"></param>
-    /// <param name="shuffleCardPlacement"></param>
-    /// <param name="shuffleCardRange"></param>
-    /// <param name="bettingTimeSpan"></param>
-    /// <param name="random"></param>
     /// <returns></returns>
     public Session CreateSession(uint numberOfBoxes, uint numberOfDecks, int shuffleCardPlacement, uint shuffleCardRange, TimeSpan bettingTimeSpan, TimeSpan sessionDestructionTimeSpan, Random? random = null)
     {
@@ -40,6 +34,7 @@ public class SessionLogic(IList<Session> sessions, IRuleBook ruleBook) : ISessio
             shuffleCardPlacement += shoe.Cards.Count;
         
         shoe.ShuffleCardIdx = shuffleCardPlacement;
+        shoe.NextCardIdx = shuffleCardPlacement; //Makes shuffling necessary.
         
         var table = new Table((int)numberOfBoxes, shoe);
         

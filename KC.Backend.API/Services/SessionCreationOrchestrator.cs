@@ -30,10 +30,13 @@ public class SessionCreationOrchestrator(ISessionLogic sessionLogic, IPlayerLogi
     private async Task OnBettingTimerElapsed(Guid sessId)
     {
         await hub.SendMessageToGroupAsync(sessId.ToString(), SignalRMethods.BettingTimerElapsed, sessId);
-        gamePlayLogic.DealHalfOfStartingCards(sessId, true);
+
+        gamePlayLogic.ShuffleIfNeeded(sessId);
+        
+        gamePlayLogic.DealHalfOfStartingCards(sessId);
         var session = sessionLogic.Get(sessId);
         await hub.SendMessageToGroupAsync(sessId.ToString(), SignalRMethods.HandsUpdated, session.ToDto(g => playerLogic.Get(g).Name));
-        await Task.Delay(DelayBetweenCards).ContinueWith(_ => gamePlayLogic.DealHalfOfStartingCards(sessId,false));
+        await Task.Delay(DelayBetweenCards).ContinueWith(_ => gamePlayLogic.DealHalfOfStartingCards(sessId));
         await hub.SendMessageToGroupAsync(sessId.ToString(), SignalRMethods.HandsUpdated, session.ToDto(g => playerLogic.Get(g).Name));
         gamePlayLogic.TransferTurn(sessId);
         await hub.SendMessageToGroupAsync(sessId.ToString(), SignalRMethods.TurnChanged, session.CurrentTurnInfo);

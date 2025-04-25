@@ -18,8 +18,6 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// <summary>
     /// Shuffles the shoe of the table in the session.
     /// </summary>
-    /// <param name="sessionId"></param>
-    /// <param name="random"></param>
     public void Shuffle(Guid sessionId, Random? random = null)
     {
         random ??= Random.Shared;
@@ -38,9 +36,21 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     }
 
     /// <summary>
+    /// Shuffles the shoe of the table in the session if the shuffle card was reached.
+    /// </summary>
+    public bool ShuffleIfNeeded(Guid sessionId, Random? random = null)
+    {
+        random ??= Random.Shared;
+        var session = sessions.Single(s => s.Id == sessionId);
+        if (session.Table.Shoe.ShuffleCardIdx > session.Table.Shoe.NextCardIdx) return false;
+        
+        Shuffle(sessionId, random);
+        return true;
+    }
+
+    /// <summary>
     /// Gives a card from the shoe of the session.
     /// </summary>
-    /// <param name="sessionId"></param>
     /// <returns></returns>
     public Card GiveCard(Guid sessionId)
     {
@@ -51,7 +61,6 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// <summary>
     /// Plays dealer's hand according to the rules.
     /// </summary>
-    /// <param name="sessionId"></param>
     /// <exception cref="InvalidOperationException">"It's not the dealer's turn."</exception>
     /// <exception cref="InvalidOperationException">"Dealer's hand is already finished."</exception>
     public void DealerPlayHand(Guid sessionId)
@@ -70,13 +79,12 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
         
         dealerHand.Finished = true;
     }
-    
+
     /// <summary>
     /// Deals cards to the players and the dealer at the start of a round (only 1 per hand, so THIS HAS TO BE CALLED TWICE).
     /// </summary>
-    /// <param name="sessionId"></param>
     /// <exception cref="InvalidOperationException">Shoe needs shuffling.</exception>
-    public void DealHalfOfStartingCards(Guid sessionId, bool checkShuffle)
+    public void DealHalfOfStartingCards(Guid sessionId, bool checkShuffle = false)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         session.DestructionTimer.Reset();
@@ -97,7 +105,6 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// <summary>
     /// Checks for dealer blackjack.
     /// </summary>
-    /// <param name="sessionId"></param>
     /// <returns>True if the dealer has blackjack</returns>
     public bool DealerCheck(Guid sessionId)
     {
@@ -113,11 +120,6 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// <summary>
     /// Makes a move on a given hand of a given player on a given box. Does not handle player balance, hand bets or transferring turns.
     /// </summary>
-    /// <param name="sessionId"></param>
-    /// <param name="boxIdx"></param>
-    /// <param name="playerId"></param>
-    /// <param name="move"></param>
-    /// <param name="handIdx"></param>
     /// <exception cref="InvalidOperationException">"The hand is not in turn."</exception>
     /// <exception cref="InvalidOperationException">"Box is not owned by player."</exception>
     /// <exception cref="InvalidOperationException">"Action not possible." if the rulebook states that this action is not possible.</exception>
