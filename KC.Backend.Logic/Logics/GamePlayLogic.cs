@@ -173,6 +173,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     
     
     // TODO: Check this logic, it seems to be a bit off
+    // TODO: This probably won't stop for the second hand of a split
     public void TransferTurn(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);

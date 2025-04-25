@@ -10,7 +10,6 @@ using KC.Shared.Models.GameManagement;
 
 namespace KC.Backend.Logic.Logics;
 
-//TODO: Make the logic more atomic, chaining them together will be handled by the API layer.
 public class SessionLogic(IList<Session> sessions) : ISessionLogic
 {
     private static CardShoe CreateUnshuffledShoe(uint numberOfDecks, int origSCardIdx, int origSCardRange) =>

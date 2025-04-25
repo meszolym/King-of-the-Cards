@@ -27,8 +27,5 @@ public partial class HandView : ReactiveUserControl<HandViewModel>
             this.OneWayBind(ViewModel, vm => vm.BetAmount, v => v.BetTextBlock.Text, bet => $"${bet}").DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.IsPartOfSplit, v => v.BetTextBlock.IsVisible).DisposeWith(d);
         });
-        
-        //TODO: Bet display + bet setting
-        //TODO: Display something to show that hand is in turn
     }
 }
