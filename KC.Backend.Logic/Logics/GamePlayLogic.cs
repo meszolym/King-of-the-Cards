@@ -138,6 +138,8 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
         var hand = box.Hands[handIdx];
         if (!GetPossibleActionsOnHand(hand).Contains(move)) throw new InvalidOperationException("Action not possible.");
         
+        session.DestructionTimer.Reset();
+        
         switch (move)
         {
             case Move.Stand:
@@ -149,6 +151,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
                 break;
             case Move.Split:
                 box.Hands.Add(new Hand(){Cards = [hand.Cards[1]], FromSplit = true});
+                hand.FromSplit = true;
                 hand.Cards.RemoveAt(1);
                 hand.Cards.Add(GiveCard(sessionId));
                 break;
@@ -156,11 +159,10 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
                 throw new ArgumentOutOfRangeException(nameof(move), move, null);
         }
 
-        //if bust, mark hand as finished
-        if (ruleBook.GetValue(hand).NumberValue > 21)
+        //if a move cannot be made, mark hand as finished
+        if (!GetPossibleActionsOnHand(hand).Any())
             hand.Finished = true;
 
-        session.DestructionTimer.Reset();
     }
         
     private IEnumerable<BettingBox> BoxesInPlay(Guid sessionId) =>
