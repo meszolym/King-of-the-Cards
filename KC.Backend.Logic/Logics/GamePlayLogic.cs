@@ -146,8 +146,11 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
                 hand.Finished = true;
                 break;
             case Move.Hit:
+                hand.Cards.Add(GiveCard(sessionId));
+                break;
             case Move.Double:
                 hand.Cards.Add(GiveCard(sessionId));
+                hand.Finished = true;
                 break;
             case Move.Split:
                 box.Hands.Add(new Hand(){Cards = [hand.Cards[1]], FromSplit = true});
@@ -168,55 +171,77 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     private IEnumerable<BettingBox> BoxesInPlay(Guid sessionId) =>
         sessions.Single(s => s.Id == sessionId).Table.BettingBoxes.Where(box => box.Hands[0].Bet > 0);
     
+    
+    // TODO: Check this logic, it seems to be a bit off
     public void TransferTurn(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
-        #region dealers turn handling
-        //if it's the dealer's turn, transfer to the first player's turn
-        if (!session.CurrentTurnInfo.PlayersTurn)
+
+        Move[] movesOnThisHand = [];
+        
+        while (true)
         {
-            session.CurrentTurnInfo = new TurnInfo(true, BoxesInPlay(sessionId).First().IdxOnTable, 0);
+            try
+            {
+                if (session.CurrentTurnInfo.PlayersTurn)
+                    movesOnThisHand = GetPossibleActionsOnHand(session.Table.BettingBoxes[session.CurrentTurnInfo.BoxIdx]
+                        .Hands[session.CurrentTurnInfo.HandIdx]).ToArray();
+            }
+            catch (Exception e)
+            {
+                movesOnThisHand = [];
+            }
+            
+            if (movesOnThisHand.Any()) return;
+            
+            #region dealers turn handling
+            //if it's the dealer's turn, transfer to the first player's turn
+            // TODO: check this (i know this is for starting the round, but it's not good when there's a new round)
+            if (!session.CurrentTurnInfo.PlayersTurn)
+            {
+                session.CurrentTurnInfo = new TurnInfo(true, BoxesInPlay(sessionId).First().IdxOnTable, 0);
+                continue;
+            }
+        
+            #endregion
+            
+            #region hand left handling
+            var box = session.Table.BettingBoxes[session.CurrentTurnInfo.BoxIdx];
+            var hand = box.Hands[session.CurrentTurnInfo.HandIdx];
+
+            //mark hand as finished
+            hand.Finished = true;
+
+            // //if bust, 0 out bet
+            // if (ruleBook.GetValue(hand).NumberValue > 21) hand.Bet = 0;
+
+            //if there are more hands left in the box, transfer to the next hand
+            if (box.Hands.Count > session.CurrentTurnInfo.HandIdx+1)
+            {
+                session.CurrentTurnInfo = session.CurrentTurnInfo with { HandIdx = session.CurrentTurnInfo.HandIdx + 1 };
+                continue;
+            }
+            #endregion
+
+            #region box left handling
+            //if there are more boxes left, transfer to the next box
+            var nextBox = BoxesInPlay(sessionId).FirstOrDefault(b => b.Hands.Any(h => !h.Finished) && b.IdxOnTable > box.IdxOnTable);
+            if (nextBox is not null)
+            {
+                session.CurrentTurnInfo = session.CurrentTurnInfo with { BoxIdx = nextBox.IdxOnTable, HandIdx = 0 };
+                continue;
+            }
+            #endregion
+
+            #region no boxes left handling
+            //if there are no more boxes left, transfer to the dealer's turn
+            session.CurrentTurnInfo = new TurnInfo(); //false, 0, 0 by default
             return;
+
+            #endregion
+
         }
         
-        #endregion
-
-        #region hand left handling
-        var box = session.Table.BettingBoxes[session.CurrentTurnInfo.BoxIdx];
-        var hand = box.Hands[session.CurrentTurnInfo.HandIdx];
-
-        //mark hand as finished
-        hand.Finished = true;
-
-        //if bust, 0 out bet
-        if (ruleBook.GetValue(hand).NumberValue > 21) hand.Bet = 0;
-
-        //if there are more hands left in the box, transfer to the next hand
-        if (box.Hands.Count > session.CurrentTurnInfo.HandIdx+1)
-        {
-            session.CurrentTurnInfo = session.CurrentTurnInfo with { HandIdx = session.CurrentTurnInfo.HandIdx + 1 };
-            hand = box.Hands[session.CurrentTurnInfo.HandIdx];
-
-            return;
-        }
-        #endregion
-
-        #region box left handling
-        //if there are more boxes left, transfer to the next box
-        var nextBox = BoxesInPlay(sessionId).FirstOrDefault(b => b.Hands.Any(h => !h.Finished) && b.IdxOnTable > box.IdxOnTable);
-        if (nextBox is not null)
-        {
-            session.CurrentTurnInfo = session.CurrentTurnInfo with { BoxIdx = nextBox.IdxOnTable, HandIdx = 0 };
-            return;
-        }
-        #endregion
-
-        #region no boxes left handling
-        //if there are no more boxes left, transfer to the dealer's turn
-        session.CurrentTurnInfo = new TurnInfo(); //false, 0, 0 by default
-        return;
-
-        #endregion
     }
 
     public void FinishAllHandsInPlay(Guid sessionId)
