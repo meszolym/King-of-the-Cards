@@ -73,5 +73,12 @@ public partial class ExternalCommunicatorService
         /// Updates a bet with the appropriate info in the body and MAC address in the header.
         /// </summary>
         public static RestRequest UpdateBet => new(BaseUri + "bettingbox/update-bet", Method.Put);
+        
+        //Gameplay
+        
+        /// <summary>
+        /// Gets the possible moves for a hand.
+        /// </summary>
+        public static RestRequest GetPossibleMovesOnHand => new(BaseUri + "gameplay/get-moves/{sessionId}/{boxIdx}/{handIdx}");
     }
 }

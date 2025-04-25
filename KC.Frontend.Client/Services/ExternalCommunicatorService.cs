@@ -127,7 +127,7 @@ public partial class ExternalCommunicatorService
             ApiEndpoints.UpdateBet.AddBody(new BoxBetUpdateDto(sessionId, boxIdx, amount, handIdx)));
 
     public async Task<IEnumerable<Move>> GetPossibleMovesOnHand(Guid sessionId, int boxIdx, int handIdx = 0) =>
-        await  _client.GetAsync<IEnumerable<Move>>(ApiEndpoints.GetPossibleMoves.AddUrlSegment("sessionId", sessionId.ToString())
+        await  _client.GetAsync<IEnumerable<Move>>(ApiEndpoints.GetPossibleMovesOnHand.AddUrlSegment("sessionId", sessionId.ToString())
             .AddUrlSegment("boxIdx", boxIdx.ToString())
             .AddUrlSegment("handIdx", handIdx.ToString()))
         ?? throw new ExternalCommunicationException("Could not get possible moves");

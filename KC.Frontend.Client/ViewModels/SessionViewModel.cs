@@ -58,7 +58,8 @@ namespace KC.Frontend.Client.ViewModels
             Dealer = new DealerViewModel(session.Table.DealerVisibleCards);
 
             var isMyTurn = Boxes.Select(b => b.InTurn.CombineLatest(b.IsLocalPlayerOwned, (turn,playerOwned) => turn && playerOwned)).CombineLatest(bs => bs.Any(b => b));
-            Controls = new SessionBoxControlsViewModel(isMyTurn);
+            
+            Controls = new SessionBoxControlsViewModel(Id,isMyTurn);
             
             ExternalCommunicatorService.SignalREvents.BettingTimerTicked.ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(dto => BettingTimeLeft = $"Time left: {dto.remainingSeconds} seconds");
