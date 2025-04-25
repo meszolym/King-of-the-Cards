@@ -24,7 +24,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
         sessionLogic.Get(id).ToDto(g => playerLogic.Get(g).Name);
 
     [HttpPost("join/{sessionId:guid}")]
-    public async Task JoinSession([FromHeader(Name = "Player-Mac-Address")] string macAddress, Guid sessionId)
+    public async Task JoinSession([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress, Guid sessionId)
     {
         var mac = MacAddress.Parse(macAddress);
         var connId = playerLogic.Get(mac).ConnectionId;
@@ -36,7 +36,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     }
 
     [HttpDelete("leave/{sessionId:guid}")]
-    public async Task LeaveSession([FromHeader(Name = "Player-Mac-Address")] string macAddress, Guid sessionId)
+    public async Task LeaveSession([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress, Guid sessionId)
     {
         var connId = playerLogic.Get(MacAddress.Parse(macAddress)).ConnectionId;
         await hub.MoveToGroupAsync(connId, hub.BaseGroup);

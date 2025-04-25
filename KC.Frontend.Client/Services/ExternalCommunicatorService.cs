@@ -7,6 +7,7 @@ using KC.Frontend.Client.Extensions;
 using KC.Frontend.Client.Utilities;
 using KC.Frontend.Client.ViewModels.Components;
 using KC.Shared.Models.Dtos;
+using KC.Shared.Models.GameItems;
 using KC.Shared.Models.Misc;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,7 @@ public partial class ExternalCommunicatorService
 {
     private readonly RestClient _client = new(ApiEndpoints.BaseUri,
         configureSerialization: s => s.UseNewtonsoftJson(), 
-        configureDefaultHeaders: h => h.Add("Player-Mac-Address", ClientMacAddressHandler.PrimaryMacAddress.Address));
+        configureDefaultHeaders: h => h.Add(HeaderNames.PlayerMacAddress, ClientMacAddressHandler.PrimaryMacAddress.Address));
 
     private readonly HubConnection _signalRHubConnection =
         new HubConnectionBuilder().WithUrl(ApiEndpoints.SignalRHub).WithAutomaticReconnect().AddNewtonsoftJsonProtocol().Build();
@@ -121,11 +122,13 @@ public partial class ExternalCommunicatorService
         await _client.DeleteAsync(
             ApiEndpoints.DisclaimBox.AddBody(new BoxOwnerUpdateDto(sessionId, boxIdx)));
 
-    public async Task UpdateBet(Guid sessionId, int boxIdx, double amount, int handIdx = 0)
-    {
+    public async Task UpdateBet(Guid sessionId, int boxIdx, double amount, int handIdx = 0) =>
         await _client.PutAsync(
             ApiEndpoints.UpdateBet.AddBody(new BoxBetUpdateDto(sessionId, boxIdx, amount, handIdx)));
-    }
-    
-    
+
+    public async Task<IEnumerable<Move>> GetPossibleMovesOnHand(Guid sessionId, int boxIdx, int handIdx = 0) =>
+        await  _client.GetAsync<IEnumerable<Move>>(ApiEndpoints.GetPossibleMoves.AddUrlSegment("sessionId", sessionId.ToString())
+            .AddUrlSegment("boxIdx", boxIdx.ToString())
+            .AddUrlSegment("handIdx", handIdx.ToString()))
+        ?? throw new ExternalCommunicationException("Could not get possible moves");
 }

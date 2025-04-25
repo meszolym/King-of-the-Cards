@@ -14,7 +14,7 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
 {
     [HttpPost]
     [Route("claim-box")]
-    public void ClaimBox([FromHeader(Name = "Player-Mac-Address")] string macAddress, [FromBody] BoxOwnerUpdateDto dto)
+    public void ClaimBox([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress, [FromBody] BoxOwnerUpdateDto dto)
     {
         bettingBoxLogic.ClaimBettingBox(dto.SessionId, dto.BoxIdx, MacAddress.Parse(macAddress));
         hub.SendMessageToGroupAsync(dto.SessionId.ToString(), SignalRMethods.BoxOwnerChanged, bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name));
@@ -23,7 +23,7 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
 
     [HttpDelete]
     [Route("disclaim-box")]
-    public void DisclaimBox([FromHeader(Name = "Player-Mac-Address")] string macAddress, [FromBody] BoxOwnerUpdateDto dto)
+    public void DisclaimBox([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress, [FromBody] BoxOwnerUpdateDto dto)
     {
         bettingBoxLogic.DisclaimBettingBox(dto.SessionId, dto.BoxIdx, MacAddress.Parse(macAddress));
         hub.SendMessageToGroupAsync(dto.SessionId.ToString(), SignalRMethods.BoxOwnerChanged, bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name));
@@ -32,5 +32,5 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
 
     [HttpPut]
     [Route("update-bet")]
-    public async Task UpdateBet([FromHeader(Name = "Player-Mac-Address")] string macAddress, [FromBody] BoxBetUpdateDto dto) => await betOrchestrator.UpdateBet(MacAddress.Parse(macAddress), dto);
+    public async Task UpdateBet([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress, [FromBody] BoxBetUpdateDto dto) => await betOrchestrator.UpdateBet(MacAddress.Parse(macAddress), dto);
 }
