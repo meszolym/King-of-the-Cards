@@ -28,6 +28,10 @@ public class PlayerLogic(IList<Player> players, IDictionary<MacAddress, Guid> ma
     
     public void UpdateName(MacAddress playerId, string name) => players.Single(p => p.Id == macToPlayerGuid[playerId]).Name = name;
 
+    public void AddToBalance(MacAddress playerId, double amount) => AddToBalance(macToPlayerGuid[playerId], amount);
+    
+    public void AddToBalance(Guid playerId, double amount) => UpdateBalance(playerId, Get(playerId).Balance + amount);
+
     public void UpdateBalance(MacAddress playerId, double balance) => UpdateBalance(macToPlayerGuid[playerId], balance);
 
     public void UpdateBalance(Guid playerId, double balance)
