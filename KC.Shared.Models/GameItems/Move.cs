@@ -1,4 +1,4 @@
-﻿namespace KC.Backend.Models.GameItems;
+﻿namespace KC.Shared.Models.GameItems;
 
 /// <summary>
 /// The possible moves in a game of blackjack.
