@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using KC.Backend.Models.GameItems;
 using KC.Shared.Models.GameItems;
 using KC.Shared.Models.Misc;
@@ -43,6 +44,8 @@ public interface IGamePlayLogic
     /// <returns>True if the dealer has blackjack</returns>
     bool DealerCheck(Guid sessionId);
 
+    IEnumerable<Move> GetPossibleActionsOnHand(Hand hand);
+    
     /// <summary>
     /// Makes a move on a given hand of a given player on a given box. Does not handle player balance, hand bets or transferring turns.
     /// </summary>

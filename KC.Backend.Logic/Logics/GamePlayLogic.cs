@@ -108,7 +108,9 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
         return true;
     }
     
-        /// <summary>
+    public IEnumerable<Move> GetPossibleActionsOnHand(Hand hand) => ruleBook.GetPossibleActionsOnHand(hand);
+    
+    /// <summary>
     /// Makes a move on a given hand of a given player on a given box. Does not handle player balance, hand bets or transferring turns.
     /// </summary>
     /// <param name="sessionId"></param>
@@ -130,7 +132,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
         if (box.OwnerId != macToPlayerGuid[playerId]) throw new InvalidOperationException("Box is not owned by player.");
         
         var hand = box.Hands[handIdx];
-        if (!ruleBook.GetPossibleActionsOnHand(hand).Contains(move)) throw new InvalidOperationException("Action not possible.");
+        if (!GetPossibleActionsOnHand(hand).Contains(move)) throw new InvalidOperationException("Action not possible.");
         
         switch (move)
         {
