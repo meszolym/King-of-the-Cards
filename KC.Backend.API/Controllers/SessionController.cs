@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using KC.Backend.API.Extensions;
 using KC.Backend.API.Services;
 using KC.Backend.API.Services.Interfaces;
 using KC.Backend.Logic.Extensions;
@@ -28,7 +29,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     {
         var mac = MacAddress.Parse(macAddress);
         var connId = playerLogic.Get(mac).ConnectionId;
-        await hub.MoveToGroupAsync(connId, sessionId.ToString());
+        await hub.MoveToGroupAsync(connId, sessionId);
         
         var sess = sessionLogic.Get(sessionId);
         sess.DestructionTimer.Reset();

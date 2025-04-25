@@ -1,3 +1,4 @@
+using KC.Backend.API.Extensions;
 using KC.Backend.API.Services.Interfaces;
 using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Logics.Interfaces;
@@ -22,11 +23,11 @@ public class BetOrchestrator(IBettingBoxLogic bettingBoxLogic, IPlayerLogic play
         
         await hub.SendMessageAsync(player.ConnectionId, SignalRMethods.PlayerBalanceUpdated, player.ToDto());
         var dtoToSend = bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name);
-        await hub.SendMessageToGroupAsync(dto.SessionId.ToString(), SignalRMethods.BetUpdated, dtoToSend);
+        await hub.SendMessageToGroupAsync(dto.SessionId, SignalRMethods.BetUpdated, dtoToSend);
         
         var running = sessionLogic.UpdateBettingTimer(dto.SessionId);
 
         if (!running)
-            await hub.SendMessageToGroupAsync(dto.SessionId.ToString(), SignalRMethods.BettingTimerStopped, dto.SessionId);
+            await hub.SendMessageToGroupAsync(dto.SessionId, SignalRMethods.BettingTimerStopped, dto.SessionId);
     }
 }

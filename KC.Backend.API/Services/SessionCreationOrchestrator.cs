@@ -1,3 +1,4 @@
+using KC.Backend.API.Extensions;
 using KC.Backend.API.Services.Interfaces;
 using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Logics.Interfaces;
@@ -29,19 +30,19 @@ public class SessionCreationOrchestrator(ISessionLogic sessionLogic, IPlayerLogi
     private const int DelayBetweenCards = 2000;
     private async Task OnBettingTimerElapsed(Guid sessId)
     {
-        await hub.SendMessageToGroupAsync(sessId.ToString(), SignalRMethods.BettingTimerElapsed, sessId);
+        await hub.SendMessageToGroupAsync(sessId, SignalRMethods.BettingTimerElapsed, sessId);
 
         gamePlayLogic.ShuffleIfNeeded(sessId);
         
         gamePlayLogic.DealHalfOfStartingCards(sessId);
         var session = sessionLogic.Get(sessId);
-        await hub.SendMessageToGroupAsync(sessId.ToString(), SignalRMethods.HandsUpdated, session.ToDto(g => playerLogic.Get(g).Name));
+        await hub.SendMessageToGroupAsync(sessId, SignalRMethods.HandsUpdated, session.ToDto(g => playerLogic.Get(g).Name));
         await Task.Delay(DelayBetweenCards).ContinueWith(_ => gamePlayLogic.DealHalfOfStartingCards(sessId));
-        await hub.SendMessageToGroupAsync(sessId.ToString(), SignalRMethods.HandsUpdated, session.ToDto(g => playerLogic.Get(g).Name));
+        await hub.SendMessageToGroupAsync(sessId, SignalRMethods.HandsUpdated, session.ToDto(g => playerLogic.Get(g).Name));
         gamePlayLogic.TransferTurn(sessId);
-        await hub.SendMessageToGroupAsync(sessId.ToString(), SignalRMethods.TurnChanged, session.CurrentTurnInfo);
+        await hub.SendMessageToGroupAsync(sessId, SignalRMethods.TurnChanged, session.CurrentTurnInfo);
     }
-    private async Task OnBettingTimerTicked(Guid sessionId, int remainingSeconds) => await hub.SendMessageToGroupAsync(sessionId.ToString(), SignalRMethods.BettingTimerTicked, (sessionId, remainingSeconds));
+    private async Task OnBettingTimerTicked(Guid sessionId, int remainingSeconds) => await hub.SendMessageToGroupAsync(sessionId, SignalRMethods.BettingTimerTicked, (sessionId, remainingSeconds));
     
     private async Task OnDestructionTimerElapsed(Guid id)
     {
