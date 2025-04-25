@@ -18,54 +18,50 @@ namespace KC.Frontend.Client.ViewModels.Components
         public SessionBoxControlsViewModel(Guid sessionId, IObservable<bool> isMyTurnObs)
         {
             _sessionId = sessionId;
-            isMyTurnObs.CombineLatest(ExternalCommunicatorService.SignalREvents.TurnChanged)
-                .Subscribe( async void (tup) => await UpdateSubjects(tup.First, tup.Second));
+            isMyTurnObs.CombineLatest(ExternalCommunicatorService.SignalREvents.TurnChanged, ExternalCommunicatorService.SignalREvents.HandsUpdated)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe( async void (tup) => await Update(tup.First, tup.Second));
             //TODO: Check async void and exception handling
         }
 
         private readonly Guid _sessionId;
         private readonly ExternalCommunicatorService _externalCommunicatorService = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
-        private async Task UpdateSubjects(bool isMyTurn, TurnInfo turnInfo)
+        private TurnInfo _currentTurnInfo;
+        private async Task Update(bool isMyTurn, TurnInfo turnInfo)
         {
-            var moves = (await _externalCommunicatorService.GetPossibleMovesOnHand(_sessionId,turnInfo.BoxIdx, turnInfo.HandIdx)).ToArray();
+            _currentTurnInfo = turnInfo;
             
-            _canHitOnHandSubject.OnNext(isMyTurn && moves.Contains(Move.Hit));
-            _canStandOnHandSubject.OnNext(isMyTurn && moves.Contains(Move.Stand));
-            _canDoubleDownOnHandSubject.OnNext(isMyTurn && moves.Contains(Move.Double));
-            _canSplitOnHandSubject.OnNext(isMyTurn && moves.Contains(Move.Split));
+            var moves = isMyTurn
+                ? (await _externalCommunicatorService.GetPossibleMovesOnHand(_sessionId, turnInfo.BoxIdx,
+                    turnInfo.HandIdx)).ToArray()
+                : [];
+            
+            _canHitOnHandSubject.OnNext(moves.Contains(Move.Hit));
+            _canStandOnHandSubject.OnNext(moves.Contains(Move.Stand));
+            _canDoubleDownOnHandSubject.OnNext(moves.Contains(Move.Double));
+            _canSplitOnHandSubject.OnNext(moves.Contains(Move.Split));
             
         }
         
         private readonly Subject<bool> _canHitOnHandSubject = new();
         private IObservable<bool> CanHitOnHand => _canHitOnHandSubject.AsObservable();
+
         [ReactiveCommand(CanExecute = nameof(CanHitOnHand))]
-        void HitOnHand()
-        {
-            
-        }
+            async Task HitOnHand() => await _externalCommunicatorService.MakeMoveOnHand(_sessionId, _currentTurnInfo.BoxIdx, Move.Hit, _currentTurnInfo.HandIdx);
         
         private readonly Subject<bool> _canStandOnHandSubject = new();
         private IObservable<bool> CanStandOnHand => _canStandOnHandSubject.AsObservable();
         [ReactiveCommand(CanExecute = nameof(CanStandOnHand))]
-        void StandOnHand()
-        {
-            
-        }
+            async Task StandOnHand() => await _externalCommunicatorService.MakeMoveOnHand(_sessionId, _currentTurnInfo.BoxIdx, Move.Stand, _currentTurnInfo.HandIdx);
 
         private readonly Subject<bool> _canDoubleDownOnHandSubject = new();
         private IObservable<bool> CanDoubleDownOnHand => _canDoubleDownOnHandSubject.AsObservable();
         [ReactiveCommand(CanExecute = nameof(CanDoubleDownOnHand))]
-        void DoubleDownOnHand()
-        {
-            
-        }
+            async Task DoubleDownOnHand() => await _externalCommunicatorService.MakeMoveOnHand(_sessionId, _currentTurnInfo.BoxIdx, Move.Double, _currentTurnInfo.HandIdx);
 
         private readonly Subject<bool> _canSplitOnHandSubject = new();
         private IObservable<bool> CanSplitOnHand => _canSplitOnHandSubject.AsObservable();
         [ReactiveCommand(CanExecute = nameof(CanSplitOnHand))]
-        void SplitOnHand()
-        {
-            
-        }
+            async Task SplitOnHand() => await _externalCommunicatorService.MakeMoveOnHand(_sessionId, _currentTurnInfo.BoxIdx, Move.Split, _currentTurnInfo.HandIdx);
     }
 }

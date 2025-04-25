@@ -80,5 +80,11 @@ public partial class ExternalCommunicatorService
         /// Gets the possible moves for a hand.
         /// </summary>
         public static RestRequest GetPossibleMovesOnHand => new(BaseUri + "gameplay/get-moves/{sessionId}/{boxIdx}/{handIdx}");
+        
+        /// <summary>
+        /// Makes move on hand with the appropriate info in the body and MAC address in the header.
+        /// </summary>
+        public static RestRequest MakeMoveOnHand => new(BaseUri + "gameplay/make-move", Method.Post);
+        
     }
 }

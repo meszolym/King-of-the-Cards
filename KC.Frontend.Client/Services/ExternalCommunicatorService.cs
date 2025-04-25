@@ -131,4 +131,7 @@ public partial class ExternalCommunicatorService
             .AddUrlSegment("boxIdx", boxIdx.ToString())
             .AddUrlSegment("handIdx", handIdx.ToString()))
         ?? throw new ExternalCommunicationException("Could not get possible moves");
+    
+    public async Task MakeMoveOnHand(Guid sessionId, int boxIdx, Move move, int handIdx = 0) => await _client.PostAsync(
+        ApiEndpoints.MakeMoveOnHand.AddBody(new MakeMoveDto(sessionId, boxIdx, handIdx, move)));
 }
