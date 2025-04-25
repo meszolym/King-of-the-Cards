@@ -1,10 +1,9 @@
-using System;
-using System.Linq;
+using KC.Backend.Logic.Extensions;
 using KC.Backend.Models.GameItems;
 using KC.Backend.Models.GameManagement;
 using KC.Shared.Models.Dtos;
 
-namespace KC.Backend.Logic.Extensions;
+namespace KC.Backend.API.Extensions;
 
 public static class ConversionExtensions
 {

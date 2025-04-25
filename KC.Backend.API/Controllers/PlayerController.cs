@@ -1,4 +1,5 @@
 using System.Net.NetworkInformation;
+using KC.Backend.API.Extensions;
 using KC.Backend.Logic;
 using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Logics.Interfaces;
