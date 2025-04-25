@@ -2,6 +2,8 @@ using KC.Backend.API.Services;
 using KC.Backend.API.Services.Interfaces;
 using Microsoft.AspNetCore.Diagnostics;
 using KC.Backend.Logic;
+using KC.Backend.Logic.Core;
+using KC.Backend.Logic.Core.Interfaces;
 using KC.Backend.Logic.Logics;
 using KC.Backend.Logic.Logics.Interfaces;
 using KC.Backend.Logic.Services;
@@ -47,6 +49,9 @@ namespace KC.Backend.API
             builder.Services.AddTransient<IPlayerLogic, PlayerLogic>();
             builder.Services.AddTransient<ISessionLogic, SessionLogic>();
             builder.Services.AddTransient<ISessionTerminatorService, SessionTerminatorService>();
+            
+            //core
+            builder.Services.AddTransient<IRuleBook, RuleBook>();
             
             //other services in API layer
             Dictionary<string, string> connectionsAndGroups = [];
