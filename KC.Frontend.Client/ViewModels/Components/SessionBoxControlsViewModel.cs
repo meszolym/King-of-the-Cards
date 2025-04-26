@@ -31,10 +31,25 @@ namespace KC.Frontend.Client.ViewModels.Components
         {
             _currentTurnInfo = turnInfo;
             
-            var moves = isMyTurn
-                ? (await _externalCommunicatorService.GetPossibleMovesOnHand(_sessionId, turnInfo.BoxIdx,
-                    turnInfo.HandIdx)).ToArray()
-                : [];
+            if (!isMyTurn)
+            {
+                _canHitOnHandSubject.OnNext(false);
+                _canStandOnHandSubject.OnNext(false);
+                _canDoubleDownOnHandSubject.OnNext(false);
+                _canSplitOnHandSubject.OnNext(false);
+                return;
+            }
+
+            Move[] moves;
+            try
+            {
+                moves = (await _externalCommunicatorService.GetPossibleMovesOnHand(_sessionId, turnInfo.BoxIdx,
+                    turnInfo.HandIdx)).ToArray();
+            }
+            catch (Exception e)
+            {
+                moves = [];
+            }
             
             _canHitOnHandSubject.OnNext(moves.Contains(Move.Hit));
             _canStandOnHandSubject.OnNext(moves.Contains(Move.Stand));
