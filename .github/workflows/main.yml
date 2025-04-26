@@ -22,13 +22,13 @@ jobs:
         echo done1
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         echo done2
-        ssh-keyscan -H ${{ secrets.SSH_HOSTNAME }} > ~/.ssh/known_hosts
-        echo done3
         touch ~/.ssh/config
-        echo done4
+        echo done3
         echo "Host ${{ secrets.SSH_HOSTNAME }}" >> ~/.ssh/config
-        echo done5
+        echo done4
         echo "ProxyCommand /usr/local/bin/cloudflared access ssh --hostname %h" >> ~/.ssh/config
+        echo done5
+        ssh-keyscan -H ${{ secrets.SSH_HOSTNAME }} > ~/.ssh/known_hosts
         echo done6
     - name: connect, pull, start server
       run: |
