@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
@@ -20,18 +21,25 @@ public class ExternalCommunicationException(string message) : Exception(message)
 
 public partial class ExternalCommunicatorService
 {
-    private readonly RestClient _client = new(ApiEndpoints.BaseUri,
-        configureSerialization: s => s.UseNewtonsoftJson(), 
-        configureDefaultHeaders: h => h.Add(HeaderNames.PlayerMacAddress, ClientMacAddressHandler.PrimaryMacAddress.Address));
+    private readonly RestClient _client;
 
-    private readonly HubConnection _signalRHubConnection =
-        new HubConnectionBuilder().WithUrl(ApiEndpoints.SignalRHub).WithAutomaticReconnect().AddNewtonsoftJsonProtocol().Build();
+    private readonly HubConnection _signalRHubConnection;
 
     private readonly Subject<bool> _connectionStatusSubject = new();
     public IObservable<bool> ConnectionStatus => _connectionStatusSubject;
 
-    public ExternalCommunicatorService()
+    public ExternalCommunicatorService(Uri baseUri)
     {
+        _client = new RestClient(baseUri,
+            configureSerialization: s => s.UseNewtonsoftJson(),
+            configureDefaultHeaders: h =>
+                h.Add(HeaderNames.PlayerMacAddress, ClientMacAddressHandler.PrimaryMacAddress.Address));
+
+        var signalRBaseUri = new Uri(baseUri, ApiEndpoints.SignalRBasePath);
+        
+        _signalRHubConnection = new HubConnectionBuilder().WithUrl(signalRBaseUri).WithAutomaticReconnect()
+            .AddNewtonsoftJsonProtocol().Build();
+        
         InitSignalRStatuses();
         SignalREvents.Init(_signalRHubConnection);
     }
@@ -41,18 +49,21 @@ public partial class ExternalCommunicatorService
         _signalRHubConnection.Reconnecting += _ =>
         {
             _connectionStatusSubject.OnNext(false);
+            Debug.WriteLine("SignalR connection is reconnecting");
             return Task.CompletedTask;
         };
 
         _signalRHubConnection.Reconnected += _ =>
         {
             _connectionStatusSubject.OnNext(true);
+            Debug.WriteLine("SignalR connection reconnected");
             return Task.CompletedTask;
         };
         
         _signalRHubConnection.Closed += _ =>
         {
             _connectionStatusSubject.OnNext(false);
+            Debug.WriteLine("SignalR connection closed");
             return Task.CompletedTask;
         };
     }

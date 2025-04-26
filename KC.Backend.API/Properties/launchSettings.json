@@ -22,7 +22,7 @@
     "http-public": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "applicationUrl": "http://0.0.0.0:5238",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

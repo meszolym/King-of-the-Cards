@@ -3,6 +3,7 @@ using Avalonia.ReactiveUI;
 using System;
 using KC.Frontend.Client.Services;
 using KC.Frontend.Client.ViewModels;
+using Microsoft.Extensions.Configuration;
 using Splat;
 
 namespace KC.Frontend.Client;
@@ -24,9 +25,12 @@ sealed class Program
             .LogToTrace()
             .UseReactiveUI();
     
-    private static void RegisterServices(AppBuilder builder)
+    private static void RegisterServices(AppBuilder appBuilder)
     {
-        Locator.CurrentMutable.RegisterConstant(new ExternalCommunicatorService());
+        var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
+        var configuration = builder.Build();
+        
+        Locator.CurrentMutable.RegisterConstant(new ExternalCommunicatorService(new Uri(configuration["BaseUri"])));
         Locator.CurrentMutable.RegisterConstant(new PlayerViewModel()); //local player
     }
 }
