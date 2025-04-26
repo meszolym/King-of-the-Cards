@@ -29,8 +29,10 @@ jobs:
         echo done4
         echo "ProxyCommand /usr/local/bin/cloudflared access ssh --hostname %h" >> ~/.ssh/config
         echo done5
-        ssh-keyscan -H ${{ secrets.SSH_HOSTNAME }} > ~/.ssh/known_hosts
+        echo "StrictHostKeyChecking=no" >> ~/.ssh/config
         echo done6
+        echo "UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+        echo done7
     - name: connect, pull, start server
       run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOSTNAME }} << 'EOF'
