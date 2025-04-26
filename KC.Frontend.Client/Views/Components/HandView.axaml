@@ -14,7 +14,7 @@
         <ItemsControl Grid.Row="0" x:Name="CardsItemsControl" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                    <Panel VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>

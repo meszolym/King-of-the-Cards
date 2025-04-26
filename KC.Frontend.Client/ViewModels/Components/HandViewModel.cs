@@ -18,7 +18,6 @@ namespace KC.Frontend.Client.ViewModels.Components;
         [Reactive]
         private bool _isPartOfSplit;
         
-        private double _height = 648; //gombócból is sok :)
         
         public HandViewModel(HandReadDto sourceDto)
         {
@@ -33,6 +32,6 @@ namespace KC.Frontend.Client.ViewModels.Components;
         public void AddCard(Card card)
         {
             var idx = Cards.Count; 
-            Cards.Add(new CardViewModel(card,idx*CardOffsetX, _height*0.65+ idx*CardOffsetY, idx));
+            Cards.Add(new CardViewModel(card,idx*CardOffsetX, idx*CardOffsetY, idx));
         }
     }
