@@ -16,6 +16,7 @@ jobs:
         curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
         echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared noble main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
         sudo apt-get update && sudo apt-get install cloudflared
+        cloudflared access ssh --hostname ${{ secrets.SSH_HOSTNAME }} &
     - name: install ssh keys, change ssh config
       run: |
         install -m 600 -D /dev/null ~/.ssh/id_rsa
@@ -32,12 +33,14 @@ jobs:
         echo done6
     - name: connect, pull, start server
       run: |
-        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOSTNAME }}
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOSTNAME }} << 'EOF'
         cd King-of-the-Cards 
         git checkout master 
         git pull 
-        pkill screen
+        pkill screen || true
         screen -d -m -S SERVER dotnet run --project ~/King-of-the-Cards/KC.Backend.API/KC.Backend.API.csproj --launch-profile 'http-public'
-        exit
+        EOF
     - name: cleanup
-      run: rm -rf ~/.ssh
+      run: |
+        rm -rf ~/.ssh
+        pkill -f "cloudflared access ssh" || true
