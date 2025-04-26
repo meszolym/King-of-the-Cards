@@ -16,7 +16,17 @@ jobs:
         install -m 600 -D /dev/null ~/.ssh/id_rsa
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-    - name: connect and pull
+    - name: install cloudflared
+      run: |
+        sudo mkdir -p --mode=0755 /usr/share/keyrings
+        curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
+        echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared noble main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
+        sudo apt-get update && sudo apt-get install cloudflared
+    - name: change .ssh config
+      run: |
+        echo "Host ${{ secrets.SSH_HOST }}
+        ProxyCommand /usr/local/bin/cloudflared access ssh --hostname %h" > ~/.ssh/config
+    - name: connect, pull, start server
       run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd King-of-the-Cards 
         && git checkout main 
