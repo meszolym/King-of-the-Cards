@@ -17,8 +17,6 @@ jobs:
         echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared noble main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
         sudo apt-get update && sudo apt-get install cloudflared
     - name: install ssh keys, change ssh config
-      # check this thread to understand why its needed:
-      # https://stackoverflow.com/a/70447517
       run: |
         install -m 600 -D /dev/null ~/.ssh/id_rsa
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
@@ -28,11 +26,12 @@ jobs:
         echo "ProxyCommand /usr/local/bin/cloudflared access ssh --hostname %h" >> ~/.ssh/config
     - name: connect, pull, start server
       run: |
-        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOSTNAME }} "cd King-of-the-Cards 
-        && git checkout master 
-        && git pull 
-        && pkill screen
-        && screen -d -m -S SERVER dotnet run --project ~/King-of-the-Cards/KC.Backend.API/KC.Backend.API.csproj --launch-profile 'http-public'
-        && exit"
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOSTNAME }}
+        cd King-of-the-Cards 
+        git checkout master 
+        git pull 
+        pkill screen
+        screen -d -m -S SERVER dotnet run --project ~/King-of-the-Cards/KC.Backend.API/KC.Backend.API.csproj --launch-profile 'http-public'
+        exit
     - name: cleanup
       run: rm -rf ~/.ssh
