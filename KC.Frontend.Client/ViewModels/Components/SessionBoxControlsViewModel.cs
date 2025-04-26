@@ -18,7 +18,7 @@ namespace KC.Frontend.Client.ViewModels.Components
         public SessionBoxControlsViewModel(Guid sessionId, IObservable<bool> isMyTurnObs)
         {
             _sessionId = sessionId;
-            isMyTurnObs.CombineLatest(ExternalCommunicatorService.SignalREvents.TurnChanged, ExternalCommunicatorService.SignalREvents.HandsUpdated)
+            isMyTurnObs.ObserveOn(RxApp.MainThreadScheduler).CombineLatest(ExternalCommunicatorService.SignalREvents.TurnChanged.ObserveOn(RxApp.MainThreadScheduler), ExternalCommunicatorService.SignalREvents.HandsUpdated.ObserveOn(RxApp.MainThreadScheduler))
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe( async void (tup) => await Update(tup.First, tup.Second));
             //TODO: Check async void and exception handling
