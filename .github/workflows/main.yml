@@ -1,7 +1,8 @@
 on:
+  workflow_dispatch:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   run_pull:
@@ -29,7 +30,7 @@ jobs:
     - name: connect, pull, start server
       run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd King-of-the-Cards 
-        && git checkout main 
+        && git checkout master 
         && git pull 
         && pkill screen
         && screen -d -m -S SERVER dotnet run --project ~/King-of-the-Cards/KC.Backend.API/KC.Backend.API.csproj --launch-profile 'http-public'
