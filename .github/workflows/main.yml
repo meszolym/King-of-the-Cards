@@ -37,7 +37,7 @@ jobs:
           for i in {1..3}; do
             {
               echo "set -e"
-              echo "cd King-of-the-Cards"
+              echo "cd ~/King-of-the-Cards"
               echo "git checkout master"
               echo "git pull"
               echo "pkill screen || true"
