@@ -40,8 +40,7 @@ jobs:
               echo "cd ~/King-of-the-Cards"
               echo "git checkout master"
               echo "git pull"
-              echo "pkill screen || true"
-              echo "screen -d -m -S SERVER dotnet run --project ~/King-of-the-Cards/KC.Backend.API/KC.Backend.API.csproj --launch-profile 'http-public'"
+              echo "sudo systemctl restart kc-backend.service"
             } | ssh -o ConnectTimeout=10 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOSTNAME }} && break || sleep 5
             echo "SSH attempt $i failed, retrying..." >&2
           done
