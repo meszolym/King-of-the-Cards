@@ -1,20 +1,32 @@
-﻿using KC.Backend.Models.GameItems;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using KC.Backend.Models.GameItems;
 using KC.Shared.Models.GameManagement;
 using Timer = System.Timers.Timer;
 
 namespace KC.Backend.Models.GameManagement;
 
-public class Session(Table table, TimeSpan betTimerTimeSpan, TimeSpan destructionTimerTimeSpan)
+public sealed class Session(Table table, TimeSpan betTimerTimeSpan, TimeSpan destructionTimerTimeSpan)
+    : SessionBase(table)
 {
-    public Guid Id { get; } = Guid.NewGuid();
-    public Table Table { get; } = table;
-    public TurnInfo CurrentTurnInfo { get; set; } = new TurnInfo();
-    //public DateTime LastMoveMadeAt { get; set; } = DateTime.MinValue;
-
     /// <summary>
     /// Shows when it is time to destroy the session as there was no activity.
     /// </summary>
-    public Timer DestructionTimer { get; set; } = new Timer(destructionTimerTimeSpan);
-    public bool CanPlaceBets => BettingTimer.RemainingSeconds > 0;
-    public TickingTimer BettingTimer { get; set; } = new TickingTimer(betTimerTimeSpan);
+    public Timer DestructionTimer { get; set; } = new(destructionTimerTimeSpan);
+
+    public TickingTimer BettingTimer { get; set; } = new(betTimerTimeSpan);
+
+    public new bool CanPlaceBets => BettingTimer.RemainingSeconds > 0;
+    
+    public new TurnInfo CurrentTurnInfo
+    {
+        get => TurnInfo;
+        set
+        {
+            if (EqualityComparer<TurnInfo>.Default.Equals(TurnInfo, value)) return;
+            TurnInfo = value;
+            TurnInfoChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentTurnInfo)));
+        }
+    }
+    public event PropertyChangedEventHandler? TurnInfoChanged;
 }
