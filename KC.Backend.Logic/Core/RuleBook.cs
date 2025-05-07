@@ -42,24 +42,28 @@ public class RuleBook : IRuleBook
 
         return new HandValue(value, isBlackJack, isPair, isSoft);
     }
-
+    
     public string GetHandValueString(Hand hand)
     {
-        if (GetValue(hand).IsBlackJack) return "BJ";
+        if (GetValue(hand).IsBlackJack) 
+            return "BJ";
         
-        if (!hand.Finished)
-        {
-            if (!hand.DealerOwned)
-            {
-                if (GetValue(hand).IsSoft && GetValue(hand).IsPair && CanBeSplit(hand)) return "P11"; //Pair of Aces
-            }
-            if (GetValue(hand).IsSoft && !hand.Finished) return $"S{GetValue(hand).NumberValue}";
-            if (!hand.DealerOwned)
-            {
-                if (GetValue(hand).IsPair && CanBeSplit(hand)) return $"P{GetValue(hand).NumberValue / 2}";
-            }
-        }
+        if (hand.Finished) 
+            return GetValue(hand).NumberValue.ToString();
         
+        if (!hand.DealerOwned) 
+            if (GetValue(hand).IsSoft && GetValue(hand).IsPair && CanBeSplit(hand)) 
+                return "P11"; //Pair of Aces
+        
+        if (GetValue(hand).IsSoft && !hand.Finished) 
+            return $"S{GetValue(hand).NumberValue}";
+        
+        if (hand.DealerOwned) 
+            return GetValue(hand).NumberValue.ToString();
+        
+        if (GetValue(hand).IsPair && CanBeSplit(hand)) 
+            return $"P{GetValue(hand).NumberValue / 2}";
+
         return GetValue(hand).NumberValue.ToString();
         
     }

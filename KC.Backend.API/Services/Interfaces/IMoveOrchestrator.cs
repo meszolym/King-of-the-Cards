@@ -6,5 +6,4 @@ namespace KC.Backend.API.Services;
 public interface IMoveOrchestrator
 {
     Task MakeMove(MacAddress macAddress, MakeMoveDto dto);
-    Task TransferTurn(Guid sessionId);
 }

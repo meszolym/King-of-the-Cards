@@ -45,6 +45,7 @@ public interface IGamePlayLogic
     bool DealerCheck(Guid sessionId);
 
     IEnumerable<Move> GetPossibleActionsOnHand(Hand hand);
+    IEnumerable<Move> GetPossibleActionsOnHand(Guid sessionId, int boxIdx, int handIdx = 0);
 
     /// <summary>
     /// Makes a move on a given hand of a given player on a given box. Does not handle player balance, hand bets or transferring turns.

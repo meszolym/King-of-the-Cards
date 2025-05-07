@@ -4,6 +4,7 @@ using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Logics.Interfaces;
 using KC.Backend.Logic.Services.Interfaces;
 using KC.Shared.Models.Misc;
+using NuGet.Protocol.Plugins;
 
 namespace KC.Backend.API.Services;
 
@@ -25,6 +26,19 @@ public class SessionCreationOrchestrator(ISessionLogic sessionLogic, IPlayerLogi
         await hub.SendMessageToGroupAsync(hub.BaseGroup, SignalRMethods.SessionCreated, sess.ToDto(g => playerLogic.Get(g).Name));
         sess.BettingTimer.Tick += async (sender, args) => await OnBettingTimerTicked(sess.Id, sess.BettingTimer.RemainingSeconds);
         sess.BettingTimer.Elapsed += async (sender, args) => await OnBettingTimerElapsed(sess.Id);
+        sess.TurnInfoChanged += async (sender, args) => await OnTurnInfoChanged(sess.Id);
+    }
+
+    private async Task OnTurnInfoChanged(Guid sessId)
+    {
+        var session = sessionLogic.Get(sessId);
+        await hub.SendMessageToGroupAsync(sessId, SignalRMethods.TurnChanged, session.CurrentTurnInfo);
+        if (!session.CurrentTurnInfo.PlayersTurn)
+        {
+            gamePlayLogic.DealerPlayHand(sessId);
+        }
+        
+        //TODO: Cleanup here? Payout + clear hands + etc
     }
 
     private const int DelayBetweenCards = 2000;

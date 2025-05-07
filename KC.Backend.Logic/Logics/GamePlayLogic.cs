@@ -108,6 +108,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// Checks for dealer blackjack.
     /// </summary>
     /// <returns>True if the dealer has blackjack</returns>
+    // TODO: Use this!!! This is not used anywhere!!!
     public bool DealerCheck(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
@@ -118,6 +119,8 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     }
     
     public IEnumerable<Move> GetPossibleActionsOnHand(Hand hand) => ruleBook.GetPossibleActionsOnHand(hand);
+    public IEnumerable<Move> GetPossibleActionsOnHand(Guid sessionId, int boxIdx, int handIdx = 0) => 
+        GetPossibleActionsOnHand(sessions.Single(s => s.Id == sessionId).Table.BettingBoxes[boxIdx].Hands[handIdx]);
     
     /// <summary>
     /// Makes a move on a given hand of a given player on a given box. Does not handle player balance, hand bets or transferring turns.
@@ -238,7 +241,6 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
             //if there are no more boxes left, transfer to the dealer's turn
             session.CurrentTurnInfo = new TurnInfo(); //false, 0, 0 by default
             return;
-
             #endregion
 
         }
