@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using KC.Backend.Logic.Core.Interfaces;
 using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Logics.Interfaces;
@@ -54,7 +55,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// Gives a card from the shoe of the session.
     /// </summary>
     /// <returns></returns>
-    public Card GiveCard(Guid sessionId)
+    public Card TakeCardFromShoe(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         return session.Table.Shoe.Cards[session.Table.Shoe.NextCardIdx++];
@@ -65,28 +66,30 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// </summary>
     /// <exception cref="InvalidOperationException">"It's not the dealer's turn."</exception>
     /// <exception cref="InvalidOperationException">"Dealer's hand is already finished."</exception>
-    public void DealerPlayHand(Guid sessionId)
+    public async Task DealerPlayHand(Guid sessionId, Func<Task> updateCallBack)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         if (session.CurrentTurnInfo.PlayersTurn) throw new InvalidOperationException("It's not the dealer's turn.");
-        if (session.Table.Dealer.DealerHand.Finished) throw new InvalidOperationException("Dealer's hand is already finished.");
+        var dealerHand = session.Table.Dealer.Hand;
+        if (session.Table.Dealer.Hand.Finished) throw new InvalidOperationException("Dealer's hand is already finished.");
         
-        session.Table.Dealer.DealerHand.Finished = true;
-        var dealerHand = session.Table.Dealer.DealerHand;
-
+        session.Table.Dealer.ShowAllCards = true;
+        await updateCallBack();
+        
         while (ruleBook.DealerShouldHit(dealerHand))
         {
-            dealerHand.Cards.Add(GiveCard(sessionId));
+            dealerHand.Cards.Add(TakeCardFromShoe(sessionId));
+            await updateCallBack();
         }
         
         dealerHand.Finished = true;
     }
 
     /// <summary>
-    /// Deals cards to the players and the dealer at the start of a round (only 1 per hand, so THIS HAS TO BE CALLED TWICE).
+    /// Deals cards to the players and the dealer at the start of a round.
     /// </summary>
     /// <exception cref="InvalidOperationException">Shoe needs shuffling.</exception>
-    public void DealHalfOfStartingCards(Guid sessionId, bool checkShuffle = false)
+    public async Task DealStartingCards(Guid sessionId, Func<Task> updateCallBack, bool checkShuffle = false)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         session.DestructionTimer.Reset();
@@ -96,12 +99,17 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
         {
             throw new InvalidOperationException("Shoe needs shuffling.");
         }
-        
-        foreach (var box in session.Table.BettingBoxes.Where(b => b.Hands[0].Bet > 0))
+
+        for (var i = 0; i < 2; i++)
         {
-            box.Hands[0].Cards.Add(GiveCard(sessionId));
+            foreach (var box in session.Table.BettingBoxes.Where(b => b.Hands[0].Bet > 0))
+            {
+                box.Hands[0].Cards.Add(TakeCardFromShoe(sessionId));
+            }
+            session.Table.Dealer.Hand.Cards.Add(TakeCardFromShoe(sessionId));
+            
+            await updateCallBack();
         }
-        session.Table.Dealer.DealerHand.Cards.Add(GiveCard(sessionId));
     }
 
     /// <summary>
@@ -112,9 +120,9 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     public bool DealerCheck(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
-        if (!ruleBook.GetValue(session.Table.Dealer.DealerHand).IsBlackJack) return false;
-        session.Table.Dealer.DealerShowsAllCards = true;
-        session.Table.Dealer.DealerHand.Finished = true;
+        if (!ruleBook.GetValue(session.Table.Dealer.Hand).IsBlackJack) return false;
+        session.Table.Dealer.ShowAllCards = true;
+        session.Table.Dealer.Hand.Finished = true;
         return true;
     }
     
@@ -149,17 +157,17 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
                 hand.Finished = true;
                 break;
             case Move.Hit:
-                hand.Cards.Add(GiveCard(sessionId));
+                hand.Cards.Add(TakeCardFromShoe(sessionId));
                 break;
             case Move.Double:
-                hand.Cards.Add(GiveCard(sessionId));
+                hand.Cards.Add(TakeCardFromShoe(sessionId));
                 hand.Finished = true;
                 break;
             case Move.Split:
                 box.Hands.Add(new Hand(){Cards = [hand.Cards[1]], FromSplit = true});
                 hand.FromSplit = true;
                 hand.Cards.RemoveAt(1);
-                hand.Cards.Add(GiveCard(sessionId));
+                hand.Cards.Add(TakeCardFromShoe(sessionId));
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(move), move, null);
@@ -266,7 +274,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     public void PayOutBets(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
-        var dealerHand = session.Table.Dealer.DealerHand;
+        var dealerHand = session.Table.Dealer.Hand;
 
         foreach (var box in BoxesInPlay(sessionId))
         {

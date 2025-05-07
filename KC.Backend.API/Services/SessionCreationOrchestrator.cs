@@ -35,24 +35,32 @@ public class SessionCreationOrchestrator(ISessionLogic sessionLogic, IPlayerLogi
         await hub.SendMessageToGroupAsync(sessId, SignalRMethods.TurnChanged, session.CurrentTurnInfo);
         if (!session.CurrentTurnInfo.PlayersTurn)
         {
-            gamePlayLogic.DealerPlayHand(sessId);
+            
+            await gamePlayLogic.DealerPlayHand(sessId, async () =>
+            {
+                await hub.SendMessageToGroupAsync(sessId, SignalRMethods.HandsUpdated,
+                    session.ToDto(g => playerLogic.Get(g).Name));
+                await Task.Delay(TimeSpan.FromSeconds(DelaySecsBetweenCards));
+            });
         }
         
         //TODO: Cleanup here? Payout + clear hands + etc
     }
 
-    private const int DelayBetweenCards = 2000;
+    private const int DelaySecsBetweenCards = 2;
     private async Task OnBettingTimerElapsed(Guid sessId)
     {
         await hub.SendMessageToGroupAsync(sessId, SignalRMethods.BettingTimerElapsed, sessId);
 
         gamePlayLogic.ShuffleIfNeeded(sessId);
         
-        gamePlayLogic.DealHalfOfStartingCards(sessId);
         var session = sessionLogic.Get(sessId);
-        await hub.SendMessageToGroupAsync(sessId, SignalRMethods.HandsUpdated, session.ToDto(g => playerLogic.Get(g).Name));
-        await Task.Delay(DelayBetweenCards).ContinueWith(_ => gamePlayLogic.DealHalfOfStartingCards(sessId));
-        await hub.SendMessageToGroupAsync(sessId, SignalRMethods.HandsUpdated, session.ToDto(g => playerLogic.Get(g).Name));
+        await gamePlayLogic.DealStartingCards(sessId, async () =>
+        {
+            await hub.SendMessageToGroupAsync(sessId, SignalRMethods.HandsUpdated,
+                session.ToDto(g => playerLogic.Get(g).Name));
+            await Task.Delay(TimeSpan.FromSeconds(DelaySecsBetweenCards));
+        });
         gamePlayLogic.TransferTurn(sessId);
         await hub.SendMessageToGroupAsync(sessId, SignalRMethods.TurnChanged, session.CurrentTurnInfo);
     }

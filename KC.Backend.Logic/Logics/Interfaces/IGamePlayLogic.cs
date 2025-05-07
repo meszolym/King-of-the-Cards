@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using KC.Backend.Models.GameItems;
 using KC.Shared.Models.GameItems;
 using KC.Shared.Models.Misc;
@@ -22,20 +23,20 @@ public interface IGamePlayLogic
     /// Gives a card from the shoe of the session.
     /// </summary>
     /// <returns></returns>
-    Card GiveCard(Guid sessionId);
+    Card TakeCardFromShoe(Guid sessionId);
 
     /// <summary>
     /// Plays dealer's hand according to the rules.
     /// </summary>
     /// <exception cref="InvalidOperationException">"It's not the dealer's turn."</exception>
     /// <exception cref="InvalidOperationException">"Dealer's hand is already finished."</exception>
-    void DealerPlayHand(Guid sessionId);
+    Task DealerPlayHand(Guid sessionId, Func<Task> updateCallBack);
 
     /// <summary>
-    /// Deals cards to the players and the dealer at the start of a round (only 1 per hand, so THIS HAS TO BE CALLED TWICE).
+    /// Deals cards to the players and the dealer at the start of a round.
     /// </summary>
     /// <exception cref="InvalidOperationException">Shoe needs shuffling.</exception>
-    void DealHalfOfStartingCards(Guid sessionId, bool checkShuffle = false);
+    Task DealStartingCards(Guid sessionId, Func<Task> updateCallBack, bool checkShuffle = false);
 
     /// <summary>
     /// Checks for dealer blackjack.
