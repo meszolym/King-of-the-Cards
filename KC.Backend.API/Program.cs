@@ -1,3 +1,4 @@
+using KC.Backend.API.Extensions;
 using KC.Backend.API.Services;
 using KC.Backend.API.Services.Interfaces;
 using Microsoft.AspNetCore.Diagnostics;
@@ -43,25 +44,7 @@ namespace KC.Backend.API
             builder.Services.AddSingleton<IList<Session>>(sessions);
             builder.Services.AddSingleton<IDictionary<MacAddress, Guid>>(macToPlayerId);
             
-            //logic layer
-            builder.Services.AddTransient<IBettingBoxLogic, BettingBoxLogic>();
-            builder.Services.AddTransient<IGamePlayLogic, GamePlayLogic>();
-            builder.Services.AddTransient<IPlayerLogic, PlayerLogic>();
-            builder.Services.AddTransient<ISessionLogic, SessionLogic>();
-            builder.Services.AddTransient<ISessionTerminatorService, SessionTerminatorService>();
-            
-            //core
-            builder.Services.AddTransient<IRuleBook, RuleBook>();
-            
-            //other services in API layer
-            Dictionary<string, string> connectionsAndGroups = [];
-            builder.Services.AddSingleton<IDictionary<string, string>>(connectionsAndGroups);
-            builder.Services.AddTransient<IClientCommunicator, ClientCommunicator>();
-            
-            builder.Services.AddSignalR().AddNewtonsoftJsonProtocol();
-            
-            builder.Services.AddTransient<ISessionCreationOrchestrator, SessionCreationOrchestrator>();
-            builder.Services.AddTransient<IMoveOrchestrator, MoveOrchestrator>();
+            builder.Services.RegisterLogicLayerServices().RegisterApiLayerServices();
             
             var app = builder.Build();
             

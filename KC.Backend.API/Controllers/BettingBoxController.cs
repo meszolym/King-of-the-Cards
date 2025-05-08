@@ -1,6 +1,7 @@
 using KC.Backend.API.Extensions;
 using KC.Backend.API.Services;
 using KC.Backend.API.Services.Interfaces;
+using KC.Backend.Logic;
 using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Logics.Interfaces;
 using KC.Shared.Models.Dtos;
@@ -11,14 +12,14 @@ namespace KC.Backend.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic playerLogic, ISessionLogic sessionLogic, IClientCommunicator hub) : Controller
+public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic playerLogic, ISessionLogic sessionLogic, IClientCommunicator hub, GetPlayerNameDelegate getPlayerName) : Controller
 {
     [HttpPost]
     [Route("claim-box")]
     public void ClaimBox([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress, [FromBody] BoxOwnerUpdateDto dto)
     {
         bettingBoxLogic.ClaimBettingBox(dto.SessionId, dto.BoxIdx, MacAddress.Parse(macAddress));
-        hub.SendMessageToGroupAsync(dto.SessionId, SignalRMethods.BoxOwnerChanged, bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name));
+        hub.SendMessageToGroupAsync(dto.SessionId, SignalRMethods.BoxOwnerChanged, bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(getPlayerName));
         hub.SendMessageToGroupAsync(hub.BaseGroup, SignalRMethods.SessionOccupancyChanged, (dto.SessionId,1));
     }
 
@@ -27,7 +28,7 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
     public void DisclaimBox([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress, [FromBody] BoxOwnerUpdateDto dto)
     {
         bettingBoxLogic.DisclaimBettingBox(dto.SessionId, dto.BoxIdx, MacAddress.Parse(macAddress));
-        hub.SendMessageToGroupAsync(dto.SessionId, SignalRMethods.BoxOwnerChanged, bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name));
+        hub.SendMessageToGroupAsync(dto.SessionId, SignalRMethods.BoxOwnerChanged, bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(getPlayerName));
         hub.SendMessageToGroupAsync(hub.BaseGroup, SignalRMethods.SessionOccupancyChanged, (dto.SessionId,-1));
     }
 
@@ -48,7 +49,7 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
         playerLogic.UpdateBalance(address, player.Balance - (dto.Amount - alreadyPlaced));
         
         await hub.SendMessageAsync(player.ConnectionId, SignalRMethods.PlayerBalanceUpdated, player.ToDto());
-        var dtoToSend = bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name);
+        var dtoToSend = bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(getPlayerName);
         await hub.SendMessageToGroupAsync(dto.SessionId, SignalRMethods.BetUpdated, dtoToSend);
         
         var running = sessionLogic.UpdateBettingTimer(dto.SessionId);

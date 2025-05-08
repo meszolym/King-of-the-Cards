@@ -10,4 +10,9 @@
   <ItemGroup>
     <ProjectReference Include="..\KC.Backend.Models\KC.Backend.Models.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+      <HintPath>..\..\..\..\..\..\home\marc\.nuget\packages\microsoft.extensions.dependencyinjection.abstractions\8.0.2\lib\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

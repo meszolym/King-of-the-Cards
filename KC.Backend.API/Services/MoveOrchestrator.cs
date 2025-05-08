@@ -1,5 +1,6 @@
 using KC.Backend.API.Extensions;
 using KC.Backend.API.Services.Interfaces;
+using KC.Backend.Logic;
 using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Logics.Interfaces;
 using KC.Shared.Models.Dtos;
@@ -8,7 +9,7 @@ using KC.Shared.Models.Misc;
 
 namespace KC.Backend.API.Services;
 
-public class MoveOrchestrator(IPlayerLogic playerLogic, IGamePlayLogic gamePlayLogic, ISessionLogic sessionLogic, IClientCommunicator hub) : IMoveOrchestrator
+public class MoveOrchestrator(IPlayerLogic playerLogic, IGamePlayLogic gamePlayLogic, ISessionLogic sessionLogic, IClientCommunicator hub, GetPlayerNameDelegate getPlayerName) : IMoveOrchestrator
 {
     //TODO: Remove bet if bust
     //TODO: Somehow start dealer turn when it should come
@@ -30,7 +31,7 @@ public class MoveOrchestrator(IPlayerLogic playerLogic, IGamePlayLogic gamePlayL
             await hub.SendMessageAsync(player.ConnectionId, SignalRMethods.PlayerBalanceUpdated, player.ToDto());
         }
         gamePlayLogic.MakeMove(dto.sessionId, dto.boxIdx, macAddress, dto.move, dto.handIdx);
-        await hub.SendMessageToGroupAsync(dto.sessionId, SignalRMethods.HandsUpdated, session.ToDto(g => playerLogic.Get(g).Name));
+        await hub.SendMessageToGroupAsync(dto.sessionId, SignalRMethods.HandsUpdated, session.ToDto(getPlayerName));
 
         if (dto.move is Move.Double or Move.Split) //TODO: Make some function in the sessionlogic/gameplaylogic?
         {
@@ -47,7 +48,7 @@ public class MoveOrchestrator(IPlayerLogic playerLogic, IGamePlayLogic gamePlayL
                 }
             }
             
-            await hub.SendMessageToGroupAsync(dto.sessionId, SignalRMethods.BetUpdated, box.ToDto(g => playerLogic.Get(g).Name));
+            await hub.SendMessageToGroupAsync(dto.sessionId, SignalRMethods.BetUpdated, box.ToDto(getPlayerName));
         }
     }
 }
