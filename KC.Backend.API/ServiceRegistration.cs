@@ -44,15 +44,17 @@ public static class ServiceRegistration
             {
                 var session = sessionLogic.Get(sessId);
                 await hub.SendMessageToGroupAsync(sessId, SignalRMethods.TurnChanged, session.CurrentTurnInfo);
-                if (!session.CurrentTurnInfo.PlayersTurn)
+                if (session.CurrentTurnInfo.PlayersTurn) return;
+
+                await gamePlayLogic.DealerPlayHand(sessId, async () =>
                 {
-                    await gamePlayLogic.DealerPlayHand(sessId, async () =>
-                    {
-                        await hub.SendMessageToGroupAsync(sessId, SignalRMethods.HandsUpdated,
-                            session.ToDto(getPlayerName));
-                        await Task.Delay(TimeSpan.FromSeconds(DelaySecsBetweenCards));
-                    });
-                }
+                    await hub.SendMessageToGroupAsync(sessId, SignalRMethods.HandsUpdated,
+                        session.ToDto(getPlayerName));
+                    await Task.Delay(TimeSpan.FromSeconds(DelaySecsBetweenCards));
+                });
+                
+                //TODO: Check winners, pay out bets, clear hands
+                
             };
         });
         
