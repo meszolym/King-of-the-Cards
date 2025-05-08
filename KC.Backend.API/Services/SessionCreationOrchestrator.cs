@@ -35,7 +35,6 @@ public class SessionCreationOrchestrator(ISessionLogic sessionLogic, IPlayerLogi
         await hub.SendMessageToGroupAsync(sessId, SignalRMethods.TurnChanged, session.CurrentTurnInfo);
         if (!session.CurrentTurnInfo.PlayersTurn)
         {
-            
             await gamePlayLogic.DealerPlayHand(sessId, async () =>
             {
                 await hub.SendMessageToGroupAsync(sessId, SignalRMethods.HandsUpdated,

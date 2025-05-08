@@ -11,7 +11,7 @@ namespace KC.Backend.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic playerLogic, IBetOrchestrator betOrchestrator, IClientCommunicator hub) : Controller
+public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic playerLogic, ISessionLogic sessionLogic, IClientCommunicator hub) : Controller
 {
     [HttpPost]
     [Route("claim-box")]
@@ -33,5 +33,27 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
 
     [HttpPut]
     [Route("update-bet")]
-    public async Task UpdateBet([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress, [FromBody] BoxBetUpdateDto dto) => await betOrchestrator.UpdateBet(MacAddress.Parse(macAddress), dto);
+    //TODO: Maybe move to logic level?
+    public async Task UpdateBet([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress, [FromBody] BoxBetUpdateDto dto)
+    {
+        var address = MacAddress.Parse(macAddress);
+        var player = playerLogic.Get(address);
+
+        var alreadyPlaced = bettingBoxLogic.GetBetOnBox(dto.SessionId, dto.BoxIdx, dto.HandIdx);
+        
+        if (dto.Amount - alreadyPlaced > player.Balance)
+            throw new InvalidOperationException("Player balance does not cover the bet.");
+        
+        bettingBoxLogic.UpdateBetOnBox(dto.SessionId, dto.BoxIdx, address, dto.Amount, dto.HandIdx);
+        playerLogic.UpdateBalance(address, player.Balance - (dto.Amount - alreadyPlaced));
+        
+        await hub.SendMessageAsync(player.ConnectionId, SignalRMethods.PlayerBalanceUpdated, player.ToDto());
+        var dtoToSend = bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(g => playerLogic.Get(g).Name);
+        await hub.SendMessageToGroupAsync(dto.SessionId, SignalRMethods.BetUpdated, dtoToSend);
+        
+        var running = sessionLogic.UpdateBettingTimer(dto.SessionId);
+
+        if (!running)
+            await hub.SendMessageToGroupAsync(dto.SessionId, SignalRMethods.BettingTimerStopped, dto.SessionId);
+    }
 }

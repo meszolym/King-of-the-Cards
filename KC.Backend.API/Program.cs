@@ -61,7 +61,6 @@ namespace KC.Backend.API
             builder.Services.AddSignalR().AddNewtonsoftJsonProtocol();
             
             builder.Services.AddTransient<ISessionCreationOrchestrator, SessionCreationOrchestrator>();
-            builder.Services.AddTransient<IBetOrchestrator, BetOrchestrator>();
             builder.Services.AddTransient<IMoveOrchestrator, MoveOrchestrator>();
             
             var app = builder.Build();
