@@ -61,7 +61,7 @@ public static class ServiceRegistration
         //OnBettingTimerTicked
         services.AddSingleton<OnBettingTimerTickedDelegate>(s =>
         {
-            var hub = s.GetRequiredService<ClientCommunicator>();
+            var hub = s.GetRequiredService<IClientCommunicator>();
             return async (Guid sessionId, int remainingSeconds) => await hub.SendMessageToGroupAsync(sessionId,
                 SignalRMethods.BettingTimerTicked, (sessionId, remainingSeconds));
         });
@@ -69,7 +69,7 @@ public static class ServiceRegistration
         //OnBettingTimerElapsed
         services.AddSingleton<OnBettingTimerElapsedDelegate>(s =>
         {
-            var hub = s.GetRequiredService<ClientCommunicator>();
+            var hub = s.GetRequiredService<IClientCommunicator>();
             var gamePlayLogic = s.GetRequiredService<IGamePlayLogic>();
             var sessionLogic = s.GetRequiredService<ISessionLogic>();
             var getPlayerName = s.GetRequiredService<GetPlayerNameDelegate>();
