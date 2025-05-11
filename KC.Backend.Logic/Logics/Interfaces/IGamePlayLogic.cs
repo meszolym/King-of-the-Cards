@@ -23,26 +23,31 @@ public interface IGamePlayLogic
     /// Gives a card from the shoe of the session.
     /// </summary>
     /// <returns></returns>
-    Card TakeCardFromShoe(Guid sessionId);
+    // public Card TakeCardFromShoe(Guid sessionId)
+    // {
+    //     var session = sessions.Single(s => s.Id == sessionId);
+    //     return ;
+    // }
+    Task AddCardToHand(Guid sessionId, int boxIdx, int handIdx);
 
     /// <summary>
     /// Plays dealer's hand according to the rules.
     /// </summary>
     /// <exception cref="InvalidOperationException">"It's not the dealer's turn."</exception>
     /// <exception cref="InvalidOperationException">"Dealer's hand is already finished."</exception>
-    Task DealerPlayHand(Guid sessionId, Func<Task> updateCallBack);
+    Task DealerPlayHand(Guid sessionId, TimeSpan delayBetweenCards);
 
     /// <summary>
     /// Deals cards to the players and the dealer at the start of a round.
     /// </summary>
     /// <exception cref="InvalidOperationException">Shoe needs shuffling.</exception>
-    Task DealStartingCards(Guid sessionId, Func<Task> updateCallBack, bool checkShuffle = false);
+    Task DealStartingCards(Guid sessionId, TimeSpan delayBetweenCards, bool checkShuffle = false);
 
     /// <summary>
     /// Checks for dealer blackjack.
     /// </summary>
-
     /// <returns>True if the dealer has blackjack</returns>
+    // TODO: Use this!!! This is not used anywhere!!!
     bool DealerCheck(Guid sessionId);
 
     IEnumerable<Move> GetPossibleActionsOnHand(Hand hand);
@@ -55,9 +60,9 @@ public interface IGamePlayLogic
     /// <exception cref="InvalidOperationException">"Box is not owned by player."</exception>
     /// <exception cref="InvalidOperationException">"Action not possible." if the rulebook states that this action is not possible.</exception>
     /// <exception cref="ArgumentOutOfRangeException">If move is not handled.</exception>
-    void MakeMove(Guid sessionId, int boxIdx, MacAddress playerId, Move move, int handIdx = 0);
+    Task MakeMove(Guid sessionId, int boxIdx, MacAddress playerId, Move move, int handIdx = 0);
 
-    void TransferTurn(Guid sessionId);
+    Task TransferTurn(Guid sessionId);
     void FinishAllHandsInPlay(Guid sessionId);
 
     /// <summary>

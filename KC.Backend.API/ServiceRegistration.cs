@@ -2,6 +2,7 @@ using KC.Backend.API.Extensions;
 using KC.Backend.API.Services;
 using KC.Backend.API.Services.Interfaces;
 using KC.Backend.Logic;
+using KC.Backend.Logic.Logics;
 using KC.Backend.Logic.Logics.Interfaces;
 using KC.Backend.Logic.Services.Interfaces;
 using KC.Shared.Models.Misc;
@@ -30,7 +31,7 @@ public static class ServiceRegistration
     
     private const int DelaySecsBetweenCards = 2;
     
-    public static IServiceCollection RegisterEventDelegates(this IServiceCollection services)
+    public static IServiceCollection RegisterDelegates(this IServiceCollection services)
     {
         //OnTurnInfoChanged
         services.AddSingleton<OnTurnInfoChangedDelegate>(s =>
@@ -46,15 +47,10 @@ public static class ServiceRegistration
                 await hub.SendMessageToGroupAsync(sessId, SignalRMethods.TurnChanged, session.CurrentTurnInfo);
                 if (session.CurrentTurnInfo.PlayersTurn) return;
 
-                await gamePlayLogic.DealerPlayHand(sessId, async () =>
-                {
-                    await hub.SendMessageToGroupAsync(sessId, SignalRMethods.HandsUpdated,
-                        session.ToDto(getPlayerName));
-                    await Task.Delay(TimeSpan.FromSeconds(DelaySecsBetweenCards));
-                });
-                
+                await gamePlayLogic.DealerPlayHand(sessId, TimeSpan.FromSeconds(DelaySecsBetweenCards));
+
                 //TODO: Check winners, pay out bets, clear hands
-                
+
             };
         });
         
@@ -81,17 +77,13 @@ public static class ServiceRegistration
                 gamePlayLogic.ShuffleIfNeeded(sessId);
         
                 var session = sessionLogic.Get(sessId);
-                await gamePlayLogic.DealStartingCards(sessId, async () =>
-                {
-                    await hub.SendMessageToGroupAsync(sessId, SignalRMethods.HandsUpdated,
-                        session.ToDto(getPlayerName));
-                    await Task.Delay(TimeSpan.FromSeconds(DelaySecsBetweenCards));
-                });
+                await gamePlayLogic.DealStartingCards(sessId, TimeSpan.FromSeconds(DelaySecsBetweenCards));
                 gamePlayLogic.TransferTurn(sessId);
                 await hub.SendMessageToGroupAsync(sessId, SignalRMethods.TurnChanged, session.CurrentTurnInfo);
             };
         });
 
+        //OnDestructionTimerElapsed
         services.AddSingleton<OnDestructionTimerElapsedDelegate>(s =>
         {
             var sessionTerminatorService = s.GetRequiredService<ISessionTerminatorService>();
@@ -116,6 +108,21 @@ public static class ServiceRegistration
                     await hub.SendMessageAsync(p.ConnectionId, SignalRMethods.PlayerBalanceUpdated, p.ToDto());
                 }
             };
+        });
+        
+        //HandUpdated -> Defined in GamePlayLogic
+        services.AddSingleton<HandUpdatedDelegate>(s =>
+        {
+            var hub = s.GetRequiredService<IClientCommunicator>();
+            var sessionLogic = s.GetRequiredService<ISessionLogic>();
+            var getPlayerName = s.GetRequiredService<GetPlayerNameDelegate>();
+            
+            return async sessionId =>
+            {
+                var session = sessionLogic.Get(sessionId);
+                await hub.SendMessageToGroupAsync(sessionId, SignalRMethods.HandsUpdated, session.ToDto(getPlayerName));
+            };
+            
         });
         
         return services;

@@ -14,7 +14,9 @@ using KC.Shared.Models.Misc;
 namespace KC.Backend.Logic.Logics;
 
 //TODO: Make the logic more atomic, chaining them together will be handled by the API layer.
-public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid> macToPlayerGuid, IRuleBook ruleBook) : IGamePlayLogic
+public delegate Task HandUpdatedDelegate(Guid sessionId);
+
+public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid> macToPlayerGuid, IRuleBook ruleBook, HandUpdatedDelegate handUpdatedDelegate) : IGamePlayLogic
 {
     /// <summary>
     /// Shuffles the shoe of the table in the session.
@@ -55,10 +57,29 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// Gives a card from the shoe of the session.
     /// </summary>
     /// <returns></returns>
-    public Card TakeCardFromShoe(Guid sessionId)
+    // public Card TakeCardFromShoe(Guid sessionId)
+    // {
+    //     var session = sessions.Single(s => s.Id == sessionId);
+    //     return ;
+    // }
+
+    public async Task AddCardToHand(Guid sessionId, int boxIdx, int handIdx)
     {
         var session = sessions.Single(s => s.Id == sessionId);
-        return session.Table.Shoe.Cards[session.Table.Shoe.NextCardIdx++];
+        Hand hand;
+        
+        if (boxIdx == -1 && handIdx == -1) //dealer hand
+        {
+            hand = session.Table.Dealer.Hand;
+        }
+        else
+        {
+            hand = session.Table.BettingBoxes[boxIdx].Hands[handIdx];
+        }
+        
+        hand.Cards.Add(session.Table.Shoe.Cards[session.Table.Shoe.NextCardIdx++]);
+        await handUpdatedDelegate(sessionId);
+        
     }
 
     /// <summary>
@@ -66,7 +87,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// </summary>
     /// <exception cref="InvalidOperationException">"It's not the dealer's turn."</exception>
     /// <exception cref="InvalidOperationException">"Dealer's hand is already finished."</exception>
-    public async Task DealerPlayHand(Guid sessionId, Func<Task> updateCallBack)
+    public async Task DealerPlayHand(Guid sessionId, TimeSpan delayBetweenCards)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         if (session.CurrentTurnInfo.PlayersTurn) throw new InvalidOperationException("It's not the dealer's turn.");
@@ -74,12 +95,13 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
         if (session.Table.Dealer.Hand.Finished) throw new InvalidOperationException("Dealer's hand is already finished.");
         
         session.Table.Dealer.ShowAllCards = true;
-        await updateCallBack();
+        await handUpdatedDelegate(sessionId);
+        await Task.Delay(delayBetweenCards);
         
         while (ruleBook.DealerShouldHit(dealerHand))
         {
-            dealerHand.Cards.Add(TakeCardFromShoe(sessionId));
-            await updateCallBack();
+            await AddCardToHand(session.Id, -1, -1); //add card to dealer hand
+            await Task.Delay(delayBetweenCards);
         }
         
         dealerHand.Finished = true;
@@ -89,7 +111,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// Deals cards to the players and the dealer at the start of a round.
     /// </summary>
     /// <exception cref="InvalidOperationException">Shoe needs shuffling.</exception>
-    public async Task DealStartingCards(Guid sessionId, Func<Task> updateCallBack, bool checkShuffle = false)
+    public async Task DealStartingCards(Guid sessionId, TimeSpan delayBetweenCards, bool checkShuffle = false)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         session.DestructionTimer.Reset();
@@ -102,13 +124,13 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
 
         for (var i = 0; i < 2; i++)
         {
-            foreach (var box in session.Table.BettingBoxes.Where(b => b.Hands[0].Bet > 0))
+            foreach (var boxIdx in session.Table.BettingBoxes.Where(b => b.Hands[0].Bet > 0).Select(b => b.IdxOnTable))
             {
-                box.Hands[0].Cards.Add(TakeCardFromShoe(sessionId));
+                await AddCardToHand(session.Id, boxIdx, 0);
             }
-            session.Table.Dealer.Hand.Cards.Add(TakeCardFromShoe(sessionId));
+            await AddCardToHand(session.Id, -1, -1); //add card to dealer hand
             
-            await updateCallBack();
+            await Task.Delay(delayBetweenCards);
         }
     }
 
@@ -137,7 +159,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// <exception cref="InvalidOperationException">"Box is not owned by player."</exception>
     /// <exception cref="InvalidOperationException">"Action not possible." if the rulebook states that this action is not possible.</exception>
     /// <exception cref="ArgumentOutOfRangeException">If move is not handled.</exception>
-    public void MakeMove(Guid sessionId, int boxIdx, MacAddress playerId, Move move, int handIdx = 0)
+    public async Task MakeMove(Guid sessionId, int boxIdx, MacAddress playerId, Move move, int handIdx = 0)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         if (!session.CurrentTurnInfo.PlayersTurn || session.CurrentTurnInfo.BoxIdx != boxIdx || session.CurrentTurnInfo.HandIdx != handIdx)
@@ -157,17 +179,17 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
                 hand.Finished = true;
                 break;
             case Move.Hit:
-                hand.Cards.Add(TakeCardFromShoe(sessionId));
+                await AddCardToHand(sessionId, boxIdx, handIdx);
                 break;
             case Move.Double:
-                hand.Cards.Add(TakeCardFromShoe(sessionId));
+                await AddCardToHand(sessionId, boxIdx, handIdx);
                 hand.Finished = true;
                 break;
             case Move.Split:
                 box.Hands.Add(new Hand(){Cards = [hand.Cards[1]], FromSplit = true});
                 hand.FromSplit = true;
                 hand.Cards.RemoveAt(1);
-                hand.Cards.Add(TakeCardFromShoe(sessionId));
+                await AddCardToHand(sessionId, boxIdx, handIdx);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(move), move, null);
@@ -182,10 +204,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     private IEnumerable<BettingBox> BoxesInPlay(Guid sessionId) =>
         sessions.Single(s => s.Id == sessionId).Table.BettingBoxes.Where(box => box.Hands[0].Bet > 0);
     
-    
-    // TODO: Check this logic, it seems to be a bit off
-    // TODO: This probably won't stop for the second hand of a split
-    public void TransferTurn(Guid sessionId)
+    public async Task TransferTurn(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
 
@@ -204,7 +223,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
                 movesOnThisHand = [];
             }
             
-            if (movesOnThisHand.Any()) return;
+            if (movesOnThisHand.Length != 0) return;
             
             #region dealers turn handling
             //if it's the dealer's turn, transfer to the first player's turn
@@ -231,7 +250,8 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
             if (box.Hands.Count > session.CurrentTurnInfo.HandIdx+1)
             {
                 session.CurrentTurnInfo = session.CurrentTurnInfo with { HandIdx = session.CurrentTurnInfo.HandIdx + 1 };
-                session.Table.BettingBoxes[session.CurrentTurnInfo.BoxIdx].Hands[session.CurrentTurnInfo.HandIdx].Cards.Add(TakeCardFromShoe(sessionId));
+                await AddCardToHand(sessionId, session.CurrentTurnInfo.BoxIdx, session.CurrentTurnInfo.HandIdx);
+                
                 return;
             }
             #endregion

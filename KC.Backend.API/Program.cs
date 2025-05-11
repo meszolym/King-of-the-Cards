@@ -44,7 +44,7 @@ namespace KC.Backend.API
             builder.Services.AddSingleton<IList<Session>>(sessions);
             builder.Services.AddSingleton<IDictionary<MacAddress, Guid>>(macToPlayerId);
             
-            builder.Services.RegisterLogicLayerServices().RegisterApiLayerServices().RegisterEventDelegates();
+            builder.Services.RegisterLogicLayerServices().RegisterApiLayerServices().RegisterDelegates();
             
             var app = builder.Build();
             
