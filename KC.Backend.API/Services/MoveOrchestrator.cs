@@ -12,7 +12,6 @@ namespace KC.Backend.API.Services;
 public class MoveOrchestrator(IPlayerLogic playerLogic, IGamePlayLogic gamePlayLogic, ISessionLogic sessionLogic, IClientCommunicator hub, GetPlayerNameDelegate getPlayerName) : IMoveOrchestrator
 {
     //TODO: Remove bet if bust
-    //TODO: Somehow start dealer turn when it should come
     //TODO: Timer for move, if not made, skip turn (auto-stand)
     //TODO: Move to logic layer into a service
     public async Task MakeMove(MacAddress macAddress, MakeMoveDto dto)

@@ -231,7 +231,8 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
             if (box.Hands.Count > session.CurrentTurnInfo.HandIdx+1)
             {
                 session.CurrentTurnInfo = session.CurrentTurnInfo with { HandIdx = session.CurrentTurnInfo.HandIdx + 1 };
-                continue;
+                session.Table.BettingBoxes[session.CurrentTurnInfo.BoxIdx].Hands[session.CurrentTurnInfo.HandIdx].Cards.Add(TakeCardFromShoe(sessionId));
+                return;
             }
             #endregion
 
