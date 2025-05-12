@@ -12,8 +12,6 @@ using KC.Shared.Models.GameManagement;
 using KC.Shared.Models.Misc;
 
 namespace KC.Backend.Logic.Logics;
-
-//TODO: Make the logic more atomic, chaining them together will be handled by the API layer.
 public delegate Task HandUpdatedDelegate(Guid sessionId);
 
 public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid> macToPlayerGuid, IRuleBook ruleBook, HandUpdatedDelegate handUpdatedDelegate) : IGamePlayLogic
@@ -40,6 +38,13 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
         shoe.ResetShuffleCardPlacement();
     }
 
+    /// <summary>
+    /// Gets if move is possible on a given hand on a given box.
+    /// </summary>
+    /// <returns></returns>
+    public bool CanMakeMove(Guid sessionId, int boxIdx, int handIdx, Move move) =>
+        GetPossibleActionsOnHand(sessionId, boxIdx, handIdx).Contains(move);
+    
     /// <summary>
     /// Shuffles the shoe of the table in the session if the shuffle card was reached.
     /// </summary>

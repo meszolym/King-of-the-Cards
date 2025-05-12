@@ -15,6 +15,12 @@ public interface IGamePlayLogic
     void Shuffle(Guid sessionId, Random? random = null);
 
     /// <summary>
+    /// Gets if move is possible on a given hand on a given box.
+    /// </summary>
+    /// <returns></returns>
+    bool CanMakeMove(Guid sessionId, int boxIdx, int handIdx, Move move);
+
+    /// <summary>
     /// Shuffles the shoe of the table in the session if the shuffle card was reached.
     /// </summary>
     bool ShuffleIfNeeded(Guid sessionId, Random? random = null);
@@ -47,7 +53,6 @@ public interface IGamePlayLogic
     /// Checks for dealer blackjack.
     /// </summary>
     /// <returns>True if the dealer has blackjack</returns>
-    // TODO: Use this!!! This is not used anywhere!!!
     bool DealerCheck(Guid sessionId);
 
     IEnumerable<Move> GetPossibleActionsOnHand(Hand hand);

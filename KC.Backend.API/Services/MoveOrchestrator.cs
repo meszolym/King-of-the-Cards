@@ -21,7 +21,7 @@ public class MoveOrchestrator(IPlayerLogic playerLogic, IGamePlayLogic gamePlayL
         var box = session.Table.BettingBoxes[dto.boxIdx];
         var hand = box.Hands[dto.handIdx];
         
-        if (!gamePlayLogic.GetPossibleActionsOnHand(hand).Contains(dto.move)) throw new InvalidOperationException("Invalid move."); //TODO: Make CanMakeMove in GamePlayLogic
+        if (!gamePlayLogic.CanMakeMove(dto.sessionId, dto.boxIdx, dto.handIdx, dto.move)) throw new InvalidOperationException("Invalid move."); 
         
         if (dto.move is Move.Double or Move.Split) //TODO: Make CanCoverBet in PlayerLogic
         {
@@ -29,7 +29,7 @@ public class MoveOrchestrator(IPlayerLogic playerLogic, IGamePlayLogic gamePlayL
             playerLogic.AddToBalance(macAddress,-hand.Bet);
             await hub.SendMessageAsync(player.ConnectionId, SignalRMethods.PlayerBalanceUpdated, player.ToDto());
         }
-        gamePlayLogic.MakeMove(dto.sessionId, dto.boxIdx, macAddress, dto.move, dto.handIdx);
+        await gamePlayLogic.MakeMove(dto.sessionId, dto.boxIdx, macAddress, dto.move, dto.handIdx);
         await hub.SendMessageToGroupAsync(dto.sessionId, SignalRMethods.HandsUpdated, session.ToDto(getPlayerName));
 
         if (dto.move is Move.Double or Move.Split) //TODO: Make some function in the sessionlogic/gameplaylogic?
