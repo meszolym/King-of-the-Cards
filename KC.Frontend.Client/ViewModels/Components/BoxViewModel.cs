@@ -73,7 +73,7 @@ public partial class BoxViewModel : ReactiveObject
     // 2. The game is in progress (this is effectively conveyed by CanClaimDisclaimBox)
     // 3. The box's hand is not split (if split, the betting text is shown on the hand level not the box level)
     public IObservable<bool> IsBettingTextVisible => IsLocalPlayerOwned.CombineLatest(BettingPhaseObs,
-        this.WhenAnyValue(vm => vm.IsSplit), (playerOwned,bettingPhase,isSplit) => !playerOwned || isSplit || !bettingPhase);
+        this.WhenAnyValue(vm => vm.IsSplit), (playerOwned,bettingPhase,isSplit) => (!playerOwned || !bettingPhase) && !isSplit);
     
     private static readonly Subject<Unit> BoxClaimStatusChangedSub = new Subject<Unit>();
     public static IObservable<Unit> BoxClaimStatusChanged => BoxClaimStatusChangedSub.AsObservable();
