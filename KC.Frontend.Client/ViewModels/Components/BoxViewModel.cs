@@ -149,10 +149,13 @@ public partial class BoxViewModel : ReactiveObject
         //TODO: Mind this when working, might have to change this later / move it to hand?
         ExternalCommunicatorService.SignalREvents.BetUpdated.ObserveOn(RxApp.MainThreadScheduler).Subscribe(dto =>
         {
-            if (dto.BoxIdx != _boxIdx || dto.Hands.Count() > 1) return;
+            if (dto.BoxIdx != _boxIdx) return;
             
             RightHand.BetAmount = (decimal)dto.Hands.First().Bet;
             
+            //TODO: Check this out, might be wrong here
+            if (dto.Hands.Count() > 1)
+                LeftHand.BetAmount = (decimal)dto.Hands.Last().Bet;
         });
         
         ExternalCommunicatorService.SignalREvents.BettingTimerElapsed.ObserveOn(RxApp.MainThreadScheduler)
