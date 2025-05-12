@@ -50,7 +50,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     private const uint DefaultDecks = 8;
     private const int DefaultShuffleCardPlacement = -40;
     private const uint DefaultShuffleCardRange = 10;
-    private const uint DefaultBettingTimeSpanSecs = 15;
+    private const uint DefaultBettingTimeSpanSecs = 10;
     private const uint DefaultSessionDestructionTimeSpanSecs = 5*60; // 5 minutes
 
     [HttpPost]

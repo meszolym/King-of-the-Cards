@@ -256,7 +256,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
             {
                 session.CurrentTurnInfo = session.CurrentTurnInfo with { HandIdx = session.CurrentTurnInfo.HandIdx + 1 };
                 await AddCardToHand(sessionId, session.CurrentTurnInfo.BoxIdx, session.CurrentTurnInfo.HandIdx);
-                
+                hand = session.Table.BettingBoxes[session.CurrentTurnInfo.BoxIdx].Hands[session.CurrentTurnInfo.HandIdx];
                 return;
             }
             #endregion

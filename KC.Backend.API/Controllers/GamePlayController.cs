@@ -21,8 +21,9 @@ public class GamePlayController(IGamePlayLogic gamePlayLogic, ISessionLogic sess
     public void MakeMove([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress, [FromBody] MakeMoveDto dto)
     {
         moveOrchestrator.MakeMove(MacAddress.Parse(macAddress), dto);
-        var nextPossibleMoves = gamePlayLogic.GetPossibleActionsOnHand(dto.sessionId, dto.boxIdx, dto.handIdx).ToArray();
-        if (!nextPossibleMoves.Any() || nextPossibleMoves.All(m => m == Move.Stand))
+        var session = sessionLogic.Get(dto.sessionId);
+        var nextPossibleMoves = gamePlayLogic.GetPossibleActionsOnHand(dto.sessionId, session.CurrentTurnInfo.BoxIdx, session.CurrentTurnInfo.HandIdx).ToArray();
+        if (nextPossibleMoves.Length == 0 || nextPossibleMoves.All(m => m == Move.Stand))
         {
             gamePlayLogic.TransferTurn(dto.sessionId);
             //Hub is called automatically, subscribed to when TurnInfo changes in session (see SessionCreationOrchestrator) 

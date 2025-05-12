@@ -78,7 +78,7 @@ public static class ServiceRegistration
         
                 var session = sessionLogic.Get(sessId);
                 await gamePlayLogic.DealStartingCards(sessId, TimeSpan.FromSeconds(DelaySecsBetweenCards));
-                gamePlayLogic.TransferTurn(sessId);
+                await gamePlayLogic.TransferTurn(sessId);
                 await hub.SendMessageToGroupAsync(sessId, SignalRMethods.TurnChanged, session.CurrentTurnInfo);
             };
         });
