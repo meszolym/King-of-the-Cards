@@ -28,6 +28,7 @@ namespace KC.Frontend.Client.ViewModels.Components
         private readonly ExternalCommunicatorService _externalCommunicatorService = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
         private TurnInfo _currentTurnInfo;
         private async Task Update(bool isMyTurn, TurnInfo turnInfo)
+        //private void Update(bool isMyTurn, TurnInfo turnInfo)
         {
             _currentTurnInfo = turnInfo;
             
@@ -43,8 +44,8 @@ namespace KC.Frontend.Client.ViewModels.Components
             Move[] moves;
             try
             {
-                moves = (await _externalCommunicatorService.GetPossibleMovesOnHand(_sessionId, turnInfo.BoxIdx,
-                    turnInfo.HandIdx)).ToArray();
+                moves = (await _externalCommunicatorService.GetPossibleMovesOnHand(_sessionId, turnInfo.BoxIdx, turnInfo.HandIdx)).ToArray();
+                //moves = _externalCommunicatorService.GetPossibleMovesOnHand(_sessionId, turnInfo.BoxIdx, turnInfo.HandIdx).Result.ToArray();
             }
             catch (Exception e)
             {
