@@ -143,11 +143,10 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// Checks for dealer blackjack.
     /// </summary>
     /// <returns>True if the dealer has blackjack</returns>
-    // TODO: Use this!!! This is not used anywhere!!!
     public bool DealerCheck(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
-        if (!ruleBook.GetValue(session.Table.Dealer.Hand).IsBlackJack) return false;
+        if (!ruleBook.DealerCheckBlackJack(session.Table.Dealer.Hand)) return false;
         session.Table.Dealer.ShowAllCards = true;
         session.Table.Dealer.Hand.Finished = true;
         return true;
@@ -296,7 +295,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// Ends the turn, pays out bets TO THE BOXES.
     /// Make sure to handle player balance changes.
     /// </summary>
-    public void PayOutBets(Guid sessionId)
+    public async Task PayOutBets(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         var dealerHand = session.Table.Dealer.Hand;
@@ -343,10 +342,11 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
 
                 //if same value, bet stays the same
             }
+            //TODO: Inform client via a delegate
         }
     }
     
-    public void ClearHands(Guid sessionId)
+    public async Task ClearHands(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         foreach (var box in session.Table.BettingBoxes)
@@ -354,5 +354,6 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
             box.Hands.Clear();
             box.Hands.Add(new ());
         }
+        await handUpdatedDelegate(sessionId);
     }
 }

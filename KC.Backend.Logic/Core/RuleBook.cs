@@ -73,6 +73,7 @@ public class RuleBook : IRuleBook
     public bool CanDouble(Hand hand) => hand.Cards.Count == 2;
     
     public bool DealerShouldHit(Hand hand) => GetValue(hand).NumberValue < 17;
+    public bool DealerCheckBlackJack(Hand hand) => hand.Cards.First().Face == Card.CardFace.Ace && GetValue(hand).IsBlackJack;
 
     public int BlackjackPayoutMultiplier { get; } = 3/2;
     

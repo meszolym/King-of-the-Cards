@@ -74,7 +74,7 @@ public interface IGamePlayLogic
     /// Ends the turn, pays out bets TO THE BOXES.
     /// Make sure to handle player balance changes.
     /// </summary>
-    void PayOutBets(Guid sessionId);
+    Task PayOutBets(Guid sessionId);
 
-    void ClearHands(Guid sessionId);
+    Task ClearHands(Guid sessionId);
 }
