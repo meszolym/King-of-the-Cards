@@ -30,25 +30,18 @@ public class MoveOrchestrator(IPlayerLogic playerLogic, IGamePlayLogic gamePlayL
             await hub.SendMessageAsync(player.ConnectionId, SignalRMethods.PlayerBalanceUpdated, player.ToDto());
         }
         await gamePlayLogic.MakeMove(dto.sessionId, dto.boxIdx, macAddress, dto.move, dto.handIdx);
-        if (dto.move is Move.Stand) return;
-        await hub.SendMessageToGroupAsync(dto.sessionId, SignalRMethods.HandsUpdated, session.ToDto(getPlayerName));
-
-        if (dto.move is Move.Double or Move.Split) //TODO: Make some function in the sessionlogic/gameplaylogic?
+        switch (dto.move)
         {
-            switch (dto.move)
-            {
-                case Move.Double:
-                    hand.Bet *= 2;
-                    break;
-                case Move.Split:
-                {
-                    var otherHand = box.Hands.Last();
-                    otherHand.Bet = hand.Bet;
-                    break;
-                }
-            }
-            
-            await hub.SendMessageToGroupAsync(dto.sessionId, SignalRMethods.BetUpdated, box.ToDto(getPlayerName));
+            case Move.Stand or Move.Hit:
+                return;
+            case Move.Double:
+                hand.Bet *= 2;
+                break;
+            case Move.Split:
+                var otherHand = box.Hands.Last();
+                otherHand.Bet = hand.Bet;
+                break;
         }
+        await hub.SendMessageToGroupAsync(dto.sessionId, SignalRMethods.BetUpdated, box.ToDto(getPlayerName));
     }
 }
