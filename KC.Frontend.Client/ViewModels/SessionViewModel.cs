@@ -17,7 +17,7 @@ using Splat;
 
 namespace KC.Frontend.Client.ViewModels
 {
-    partial class SessionViewModel : ReactiveObject, IRoutableViewModel
+    public partial class SessionViewModel : ReactiveObject, IRoutableViewModel
     {
         
         [Reactive]
@@ -56,10 +56,8 @@ namespace KC.Frontend.Client.ViewModels
             BettingPhase = session.CanPlaceBets;
             Boxes = new ObservableCollection<BoxViewModel>(session.Table.BettingBoxes.OrderByDescending(b => b.BoxIdx).Select(b => new BoxViewModel(Id, b, session.CurrentTurnInfo, session.CanPlaceBets)));
             Dealer = new DealerViewModel(session.Table.DealerVisibleCards);
-
-            var isMyTurn = Boxes.Select(b => b.InTurn.CombineLatest(b.IsLocalPlayerOwned, (turn,playerOwned) => turn && playerOwned)).CombineLatest(bs => bs.Any(b => b));
             
-            Controls = new SessionBoxControlsViewModel(Id,isMyTurn);
+            Controls = new SessionBoxControlsViewModel(this);
             
             ExternalCommunicatorService.SignalREvents.BettingTimerTicked.ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(dto => BettingTimeLeft = $"Time left: {dto.remainingSeconds} seconds");

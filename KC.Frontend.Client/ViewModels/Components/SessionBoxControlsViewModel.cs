@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -15,24 +16,31 @@ namespace KC.Frontend.Client.ViewModels.Components
 {
     public partial class SessionBoxControlsViewModel : ReactiveObject
     {
-        public SessionBoxControlsViewModel(Guid sessionId, IObservable<bool> isMyTurnObs)
+        /// <summary>
+        /// Partial class for the SessionBoxControlsViewModel which contains ReactiveUI ReactiveCommand initialization.
+        /// </summary>
+        public SessionBoxControlsViewModel(SessionViewModel parent)
         {
-            _sessionId = sessionId;
-            isMyTurnObs.ObserveOn(RxApp.MainThreadScheduler).CombineLatest(ExternalCommunicatorService.SignalREvents.TurnChanged.ObserveOn(RxApp.MainThreadScheduler), ExternalCommunicatorService.SignalREvents.HandsUpdated.ObserveOn(RxApp.MainThreadScheduler))
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe( async void (tup) => await Update(tup.First, tup.Second));
-            //TODO: Check async void and exception handling
+            _parent = parent;
+            ExternalCommunicatorService.SignalREvents.HandsUpdated.ObserveOn(RxApp.MainThreadScheduler).Subscribe(_ => Debug.WriteLine("Hands updated"));
+            ExternalCommunicatorService.SignalREvents.TurnChanged.ObserveOn(RxApp.MainThreadScheduler).Subscribe(_ => Debug.WriteLine("Turn changed"));
+            
+            Observable.CombineLatest(
+                ExternalCommunicatorService.SignalREvents.HandsUpdated.ObserveOn(RxApp.MainThreadScheduler),
+                ExternalCommunicatorService.SignalREvents.TurnChanged.ObserveOn(RxApp.MainThreadScheduler),
+                (_, turnInfo) => turnInfo
+            ).Subscribe(turnInfo => Update(turnInfo).ConfigureAwait(false));
         }
-
-        private readonly Guid _sessionId;
+        
         private readonly ExternalCommunicatorService _externalCommunicatorService = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
+        private readonly PlayerViewModel _playerViewModel = Locator.Current.GetRequiredService<PlayerViewModel>();
         private TurnInfo _currentTurnInfo;
-        private async Task Update(bool isMyTurn, TurnInfo turnInfo)
-        //private void Update(bool isMyTurn, TurnInfo turnInfo)
+        private readonly SessionViewModel _parent;
+        private async Task Update(TurnInfo turnInfo)
         {
             _currentTurnInfo = turnInfo;
             
-            if (!isMyTurn)
+            if (!_parent.Boxes.Any(b => b.BoxTurnState != BoxViewModel.TurnState.None && b.OwnerId == _playerViewModel.Id))
             {
                 _canHitOnHandSubject.OnNext(false);
                 _canStandOnHandSubject.OnNext(false);
@@ -44,8 +52,7 @@ namespace KC.Frontend.Client.ViewModels.Components
             Move[] moves;
             try
             {
-                moves = (await _externalCommunicatorService.GetPossibleMovesOnHand(_sessionId, turnInfo.BoxIdx, turnInfo.HandIdx)).ToArray();
-                //moves = _externalCommunicatorService.GetPossibleMovesOnHand(_sessionId, turnInfo.BoxIdx, turnInfo.HandIdx).Result.ToArray();
+                moves = (await _externalCommunicatorService.GetPossibleMovesOnHand(_parent.Id, turnInfo.BoxIdx, turnInfo.HandIdx)).ToArray();
             }
             catch (Exception e)
             {
@@ -63,21 +70,21 @@ namespace KC.Frontend.Client.ViewModels.Components
         private IObservable<bool> CanHitOnHand => _canHitOnHandSubject.AsObservable();
 
         [ReactiveCommand(CanExecute = nameof(CanHitOnHand))]
-            async Task HitOnHand() => await _externalCommunicatorService.MakeMoveOnHand(_sessionId, _currentTurnInfo.BoxIdx, Move.Hit, _currentTurnInfo.HandIdx);
+            async Task HitOnHand() => await _externalCommunicatorService.MakeMoveOnHand(_parent.Id, _currentTurnInfo.BoxIdx, Move.Hit, _currentTurnInfo.HandIdx);
         
         private readonly Subject<bool> _canStandOnHandSubject = new();
         private IObservable<bool> CanStandOnHand => _canStandOnHandSubject.AsObservable();
         [ReactiveCommand(CanExecute = nameof(CanStandOnHand))]
-            async Task StandOnHand() => await _externalCommunicatorService.MakeMoveOnHand(_sessionId, _currentTurnInfo.BoxIdx, Move.Stand, _currentTurnInfo.HandIdx);
+            async Task StandOnHand() => await _externalCommunicatorService.MakeMoveOnHand(_parent.Id, _currentTurnInfo.BoxIdx, Move.Stand, _currentTurnInfo.HandIdx);
 
         private readonly Subject<bool> _canDoubleDownOnHandSubject = new();
         private IObservable<bool> CanDoubleDownOnHand => _canDoubleDownOnHandSubject.AsObservable();
         [ReactiveCommand(CanExecute = nameof(CanDoubleDownOnHand))]
-            async Task DoubleDownOnHand() => await _externalCommunicatorService.MakeMoveOnHand(_sessionId, _currentTurnInfo.BoxIdx, Move.Double, _currentTurnInfo.HandIdx);
+            async Task DoubleDownOnHand() => await _externalCommunicatorService.MakeMoveOnHand(_parent.Id, _currentTurnInfo.BoxIdx, Move.Double, _currentTurnInfo.HandIdx);
 
         private readonly Subject<bool> _canSplitOnHandSubject = new();
         private IObservable<bool> CanSplitOnHand => _canSplitOnHandSubject.AsObservable();
         [ReactiveCommand(CanExecute = nameof(CanSplitOnHand))]
-            async Task SplitOnHand() => await _externalCommunicatorService.MakeMoveOnHand(_sessionId, _currentTurnInfo.BoxIdx, Move.Split, _currentTurnInfo.HandIdx);
+            async Task SplitOnHand() => await _externalCommunicatorService.MakeMoveOnHand(_parent.Id, _currentTurnInfo.BoxIdx, Move.Split, _currentTurnInfo.HandIdx);
     }
 }
