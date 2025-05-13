@@ -88,7 +88,7 @@ public static class ServiceRegistration
                 if (dealerBj)
                 {
                     gamePlayLogic.FinishAllHandsInPlay(sessId);
-                    await gamePlayLogic.PayOutBets(sessId);
+                    await gamePlayLogic.PayOutBets(sessId); //Informs players of their bets
                     await gamePlayLogic.ClearHands(sessId);
                     
                     //TODO: Handle the rest of this case, like resetting the session timer and stuff

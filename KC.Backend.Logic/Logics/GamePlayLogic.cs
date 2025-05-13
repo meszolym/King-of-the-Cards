@@ -288,6 +288,8 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
                 h.Finished = true;
             }
         }
+        session.CurrentTurnInfo = new TurnInfo(); //false, 0, 0 by default, informs players
+        
     }
     
     /// <summary>
