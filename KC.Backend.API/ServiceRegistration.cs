@@ -55,7 +55,8 @@ public static class ServiceRegistration
                 //TODO: Check winners, pay out bets, clear hands
                 gamePlayLogic.FinishAllHandsInPlay(sessId);
                 await gamePlayLogic.PayOutBets(sessId);
-                await gamePlayLogic.ClearHands(sessId);
+                //This ClearHands deletes hands, so that means the bets are cleared too TODO: get the bets from the boxes to the player balance
+                await gamePlayLogic.ClearHands(sessId); 
 
             };
         });
@@ -89,6 +90,7 @@ public static class ServiceRegistration
                 {
                     gamePlayLogic.FinishAllHandsInPlay(sessId);
                     await gamePlayLogic.PayOutBets(sessId); //Informs players of their bets
+                    //This ClearHands deletes hands, so that means the bets are cleared too TODO: get the bets from the boxes to the player balance
                     await gamePlayLogic.ClearHands(sessId);
                     
                     //TODO: Handle the rest of this case, like resetting the session timer and stuff
