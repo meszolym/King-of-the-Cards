@@ -34,13 +34,15 @@ public static class ServiceRegistration
     
     public static IServiceCollection RegisterDelegates(this IServiceCollection services)
     {
+        
+
+        
         //OnTurnInfoChanged
         services.AddSingleton<OnTurnInfoChangedDelegate>(s =>
         {
             var sessionLogic = s.GetRequiredService<ISessionLogic>();
             var hub = s.GetRequiredService<IClientCommunicator>();
             var gamePlayLogic = s.GetRequiredService<IGamePlayLogic>();
-            var getPlayerName = s.GetRequiredService<GetPlayerNameDelegate>();
 
             return async sessId =>
             {
@@ -51,6 +53,9 @@ public static class ServiceRegistration
                 await gamePlayLogic.DealerPlayHand(sessId, TimeSpan.FromSeconds(DelaySecsBetweenCards));
 
                 //TODO: Check winners, pay out bets, clear hands
+                gamePlayLogic.FinishAllHandsInPlay(sessId);
+                await gamePlayLogic.PayOutBets(sessId);
+                await gamePlayLogic.ClearHands(sessId);
 
             };
         });
@@ -121,7 +126,7 @@ public static class ServiceRegistration
             };
         });
         
-        //HandUpdated -> Defined in GamePlayLogic
+        //HandUpdated -> Defined in Logic.ServiceRegistration
         services.AddSingleton<HandUpdatedDelegate>(s =>
         {
             var hub = s.GetRequiredService<IClientCommunicator>();
@@ -134,6 +139,20 @@ public static class ServiceRegistration
                 await hub.SendMessageToGroupAsync(sessionId, SignalRMethods.HandsUpdated, session.ToDto(getPlayerName));
             };
             
+        });
+        
+        //BetUpdated -> Defined in Logic.ServiceRegistration
+        services.AddSingleton<BetUpdatedDelegate>(s =>
+        {
+            var hub = s.GetRequiredService<IClientCommunicator>();
+            var sessionLogic = s.GetRequiredService<ISessionLogic>();
+            var getPlayerName = s.GetRequiredService<GetPlayerNameDelegate>();
+            
+            return async (sessionId, boxIdx) =>
+            {
+                var session = sessionLogic.Get(sessionId);
+                await hub.SendMessageToGroupAsync(sessionId, SignalRMethods.BetUpdated, session.Table.BettingBoxes[boxIdx].ToDto(getPlayerName));
+            };
         });
         
         return services;

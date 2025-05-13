@@ -12,9 +12,8 @@ using KC.Shared.Models.GameManagement;
 using KC.Shared.Models.Misc;
 
 namespace KC.Backend.Logic.Logics;
-public delegate Task HandUpdatedDelegate(Guid sessionId);
 
-public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid> macToPlayerGuid, IRuleBook ruleBook, HandUpdatedDelegate handUpdatedDelegate) : IGamePlayLogic
+public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid> macToPlayerGuid, IRuleBook ruleBook, HandUpdatedDelegate handUpdatedDelegate, BetUpdatedDelegate betUpdatedDelegate) : IGamePlayLogic
 {
     /// <summary>
     /// Shuffles the shoe of the table in the session.
@@ -342,7 +341,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
 
                 //if same value, bet stays the same
             }
-            //TODO: Inform client via a delegate
+            await betUpdatedDelegate(sessionId, box.IdxOnTable);
         }
     }
     

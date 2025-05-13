@@ -12,7 +12,7 @@ namespace KC.Backend.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic playerLogic, ISessionLogic sessionLogic, IClientCommunicator hub, GetPlayerNameDelegate getPlayerName) : Controller
+public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic playerLogic, ISessionLogic sessionLogic, IClientCommunicator hub, GetPlayerNameDelegate getPlayerName, BetUpdatedDelegate betUpdated) : Controller
 {
     [HttpPost]
     [Route("claim-box")]
@@ -49,8 +49,7 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
         playerLogic.UpdateBalance(address, player.Balance - (dto.Amount - alreadyPlaced));
         
         await hub.SendMessageAsync(player.ConnectionId, SignalRMethods.PlayerBalanceUpdated, player.ToDto());
-        var dtoToSend = bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(getPlayerName);
-        await hub.SendMessageToGroupAsync(dto.SessionId, SignalRMethods.BetUpdated, dtoToSend);
+        await betUpdated(dto.SessionId, dto.BoxIdx);
         
         var running = sessionLogic.UpdateBettingTimer(dto.SessionId);
 

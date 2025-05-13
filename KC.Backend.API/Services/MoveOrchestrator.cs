@@ -9,7 +9,7 @@ using KC.Shared.Models.Misc;
 
 namespace KC.Backend.API.Services;
 
-public class MoveOrchestrator(IPlayerLogic playerLogic, IGamePlayLogic gamePlayLogic, ISessionLogic sessionLogic, IClientCommunicator hub, GetPlayerNameDelegate getPlayerName) : IMoveOrchestrator
+public class MoveOrchestrator(IPlayerLogic playerLogic, IGamePlayLogic gamePlayLogic, ISessionLogic sessionLogic, IClientCommunicator hub, BetUpdatedDelegate betUpdated) : IMoveOrchestrator
 {
     //TODO: Remove bet if bust
     //TODO: Timer for move, if not made, skip turn (auto-stand)
@@ -42,6 +42,6 @@ public class MoveOrchestrator(IPlayerLogic playerLogic, IGamePlayLogic gamePlayL
                 otherHand.Bet = hand.Bet;
                 break;
         }
-        await hub.SendMessageToGroupAsync(dto.sessionId, SignalRMethods.BetUpdated, box.ToDto(getPlayerName));
+        await betUpdated(dto.sessionId, dto.boxIdx);
     }
 }

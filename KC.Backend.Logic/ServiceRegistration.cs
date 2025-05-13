@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using KC.Backend.Logic.Core;
 using KC.Backend.Logic.Core.Interfaces;
 using KC.Backend.Logic.Logics;
@@ -10,7 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace KC.Backend.Logic;
 
 public delegate string GetPlayerNameDelegate(Guid playerId);
-
+public delegate Task HandUpdatedDelegate(Guid sessionId);
+public delegate Task BetUpdatedDelegate(Guid sessionId, int boxIdx);
 public static class ServiceRegistration
 {
     public static IServiceCollection RegisterLogicLayerServices(this IServiceCollection services)
