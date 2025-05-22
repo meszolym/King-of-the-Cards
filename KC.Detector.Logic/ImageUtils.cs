@@ -1,10 +1,12 @@
 ﻿using System.Drawing;
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms.VisualStyles;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using BorderType = Emgu.CV.CvEnum.BorderType;
 
 namespace KC.Detector.Logic;
 

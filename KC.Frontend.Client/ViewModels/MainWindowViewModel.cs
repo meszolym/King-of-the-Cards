@@ -57,8 +57,7 @@ namespace KC.Frontend.Client.ViewModels
                     await Task.Delay(3000);
                 }
             }
-
-            //TODO: Loop until registered?
+            
             while (!_isRegistered)
             {
                 await Register();
