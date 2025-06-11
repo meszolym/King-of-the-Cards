@@ -50,8 +50,7 @@ public static class ServiceRegistration
                 if (session.CurrentTurnInfo.PlayersTurn) return;
 
                 await gamePlayLogic.DealerPlayHand(sessId, TimeSpan.FromSeconds(DelaySecsBetweenCards));
-
-                //TODO: Check winners, pay out bets, clear hands
+                
                 gamePlayLogic.FinishAllHandsInPlay(sessId);
                 
                 await gamePlayLogic.PayOutBetsToBettingBoxes(sessId);
@@ -67,7 +66,7 @@ public static class ServiceRegistration
                 }
                 
                 await gamePlayLogic.ClearHands(sessId);
-
+                //TODO: Restart the betting phase of the game
             };
         });
         
@@ -86,6 +85,8 @@ public static class ServiceRegistration
             var gamePlayLogic = s.GetRequiredService<IGamePlayLogic>();
             var sessionLogic = s.GetRequiredService<ISessionLogic>();
             var getPlayerName = s.GetRequiredService<GetPlayerNameDelegate>();
+            var playerLogic = s.GetRequiredService<IPlayerLogic>();
+            var betUpdated = s.GetRequiredService<BetUpdatedDelegate>();
 
             return async sessId =>
             {
@@ -99,11 +100,21 @@ public static class ServiceRegistration
                 if (dealerBj)
                 {
                     gamePlayLogic.FinishAllHandsInPlay(sessId);
-                    await gamePlayLogic.PayOutBetsToBettingBoxes(sessId); //Informs players of their bets
-                    //This ClearHands deletes hands, so that means the bets are cleared too TODO: get the bets from the boxes to the player balance
-                    await gamePlayLogic.ClearHands(sessId);
+                    await gamePlayLogic.PayOutBetsToBettingBoxes(sessId);
                     
-                    //TODO: Handle the rest of this case, like resetting the session timer and stuff
+                    //Pay out to players from the betting boxes
+                    foreach (var b in session.Table.BettingBoxes)
+                    {
+                        if (b.OwnerId == Guid.Empty) continue;
+                        var player = playerLogic.Get(b.OwnerId);
+                        playerLogic.AddToBalance(b.OwnerId, b.Hands.Sum(h => h.Bet));
+                        await hub.SendMessageAsync(player.ConnectionId, SignalRMethods.PlayerBalanceUpdated, player.ToDto());
+                        await betUpdated(sessId, b.IdxOnTable);
+                    }
+                    
+                    await gamePlayLogic.ClearHands(sessId);
+                    //TODO: Restart the betting phase of the game
+                    
                     return;
                 }
                 await gamePlayLogic.TransferTurn(sessId);
