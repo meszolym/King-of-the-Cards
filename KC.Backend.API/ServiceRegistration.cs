@@ -34,16 +34,15 @@ public static class ServiceRegistration
     
     public static IServiceCollection RegisterDelegates(this IServiceCollection services)
     {
-        
-
-        
         //OnTurnInfoChanged
         services.AddSingleton<OnTurnInfoChangedDelegate>(s =>
         {
             var sessionLogic = s.GetRequiredService<ISessionLogic>();
             var hub = s.GetRequiredService<IClientCommunicator>();
             var gamePlayLogic = s.GetRequiredService<IGamePlayLogic>();
-
+            var playerLogic = s.GetRequiredService<IPlayerLogic>();
+            var betUpdated = s.GetRequiredService<BetUpdatedDelegate>();
+            
             return async sessId =>
             {
                 var session = sessionLogic.Get(sessId);
@@ -54,9 +53,20 @@ public static class ServiceRegistration
 
                 //TODO: Check winners, pay out bets, clear hands
                 gamePlayLogic.FinishAllHandsInPlay(sessId);
-                await gamePlayLogic.PayOutBets(sessId);
-                //This ClearHands deletes hands, so that means the bets are cleared too TODO: get the bets from the boxes to the player balance
-                await gamePlayLogic.ClearHands(sessId); 
+                
+                await gamePlayLogic.PayOutBetsToBettingBoxes(sessId);
+                
+                //Pay out to players from the betting boxes
+                foreach (var b in session.Table.BettingBoxes)
+                {
+                    if (b.OwnerId == Guid.Empty) continue;
+                    var player = playerLogic.Get(b.OwnerId);
+                    playerLogic.AddToBalance(b.OwnerId, b.Hands.Sum(h => h.Bet));
+                    await hub.SendMessageAsync(player.ConnectionId, SignalRMethods.PlayerBalanceUpdated, player.ToDto());
+                    await betUpdated(sessId, b.IdxOnTable);
+                }
+                
+                await gamePlayLogic.ClearHands(sessId);
 
             };
         });
@@ -89,7 +99,7 @@ public static class ServiceRegistration
                 if (dealerBj)
                 {
                     gamePlayLogic.FinishAllHandsInPlay(sessId);
-                    await gamePlayLogic.PayOutBets(sessId); //Informs players of their bets
+                    await gamePlayLogic.PayOutBetsToBettingBoxes(sessId); //Informs players of their bets
                     //This ClearHands deletes hands, so that means the bets are cleared too TODO: get the bets from the boxes to the player balance
                     await gamePlayLogic.ClearHands(sessId);
                     

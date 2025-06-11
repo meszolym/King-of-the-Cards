@@ -309,7 +309,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// Ends the turn, pays out bets TO THE BOXES.
     /// Make sure to handle player balance changes.
     /// </summary>
-    public async Task PayOutBets(Guid sessionId)
+    public async Task PayOutBetsToBettingBoxes(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         var dealerHand = session.Table.Dealer.Hand;
@@ -368,6 +368,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
             box.Hands.Clear();
             box.Hands.Add(new ());
         }
+        session.Table.Dealer.Hand = new ();
         await handUpdatedDelegate(sessionId);
     }
 }
