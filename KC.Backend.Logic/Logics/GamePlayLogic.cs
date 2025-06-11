@@ -98,9 +98,22 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
         var dealerHand = session.Table.Dealer.Hand;
         if (session.Table.Dealer.Hand.Finished) throw new InvalidOperationException("Dealer's hand is already finished.");
         
+        var handsInPlayNotBustNoBj = session.Table.BettingBoxes
+            .Where(b => b.Hands.Any(h => h.Bet > 0 
+                                         && !ruleBook.GetValue(h).IsBlackJack 
+                                         && ruleBook.GetValue(h).NumberValue <= 21))
+            .ToArray();
+        
         session.Table.Dealer.ShowAllCards = true;
         await handUpdatedDelegate(sessionId);
         await Task.Delay(delayBetweenCards);
+
+        if (handsInPlayNotBustNoBj.Length == 0)
+        {
+            //No need to play the hand
+            dealerHand.Finished = true;
+            return;
+        }
         
         while (ruleBook.DealerShouldHit(dealerHand))
         {
