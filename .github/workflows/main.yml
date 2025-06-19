@@ -17,18 +17,18 @@ jobs:
       run: |
         echo "[Interface]
           PrivateKey = ${{ secrets.WG_PRIVATE_KEY }}
-          Address = 172.0.0.2/32
+          Address = 172.16.0.2/32
 
           [Peer]
           PublicKey = ${{ secrets.WG_PEER_PUBLIC_KEY }}
-          AllowedIPs = 172.0.0.1/32
+          AllowedIPs = 172.16.0.1/32
           Endpoint = ${{ secrets.WG_HOST }}:51820
           PersistentKeepalive = 25" > wg0.conf
           
     - name: Establish Tunnel
       run: |
         sudo wg-quick up ./wg0.conf
-        ping -c 3 172.0.0.1  # Verify connection
+        ping -c 3 172.16.0.1  # Verify connection
         
     - name: Setup SSH
       run: |
@@ -37,7 +37,7 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
 
         {
-          echo "Host 172.0.0.1"
+          echo "Host 172.16.0.1"
           echo "  StrictHostKeyChecking=no"
           echo "  UserKnownHostsFile=/dev/null"
         } >> ~/.ssh/config
@@ -52,7 +52,7 @@ jobs:
               echo "git checkout master"
               echo "git pull"
               echo "sudo systemctl restart kc-backend.service"
-            } | ssh -o ConnectTimeout=10 ${{ secrets.SSH_USER }}@172.0.0.1 && break || sleep 5
+            } | ssh -o ConnectTimeout=10 ${{ secrets.SSH_USER }}@172.16.0.1 && break || sleep 5
             echo "SSH attempt $i failed, retrying..." >&2
           done
         }
@@ -60,4 +60,4 @@ jobs:
         
     - name: Cleanup
       if: always()
-      run: rm -rf ~/.ssh
+      run: rm -rf ~/.ssh && rm ./wg0.conf
