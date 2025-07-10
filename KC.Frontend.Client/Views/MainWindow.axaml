@@ -12,7 +12,7 @@
 		xmlns:app="clr-namespace:KC.Frontend.Client"
         Title="KC.Frontend.Client"
 		Position="0,0"
-		MinHeight="972" MinWidth="1728">
+		MinHeight="486" MinWidth="864">
 		<!-- MaxHeight="1080" MaxWidth="1920"> -->
 
     <Design.DataContext>
