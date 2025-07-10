@@ -20,6 +20,9 @@ namespace KC.Frontend.Client.ViewModels.Components
         [Reactive] 
         private string _occupancy = "";
 
+        [Reactive]
+        private string _tooltipText = "";
+
         public SessionListItemViewModel()
         {
             this.WhenAnyValue(vm => vm.CurrentOccupancy).ObserveOn(RxApp.MainThreadScheduler).Subscribe(_ =>

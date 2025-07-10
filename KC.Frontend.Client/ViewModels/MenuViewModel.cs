@@ -47,7 +47,15 @@ namespace KC.Frontend.Client.ViewModels
                     HostScreen.Router.NavigateBack.Execute();
             });
             ExternalCommunicatorService.SignalREvents.SessionOccupancyChanged.ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(dto => Sessions.First(s => s.Id == dto.sessionId).CurrentOccupancy += dto.change);
+                .Subscribe(dto =>
+                {
+                    var s = Sessions.First(s => s.Id == dto.Id);
+                    s.CurrentOccupancy = dto.Table.BettingBoxes.Count(b => b.OwnerId != Guid.Empty);
+                    s.TooltipText = dto.Table.BettingBoxes.Count(b => b.OwnerId != Guid.Empty) == 0
+                        ? "Players:" + Environment.NewLine + "None"
+                        : "Players:" + Environment.NewLine + string.Join(Environment.NewLine,
+                            dto.Table.BettingBoxes.Select(b => b.OwnerName).Distinct());
+                });
             
             Sessions.CollectionChanged += (_, __) =>
                 this.RaisePropertyChanged(nameof(Sessions.Count));

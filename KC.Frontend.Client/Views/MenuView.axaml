@@ -19,7 +19,7 @@
 		<ListBox Grid.Column="0" Grid.Row="0" x:Name="SessionsListBox">
 			<ListBox.ItemTemplate>
 				<DataTemplate DataType="{x:Type components:SessionListItemViewModel}">
-					<Grid>
+					<Grid ToolTip.Tip="{Binding TooltipText}">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto"/>
 							<ColumnDefinition />
