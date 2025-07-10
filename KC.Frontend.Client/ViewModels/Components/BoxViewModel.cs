@@ -163,7 +163,11 @@ public partial class BoxViewModel : ReactiveObject
             .Subscribe(dto => BoxTurnState = GetTurnState(dto));
         
         ExternalCommunicatorService.SignalREvents.BettingReset.ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(dto => BettingPhase = dto.CanPlaceBets);
+            .Subscribe(dto =>
+            {
+                BettingPhase = dto.CanPlaceBets;
+                RightHand = new HandViewModel(dto.Table.BettingBoxes.First(b => b.BoxIdx == _boxIdx).Hands.FirstOrDefault());
+            });
     }
 
     private readonly Guid _sessionId;
