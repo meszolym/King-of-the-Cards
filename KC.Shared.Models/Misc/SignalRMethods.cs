@@ -11,6 +11,7 @@ public static class SignalRMethods
     public static SignalRMethod<(Guid sessionId, int remainingSeconds)> BettingTimerTicked { get; } = new("BettingTimerTicked");
     public static SignalRMethod<Guid> BettingTimerElapsed { get; } = new("BettingTimerElapsed");
     public static SignalRMethod<Guid> BettingTimerStopped { get; } = new("BettingTimerStopped");
+    public static SignalRMethod<SessionReadDto> BettingReset { get; } = new("BettingReset");
     public static SignalRMethod<SessionReadDto> HandsUpdated { get; } = new("HandsUpdated");
     public static SignalRMethod<BettingBoxReadDto> BetUpdated { get; } = new("BetUpdated");
     public static SignalRMethod<BettingBoxReadDto> BoxOwnerChanged { get; } = new("BoxOwnerChanged");

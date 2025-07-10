@@ -42,6 +42,7 @@ public static class ServiceRegistration
             var gamePlayLogic = s.GetRequiredService<IGamePlayLogic>();
             var playerLogic = s.GetRequiredService<IPlayerLogic>();
             var betUpdated = s.GetRequiredService<BetUpdatedDelegate>();
+            var getPlayerName = s.GetRequiredService<GetPlayerNameDelegate>();
             
             return async sessId =>
             {
@@ -67,8 +68,7 @@ public static class ServiceRegistration
                 
                 await gamePlayLogic.ClearHands(sessId);
                 sessionLogic.ZeroBettingTimer(sessId);
-                await hub.SendMessageToGroupAsync(sessId, SignalRMethods.BettingTimerStopped, sessId);
-                //TODO: Send message to clients: betting is allowed again.
+                await hub.SendMessageToGroupAsync(sessId, SignalRMethods.BettingReset, session.ToDto(getPlayerName));
             };
         });
         
@@ -116,8 +116,7 @@ public static class ServiceRegistration
                     
                     await gamePlayLogic.ClearHands(sessId);
                     sessionLogic.ZeroBettingTimer(sessId);
-                    await hub.SendMessageToGroupAsync(sessId, SignalRMethods.BettingTimerStopped, sessId);
-                    //TODO: Send message to clients: betting is allowed again.
+                    await hub.SendMessageToGroupAsync(sessId, SignalRMethods.BettingReset, session.ToDto(getPlayerName));
                     
                     return;
                 }

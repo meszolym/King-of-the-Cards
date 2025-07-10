@@ -67,7 +67,9 @@ namespace KC.Frontend.Client.ViewModels
 
             ExternalCommunicatorService.SignalREvents.BettingTimerElapsed.ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(_ => BettingPhase = false);
-
+            
+            ExternalCommunicatorService.SignalREvents.BettingReset.ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => BettingPhase = true);
         }
 
         [Reactive]
