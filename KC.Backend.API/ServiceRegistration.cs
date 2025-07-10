@@ -66,7 +66,9 @@ public static class ServiceRegistration
                 }
                 
                 await gamePlayLogic.ClearHands(sessId);
-                //TODO: Restart the betting phase of the game
+                sessionLogic.ZeroBettingTimer(sessId);
+                await hub.SendMessageToGroupAsync(sessId, SignalRMethods.BettingTimerStopped, sessId);
+                //TODO: Send message to clients: betting is allowed again.
             };
         });
         
@@ -113,7 +115,9 @@ public static class ServiceRegistration
                     }
                     
                     await gamePlayLogic.ClearHands(sessId);
-                    //TODO: Restart the betting phase of the game
+                    sessionLogic.ZeroBettingTimer(sessId);
+                    await hub.SendMessageToGroupAsync(sessId, SignalRMethods.BettingTimerStopped, sessId);
+                    //TODO: Send message to clients: betting is allowed again.
                     
                     return;
                 }

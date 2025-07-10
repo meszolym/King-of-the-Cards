@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Logics.Interfaces;
 using KC.Backend.Models.GameItems;
@@ -44,7 +45,7 @@ public class SessionLogic(IList<Session> sessions) : ISessionLogic
         sessions.Add(sess);
         return sess;
     }
-
+    
     public Session RemoveSession(Guid sessId)
     {
         var session = sessions.Single(s => s.Id == sessId);
@@ -77,4 +78,6 @@ public class SessionLogic(IList<Session> sessions) : ISessionLogic
         
         return session.BettingTimer.Enabled;
     }
+
+    public void ZeroBettingTimer(Guid sessionId) => Get(sessionId).BettingTimer.Zero();
 }

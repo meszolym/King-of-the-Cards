@@ -22,6 +22,12 @@ public class TickingTimer
         public int RemainingSeconds { get; } = remainingSeconds;
     }
 
+    public void Zero()
+    {
+        Stop();
+        ElapsedSeconds = 0;
+    }
+    
     public TickingTimer(TimeSpan timeSpan)
     {
         timer = new Timer(TimeSpan.FromSeconds(1));

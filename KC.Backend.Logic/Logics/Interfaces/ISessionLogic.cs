@@ -28,4 +28,6 @@ public interface ISessionLogic
     /// <param name="sessionId"></param>
     /// <returns>Whether the betting timer is enabled after the update.</returns>
     bool UpdateBettingTimer(Guid sessionId);
+
+    void ZeroBettingTimer(Guid sessionId);
 }
