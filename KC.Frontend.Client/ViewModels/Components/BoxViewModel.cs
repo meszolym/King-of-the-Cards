@@ -161,6 +161,9 @@ public partial class BoxViewModel : ReactiveObject
         
         ExternalCommunicatorService.SignalREvents.TurnChanged.ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe(dto => BoxTurnState = GetTurnState(dto));
+        
+        ExternalCommunicatorService.SignalREvents.BettingReset.ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(dto => BettingPhase = dto.CanPlaceBets);
     }
 
     private readonly Guid _sessionId;

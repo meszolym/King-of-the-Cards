@@ -369,6 +369,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
             box.Hands.Add(new ());
         }
         session.Table.Dealer.Hand = new ();
+        session.Table.Dealer.ShowAllCards = false;
         await handUpdatedDelegate(sessionId);
     }
 }

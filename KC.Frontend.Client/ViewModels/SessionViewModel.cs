@@ -69,7 +69,11 @@ namespace KC.Frontend.Client.ViewModels
                 .Subscribe(_ => BettingPhase = false);
             
             ExternalCommunicatorService.SignalREvents.BettingReset.ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(_ => BettingPhase = true);
+                .Subscribe(dto =>
+                {
+                    BettingPhase = dto.CanPlaceBets;
+                    BettingTimeLeft = "Waiting for first bet...";
+                });
         }
 
         [Reactive]
