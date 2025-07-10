@@ -20,7 +20,7 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
     {
         bettingBoxLogic.ClaimBettingBox(dto.SessionId, dto.BoxIdx, MacAddress.Parse(macAddress));
         hub.SendMessageToGroupAsync(dto.SessionId, SignalRMethods.BoxOwnerChanged, bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(getPlayerName));
-        hub.SendMessageToGroupAsync(hub.BaseGroup, SignalRMethods.SessionOccupancyChanged, (dto.SessionId,1));
+        hub.SendMessageToGroupAsync(hub.BaseGroup, SignalRMethods.SessionOccupancyChanged, sessionLogic.Get(dto.SessionId).ToDto(getPlayerName));
     }
 
     [HttpDelete]
@@ -29,7 +29,7 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
     {
         bettingBoxLogic.DisclaimBettingBox(dto.SessionId, dto.BoxIdx, MacAddress.Parse(macAddress));
         hub.SendMessageToGroupAsync(dto.SessionId, SignalRMethods.BoxOwnerChanged, bettingBoxLogic.Get(dto.SessionId, dto.BoxIdx).ToDto(getPlayerName));
-        hub.SendMessageToGroupAsync(hub.BaseGroup, SignalRMethods.SessionOccupancyChanged, (dto.SessionId,-1));
+        hub.SendMessageToGroupAsync(hub.BaseGroup, SignalRMethods.SessionOccupancyChanged, sessionLogic.Get(dto.SessionId).ToDto(getPlayerName));
     }
 
     [HttpPut]
