@@ -12,6 +12,9 @@ public static class ConversionExtensions
         new()
         {
             Id = s.Id, CurrentOccupancy = s.Table.BettingBoxes.Count(b => b.OwnerId != Guid.Empty),
-            MaxOccupancy = s.Table.BettingBoxes.Count()
+            MaxOccupancy = s.Table.BettingBoxes.Count(),
+            TooltipText = s.Table.BettingBoxes.Count(b => b.OwnerId != Guid.Empty) == 0 
+                ? "Players:" + Environment.NewLine + "None" 
+                : "Players:" + Environment.NewLine + string.Join(Environment.NewLine, s.Table.BettingBoxes.Select(b => b.OwnerName).Distinct())
         };
 }

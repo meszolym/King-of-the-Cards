@@ -19,7 +19,7 @@
 		<ListBox Grid.Column="0" Grid.Row="0" x:Name="SessionsListBox">
 			<ListBox.ItemTemplate>
 				<DataTemplate DataType="{x:Type components:SessionListItemViewModel}">
-					<Grid>
+					<Grid ToolTip.Tip="{Binding TooltipText}">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto"/>
 							<ColumnDefinition />
@@ -35,7 +35,7 @@
 			</ListBox.ItemTemplate>
 		</ListBox>
 		<Border x:Name="NoSessionsTextBorder" VerticalAlignment="Center" Background="LightGray">
-			<TextBlock Text="No sessions yet. Start by creating one yourself! →" HorizontalAlignment="Center" FontSize="50" Margin="0,20,0,20"/>
+			<TextBlock Text="No sessions yet. Start by creating one yourself! →" HorizontalAlignment="Center" FontSize="25" Margin="0,20,0,20"/>
 		</Border>
 		<StackPanel x:Name="NoConnStackPanel" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Background="IndianRed">
 			<TextBlock Text="Could not get sessions from the server" HorizontalAlignment="Center" FontSize="50" Margin="0,20,0,0"/>

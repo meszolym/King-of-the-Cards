@@ -29,6 +29,9 @@ namespace KC.Frontend.Client.ViewModels
         [Reactive]
         private PlayerViewModel _playerViewModel;
 
+        [Reactive]
+        private bool _resetBalanceEnabled = false;
+
         public MainWindowViewModel()
         {
             _externalCommunicator = Locator.Current.GetRequiredService<ExternalCommunicatorService>();
@@ -39,6 +42,10 @@ namespace KC.Frontend.Client.ViewModels
             Router.NavigationChanged.ObserveOn(RxApp.MainThreadScheduler).Subscribe(_ => IsFullScreen = Router.GetCurrentViewModel() is SessionViewModel);
             
             ExternalCommunicatorService.SignalREvents.PlayerBalanceUpdated.ObserveOn(RxApp.MainThreadScheduler).Subscribe(player => PlayerViewModel.PlayerBalance = player.Balance);
+            
+            this.WhenAnyValue(x => x.IsConnected, x=> x.PlayerViewModel.PlayerBalance)
+                .ObserveOn(RxApp.MainThreadScheduler).Subscribe(tup => ResetBalanceEnabled = tup is { Item1: true, Item2: 0 });
+            
         }
         
         [Reactive]
@@ -110,5 +117,8 @@ namespace KC.Frontend.Client.ViewModels
             }
         }
         public RoutingState Router { get; } = new();
+
+        [ReactiveCommand]
+        private Task ResetBalance() => _externalCommunicator.ResetPlayerBalance();
     }
 }

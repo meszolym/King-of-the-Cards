@@ -25,7 +25,7 @@ public partial class ExternalCommunicatorService
         public static IObservable<SessionReadDto> HandsUpdated => HandsUpdatedSubject.AsObservable();
         public static IObservable<BettingBoxReadDto> BetUpdated => BetUpdatedSubject.AsObservable();
         public static IObservable<BettingBoxReadDto> BoxOwnerChanged => BoxOwnerChangedSubject.AsObservable();
-        public static IObservable<(Guid sessionId, int change)> SessionOccupancyChanged => SessionOccupancyChangedSubject.AsObservable();
+        public static IObservable<SessionReadDto> SessionOccupancyChanged => SessionOccupancyChangedSubject.AsObservable();
         public static IObservable<TurnInfo> TurnChanged => TurnChangedSubject.AsObservable();
     
         private static readonly Subject<SessionReadDto> SessionCreatedSubject = new();
@@ -38,7 +38,7 @@ public partial class ExternalCommunicatorService
         private static readonly Subject<SessionReadDto> HandsUpdatedSubject = new();
         private static readonly Subject<BettingBoxReadDto> BetUpdatedSubject = new();
         private static readonly Subject<BettingBoxReadDto> BoxOwnerChangedSubject = new();
-        private static readonly Subject<(Guid sessionId, int change)> SessionOccupancyChangedSubject = new();
+        private static readonly Subject<SessionReadDto> SessionOccupancyChangedSubject = new();
         private static readonly Subject<TurnInfo> TurnChangedSubject = new();
         
         public static void Init(HubConnection conn)
