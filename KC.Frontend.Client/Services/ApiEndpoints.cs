@@ -82,7 +82,7 @@ public partial class ExternalCommunicatorService
         /// </summary>
         public static RestRequest MakeMoveOnHand => new("/gameplay/make-move", Method.Post);
         
-        public static RestRequest ResetPlayerBalance => new("/player/reset-money", Method.Delete);
+        public static RestRequest ResetPlayerBalance => new("/player/reset-money", Method.Post);
         
     }
 }
