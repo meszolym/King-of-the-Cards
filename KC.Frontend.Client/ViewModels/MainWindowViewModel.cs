@@ -110,5 +110,8 @@ namespace KC.Frontend.Client.ViewModels
             }
         }
         public RoutingState Router { get; } = new();
+
+        [ReactiveCommand]
+        private async Task ResetBalance() => _externalCommunicator.ResetPlayerBalance();
     }
 }

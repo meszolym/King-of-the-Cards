@@ -23,12 +23,13 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             this.OneWayBind(ViewModel, vm => vm.PlayerViewModel.PlayerName, v => v.PlayerNameTextBlock.Text, n => $"Name: {n}").DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.PlayerViewModel.PlayerBalance, v => v.PlayerBalanceTextBlock.Text, bt => $"Balance: ${bt}" ).DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.ClientMacAddress, v => v.PlayerMacTextBlock.Text, mac => $"(MAC: {mac})").DisposeWith(d);
+
+            this.BindCommand(ViewModel, vm => vm.ResetBalanceCommand, v => v.ResetBalanceButton);
+            this.OneWayBind(ViewModel, vm => vm.PlayerViewModel.PlayerBalance, v => v.ResetBalanceButton.IsVisible, balance => balance == 0).DisposeWith(d);
             
             this.BeforeFirstConnStackPanel.IsVisible = true;
             await ViewModel!.InitAsync();
             this.BeforeFirstConnStackPanel.IsVisible = false;
-            
-            
         });
         
     }

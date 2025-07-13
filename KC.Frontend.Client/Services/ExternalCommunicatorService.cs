@@ -145,4 +145,6 @@ public partial class ExternalCommunicatorService
     
     public async Task MakeMoveOnHand(Guid sessionId, int boxIdx, Move move, int handIdx = 0) => await _client.PostAsync(
         ApiEndpoints.MakeMoveOnHand.AddBody(new MakeMoveDto(sessionId, boxIdx, handIdx, move)));
+    
+    public async Task ResetPlayerBalance() => await _client.PostAsync(ApiEndpoints.ResetPlayerBalance);
 }
