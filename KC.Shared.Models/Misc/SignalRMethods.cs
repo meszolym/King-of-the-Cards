@@ -17,4 +17,5 @@ public static class SignalRMethods
     public static SignalRMethod<BettingBoxReadDto> BoxOwnerChanged { get; } = new("BoxOwnerChanged");
     public static SignalRMethod<SessionReadDto> SessionOccupancyChanged { get; } = new("SessionOccupancyChanged");
     public static SignalRMethod<TurnInfo> TurnChanged { get; } = new("TurnChanged");
+    public static SignalRMethod<OutcomeReadDto> OutcomeCalculated { get; } = new("OutcomeCalculated");
 }
