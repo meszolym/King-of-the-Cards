@@ -11,11 +11,9 @@ namespace KC.Backend.Logic.Logics;
 //This is done.
 public class PlayerLogic(IList<Player> players, IDictionary<MacAddress, Guid> macToPlayerGuid) : IPlayerLogic
 {
-    private static double DefaultBalance { get; set; } = 500;
-
-    public void AddPlayer(MacAddress mac, Player player)
+    public void AddPlayer(MacAddress mac, Player player, double balance = 500)
     {
-        var p = player.WithBalance(DefaultBalance);
+        var p = player.WithBalance(balance);
         players.Add(p);
         macToPlayerGuid.Add(mac, p.Id);
     }

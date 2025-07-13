@@ -28,4 +28,11 @@ public class PlayerController(IPlayerLogic playerLogic) : Controller
 
     [HttpPut("update-conn-id/{connectionId}")]
     public void UpdatePlayerConnectionId([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress, string connectionId) => playerLogic.UpdatePlayerConnectionId(MacAddress.Parse(macAddress), connectionId);
+    
+    [HttpPost("reset-money")]
+    public void ResetMoney([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress)
+    {
+        var player = playerLogic.Get(MacAddress.Parse(macAddress));
+        playerLogic.UpdateBalance(player.Id, 500);
+    }
 }
