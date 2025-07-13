@@ -352,7 +352,6 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
                         await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.BjPush);
                     }
 
-                    ;
                     continue;
                 }
 
