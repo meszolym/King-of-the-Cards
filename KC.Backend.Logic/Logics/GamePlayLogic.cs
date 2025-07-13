@@ -313,6 +313,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     {
         var session = sessions.Single(s => s.Id == sessionId);
         var dealerHand = session.Table.Dealer.Hand;
+        var winLose = Outcome.None;
 
         foreach (var box in BoxesInPlay(sessionId))
         {
@@ -321,40 +322,61 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
                 if (ruleBook.GetValue(hand).NumberValue > 21) //player bust
                 {
                     hand.Bet = 0; //lose bet
+                    winLose = Outcome.Lose;
                     continue;
                 }
 
                 if (ruleBook.GetValue(dealerHand).NumberValue > 21) //dealer bust
                 {
-                    if (ruleBook.GetValue(hand).IsBlackJack) hand.Bet += hand.Bet * ruleBook.BlackjackPayoutMultiplier; //if player has blackjack, pay out 1.5x bet
+                    if (ruleBook.GetValue(hand).IsBlackJack) 
+                    {
+                        hand.Bet += hand.Bet * ruleBook.BlackjackPayoutMultiplier; //if player has blackjack, pay out 1.5x bet
+                        winLose = Outcome.BjWin;
+                    }
                     else hand.Bet += hand.Bet * ruleBook.StandardPayoutMultiplier; //pay out bet
+                    winLose = Outcome.Win;
                     continue;
                 }
 
                 if (ruleBook.GetValue(dealerHand).IsBlackJack) //dealer has blackjack
                 {
-                    if (!ruleBook.GetValue(hand).IsBlackJack) hand.Bet = 0; //if player doesn't have blackjack, lose bet, else bet stays the same
-                    if (!ruleBook.GetValue(hand).IsBlackJack) hand.Bet += hand.Bet * ruleBook.BjVsBjPayoutMultiplier;
+                    if (!ruleBook.GetValue(hand).IsBlackJack)
+                    {
+                        hand.Bet = 0; //if player doesn't have blackjack, lose bet, else bet stays the same
+                        winLose = Outcome.Lose;
+                    }
+                    else
+                    {
+                        hand.Bet += hand.Bet * ruleBook.BjVsBjPayoutMultiplier;
+                        winLose = Outcome.BjPush;
+                    };
                     continue;
                 }
 
                 if (ruleBook.GetValue(hand).IsBlackJack) //player has blackjack
                 {
                     hand.Bet += hand.Bet * ruleBook.BlackjackPayoutMultiplier; //if player has blackjack, pay out 1.5x bet
+                    winLose = Outcome.BjWin;
+                    continue;
                 }
 
                 if (ruleBook.GetValue(hand).NumberValue > ruleBook.GetValue(dealerHand).NumberValue) //player has stronger hand
                 {
                     hand.Bet += hand.Bet * ruleBook.StandardPayoutMultiplier; //pay out bet
+                    winLose = Outcome.Win;
                     continue;
                 }
 
                 if (ruleBook.GetValue(hand).NumberValue < ruleBook.GetValue(dealerHand).NumberValue) //player has weaker hand
                 {
                     hand.Bet = 0; //lose bet
+                    winLose = Outcome.Lose;
+                    continue;
                 }
 
                 //if same value, bet stays the same
+                winLose = Outcome.Push;
+                //TODO: Send message to players about outcome of the hand
             }
             await betUpdatedDelegate(sessionId, box.IdxOnTable);
         }
