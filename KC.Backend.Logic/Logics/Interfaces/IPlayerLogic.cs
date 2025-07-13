@@ -6,7 +6,7 @@ namespace KC.Backend.Logic.Logics.Interfaces;
 
 public interface IPlayerLogic
 {
-    void AddPlayer(MacAddress mac, Player player);
+    void AddPlayer(MacAddress mac, Player player, double balance = 500);
     void RemovePlayer(MacAddress playerId);
     Player Get(MacAddress playerId);
     Player Get(Guid playerId);

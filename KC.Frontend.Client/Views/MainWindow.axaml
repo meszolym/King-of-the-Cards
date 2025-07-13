@@ -35,6 +35,7 @@
 		<StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Stretch" Margin="5">
 			<TextBlock x:Name="PlayerNameTextBlock" FontSize="16"/>
 			<TextBlock x:Name="PlayerBalanceTextBlock" FontSize="16"/>
+			<Button HorizontalAlignment="Center" Padding="2,1" x:Name="ResetBalanceButton" CornerRadius="8" FontSize="10">Reset</Button>
 		</StackPanel>
 		<TextBlock Grid.Row="1" x:Name="PlayerMacTextBlock" HorizontalAlignment="Right" Margin="5" FontSize="16"/>
 	</Grid>
