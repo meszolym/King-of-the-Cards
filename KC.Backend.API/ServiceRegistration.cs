@@ -69,6 +69,7 @@ public static class ServiceRegistration
                 gamePlayLogic.FinishAllHandsInPlay(sessId);
                 
                 await gamePlayLogic.PayOutBetsToBettingBoxes(sessId);
+                await Task.Delay(TimeSpan.FromSeconds(DelaySecsBetweenCards));
                 
                 //Pay out to players from the betting boxes
                 foreach (var b in session.Table.BettingBoxes)
@@ -117,6 +118,7 @@ public static class ServiceRegistration
                 {
                     gamePlayLogic.FinishAllHandsInPlay(sessId);
                     await gamePlayLogic.PayOutBetsToBettingBoxes(sessId);
+                    await Task.Delay(TimeSpan.FromSeconds(DelaySecsBetweenCards));
                     
                     //Pay out to players from the betting boxes
                     foreach (var b in session.Table.BettingBoxes)
