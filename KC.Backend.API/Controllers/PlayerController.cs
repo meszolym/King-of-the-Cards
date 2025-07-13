@@ -1,5 +1,6 @@
 using System.Net.NetworkInformation;
 using KC.Backend.API.Extensions;
+using KC.Backend.API.Services.Interfaces;
 using KC.Backend.Logic;
 using KC.Backend.Logic.Extensions;
 using KC.Backend.Logic.Logics.Interfaces;
@@ -12,7 +13,7 @@ namespace KC.Backend.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PlayerController(IPlayerLogic playerLogic) : Controller
+public class PlayerController(IPlayerLogic playerLogic, IClientCommunicator hub) : Controller
 {
     // [HttpGet("{address}")]
     // public PlayerReadDto GetPlayer(string address) => playerLogic.Get(MacAddress.Parse(address)).ToDto();
@@ -30,9 +31,10 @@ public class PlayerController(IPlayerLogic playerLogic) : Controller
     public void UpdatePlayerConnectionId([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress, string connectionId) => playerLogic.UpdatePlayerConnectionId(MacAddress.Parse(macAddress), connectionId);
     
     [HttpPost("reset-money")]
-    public void ResetMoney([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress)
+    public async Task ResetMoney([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress)
     {
         var player = playerLogic.Get(MacAddress.Parse(macAddress));
         playerLogic.UpdateBalance(player.Id, 500);
+        await hub.SendMessageAsync(player.ConnectionId, SignalRMethods.PlayerBalanceUpdated, player.ToDto());
     }
 }
