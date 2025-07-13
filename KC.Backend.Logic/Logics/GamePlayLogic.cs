@@ -13,7 +13,7 @@ using KC.Shared.Models.Misc;
 
 namespace KC.Backend.Logic.Logics;
 
-public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid> macToPlayerGuid, IRuleBook ruleBook, HandUpdatedDelegate handUpdatedDelegate, BetUpdatedDelegate betUpdatedDelegate) : IGamePlayLogic
+public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid> macToPlayerGuid, IRuleBook ruleBook, HandUpdatedDelegate handUpdatedDelegate, BetUpdatedDelegate betUpdatedDelegate, OutcomeCalculatedDelegate outcomeCalculatedDelegate) : IGamePlayLogic
 {
     /// <summary>
     /// Shuffles the shoe of the table in the session.
@@ -316,46 +316,73 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
 
         foreach (var box in BoxesInPlay(sessionId))
         {
-            foreach (var hand in box.Hands)
+            for (var index = 0; index < box.Hands.Count; index++)
             {
+                var hand = box.Hands[index];
                 if (ruleBook.GetValue(hand).NumberValue > 21) //player bust
                 {
                     hand.Bet = 0; //lose bet
+                    await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.Lose);
                     continue;
                 }
 
                 if (ruleBook.GetValue(dealerHand).NumberValue > 21) //dealer bust
                 {
-                    if (ruleBook.GetValue(hand).IsBlackJack) hand.Bet += hand.Bet * ruleBook.BlackjackPayoutMultiplier; //if player has blackjack, pay out 1.5x bet
+                    if (ruleBook.GetValue(hand).IsBlackJack)
+                    {
+                        hand.Bet += hand.Bet *
+                                    ruleBook.BlackjackPayoutMultiplier; //if player has blackjack, pay out 1.5x bet
+                        await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.BjWin);
+                    }
                     else hand.Bet += hand.Bet * ruleBook.StandardPayoutMultiplier; //pay out bet
+                    await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.Win);
                     continue;
                 }
 
                 if (ruleBook.GetValue(dealerHand).IsBlackJack) //dealer has blackjack
                 {
-                    if (!ruleBook.GetValue(hand).IsBlackJack) hand.Bet = 0; //if player doesn't have blackjack, lose bet, else bet stays the same
-                    if (!ruleBook.GetValue(hand).IsBlackJack) hand.Bet += hand.Bet * ruleBook.BjVsBjPayoutMultiplier;
+                    if (!ruleBook.GetValue(hand).IsBlackJack)
+                    {
+                        hand.Bet = 0; //if player doesn't have blackjack, lose bet, else bet stays the same
+                        await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.Lose);
+                    }
+                    else
+                    {
+                        hand.Bet += hand.Bet * ruleBook.BjVsBjPayoutMultiplier;
+                        await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.BjPush);
+                    }
+
                     continue;
                 }
 
                 if (ruleBook.GetValue(hand).IsBlackJack) //player has blackjack
                 {
-                    hand.Bet += hand.Bet * ruleBook.BlackjackPayoutMultiplier; //if player has blackjack, pay out 1.5x bet
-                }
-
-                if (ruleBook.GetValue(hand).NumberValue > ruleBook.GetValue(dealerHand).NumberValue) //player has stronger hand
-                {
-                    hand.Bet += hand.Bet * ruleBook.StandardPayoutMultiplier; //pay out bet
+                    hand.Bet += hand.Bet *
+                                ruleBook.BlackjackPayoutMultiplier; //if player has blackjack, pay out 1.5x bet
+                    await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.BjWin);
                     continue;
                 }
 
-                if (ruleBook.GetValue(hand).NumberValue < ruleBook.GetValue(dealerHand).NumberValue) //player has weaker hand
+                if (ruleBook.GetValue(hand).NumberValue >
+                    ruleBook.GetValue(dealerHand).NumberValue) //player has stronger hand
+                {
+                    hand.Bet += hand.Bet * ruleBook.StandardPayoutMultiplier; //pay out bet
+                    await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.Win);
+                    continue;
+                }
+
+                if (ruleBook.GetValue(hand).NumberValue <
+                    ruleBook.GetValue(dealerHand).NumberValue) //player has weaker hand
                 {
                     hand.Bet = 0; //lose bet
+                    await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.Lose);
+                    continue;
                 }
 
                 //if same value, bet stays the same
+                await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.Push);
             }
+
             await betUpdatedDelegate(sessionId, box.IdxOnTable);
         }
     }

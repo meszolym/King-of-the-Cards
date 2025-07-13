@@ -6,6 +6,8 @@ using KC.Backend.Logic;
 using KC.Backend.Logic.Logics;
 using KC.Backend.Logic.Logics.Interfaces;
 using KC.Backend.Logic.Services.Interfaces;
+using KC.Shared.Models.Dtos;
+using KC.Shared.Models.GameItems;
 using KC.Shared.Models.Misc;
 
 namespace KC.Backend.API;
@@ -14,6 +16,7 @@ public delegate Task OnTurnInfoChangedDelegate(Guid sessionId);
 public delegate Task OnBettingTimerTickedDelegate(Guid sessionId, int remainingSeconds);
 public delegate Task OnBettingTimerElapsedDelegate(Guid sessionId);
 public delegate Task OnDestructionTimerElapsedDelegate(Guid sessionId);
+
 
 public static class ServiceRegistration
 {
@@ -34,6 +37,17 @@ public static class ServiceRegistration
     
     public static IServiceCollection RegisterDelegates(this IServiceCollection services)
     {
+        
+        //OnOutcomeCalculated -> Defined in Logic.ServiceRegistration
+        services.AddSingleton<OutcomeCalculatedDelegate>(s =>
+        {
+            var hub = s.GetRequiredService<IClientCommunicator>();
+            
+            return async (sessionId, boxIdx, handIdx, outcome)
+                => await hub.SendMessageToGroupAsync(sessionId, SignalRMethods.OutcomeCalculated, 
+                    new OutcomeReadDto(sessionId, boxIdx, handIdx, outcome));
+        });
+        
         //OnTurnInfoChanged
         services.AddSingleton<OnTurnInfoChangedDelegate>(s =>
         {
@@ -55,6 +69,7 @@ public static class ServiceRegistration
                 gamePlayLogic.FinishAllHandsInPlay(sessId);
                 
                 await gamePlayLogic.PayOutBetsToBettingBoxes(sessId);
+                await Task.Delay(TimeSpan.FromSeconds(DelaySecsBetweenCards));
                 
                 //Pay out to players from the betting boxes
                 foreach (var b in session.Table.BettingBoxes)
@@ -103,6 +118,7 @@ public static class ServiceRegistration
                 {
                     gamePlayLogic.FinishAllHandsInPlay(sessId);
                     await gamePlayLogic.PayOutBetsToBettingBoxes(sessId);
+                    await Task.Delay(TimeSpan.FromSeconds(DelaySecsBetweenCards));
                     
                     //Pay out to players from the betting boxes
                     foreach (var b in session.Table.BettingBoxes)
