@@ -28,6 +28,9 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
         
+        <TextBlock Grid.Row="0" x:Name="OutcomeTextBlock" Foreground="White" FontSize="15" 
+                   TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="20" Background="#4a8b40"/>
+        
         <!-- Bet display (only used when hands are split, otherwise bet is displayed on a box level) -->
         <TextBlock Grid.Row="1" x:Name="BetTextBlock" HorizontalAlignment="Center" Foreground="White" Margin="5"/>
     </Grid>

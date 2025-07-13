@@ -26,6 +26,8 @@ public partial class HandView : ReactiveUserControl<HandViewModel>
             this.OneWayBind(ViewModel, vm => vm.Cards, v => v.CardsItemsControl.ItemsSource).DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.BetAmount, v => v.BetTextBlock.Text, bet => $"${bet}").DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.IsPartOfSplit, v => v.BetTextBlock.IsVisible).DisposeWith(d);
+            this.OneWayBind(ViewModel, vm => vm.OutcomeText, v => v.OutcomeTextBlock.Text).DisposeWith(d);
+            this.OneWayBind(ViewModel, vm => vm.OutcomeText, v => v.OutcomeTextBlock.IsVisible, text => !string.IsNullOrEmpty(text)).DisposeWith(d);
         });
     }
 }
