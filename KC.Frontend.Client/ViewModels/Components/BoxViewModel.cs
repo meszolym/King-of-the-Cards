@@ -168,6 +168,14 @@ public partial class BoxViewModel : ReactiveObject
                 BettingPhase = dto.CanPlaceBets;
                 RightHand = new HandViewModel(dto.Table.BettingBoxes.First(b => b.BoxIdx == _boxIdx).Hands.FirstOrDefault());
             });
+
+        ExternalCommunicatorService.SignalREvents.OutcomeCalculated.ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(dto =>
+            {
+                if (dto.boxIdx != _boxIdx) return;
+                if (dto.handIdx == 0) Task.Run(() => RightHand.ShowOutcome(dto.outcome)).ContinueWith(t => { if (t.Exception != null) Debug.WriteLine(t.Exception); }, TaskContinuationOptions.OnlyOnFaulted);
+                if (dto.handIdx == 1) Task.Run(() => LeftHand.ShowOutcome(dto.outcome)).ContinueWith(t => { if (t.Exception != null) Debug.WriteLine(t.Exception); }, TaskContinuationOptions.OnlyOnFaulted);
+            });
     }
 
     private readonly Guid _sessionId;
