@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KC.Detector.Logic", "KC.Detector.Logic\KC.Detector.Logic.csproj", "{AAA4771E-F9E2-4E04-883D-3B37152D1FA8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KC.Backend.API", "KC.Backend.API\KC.Backend.API.csproj", "{9B94527B-5C7D-42DA-B6C2-8F1B62B375AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KC.Backend.Logic", "KC.Backend.Logic\KC.Backend.Logic.csproj", "{6BEE301E-22DF-4CC1-9F34-6E8F900F649D}"
@@ -31,10 +29,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AAA4771E-F9E2-4E04-883D-3B37152D1FA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AAA4771E-F9E2-4E04-883D-3B37152D1FA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AAA4771E-F9E2-4E04-883D-3B37152D1FA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AAA4771E-F9E2-4E04-883D-3B37152D1FA8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B94527B-5C7D-42DA-B6C2-8F1B62B375AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9B94527B-5C7D-42DA-B6C2-8F1B62B375AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B94527B-5C7D-42DA-B6C2-8F1B62B375AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -60,7 +54,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{AAA4771E-F9E2-4E04-883D-3B37152D1FA8} = {59C4F115-E6DF-4F6B-8CBF-1F6C73B0849B}
 		{9B94527B-5C7D-42DA-B6C2-8F1B62B375AC} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{6BEE301E-22DF-4CC1-9F34-6E8F900F649D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {709E2538-3B8D-4A85-B9F8-A80046A865A3}
