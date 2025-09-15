@@ -173,8 +173,8 @@ public partial class BoxViewModel : ReactiveObject
             .Subscribe(dto =>
             {
                 if (dto.boxIdx != _boxIdx) return;
-                if (dto.handIdx == 0) _ = RightHand.ShowOutcome(dto.outcome);
-                if (dto.handIdx == 1) _ = LeftHand.ShowOutcome(dto.outcome);
+                if (dto.handIdx == 0) Task.Run(() => RightHand.ShowOutcome(dto.outcome)).ContinueWith(t => { if (t.Exception != null) Debug.WriteLine(t.Exception); }, TaskContinuationOptions.OnlyOnFaulted);
+                if (dto.handIdx == 1) Task.Run(() => LeftHand.ShowOutcome(dto.outcome)).ContinueWith(t => { if (t.Exception != null) Debug.WriteLine(t.Exception); }, TaskContinuationOptions.OnlyOnFaulted);
             });
     }
 
