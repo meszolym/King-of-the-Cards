@@ -15,6 +15,7 @@ public delegate string GetPlayerNameDelegate(Guid playerId);
 public delegate Task HandUpdatedDelegate(Guid sessionId); 
 public delegate Task BetUpdatedDelegate(Guid sessionId, int boxIdx);
 public delegate Task OutcomeCalculatedDelegate(Guid sessionId, int boxIdx, int handIdx, Outcome outcome);
+public delegate Task ShuffleDelegate(Guid sessionId);
 public static class ServiceRegistration
 {
     public static IServiceCollection RegisterLogicLayerServices(this IServiceCollection services)

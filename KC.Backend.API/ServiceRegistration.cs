@@ -37,6 +37,12 @@ public static class ServiceRegistration
     
     public static IServiceCollection RegisterDelegates(this IServiceCollection services)
     {
+        //Shuffle -> Defined in Logic.ServiceRegistration
+        services.AddSingleton<ShuffleDelegate>(s =>
+        {
+            var hub = s.GetRequiredService<IClientCommunicator>();
+            return async sessionId => await hub.SendMessageToGroupAsync(sessionId, SignalRMethods.Shuffling,sessionId);
+        });
         
         //OnOutcomeCalculated -> Defined in Logic.ServiceRegistration
         services.AddSingleton<OutcomeCalculatedDelegate>(s =>
@@ -109,7 +115,7 @@ public static class ServiceRegistration
             {
                 await hub.SendMessageToGroupAsync(sessId, SignalRMethods.BettingTimerElapsed, sessId);
 
-                gamePlayLogic.ShuffleIfNeeded(sessId);
+                gamePlayLogic.ShuffleIfNeeded(sessId); //First shuffle of the game will not be announced
         
                 var session = sessionLogic.Get(sessId);
                 await gamePlayLogic.DealStartingCards(sessId, TimeSpan.FromSeconds(DelaySecsBetweenCards));

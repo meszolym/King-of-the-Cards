@@ -13,7 +13,7 @@ using KC.Shared.Models.Misc;
 
 namespace KC.Backend.Logic.Logics;
 
-public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid> macToPlayerGuid, IRuleBook ruleBook, HandUpdatedDelegate handUpdatedDelegate, BetUpdatedDelegate betUpdatedDelegate, OutcomeCalculatedDelegate outcomeCalculatedDelegate) : IGamePlayLogic
+public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid> macToPlayerGuid, IRuleBook ruleBook, HandUpdatedDelegate handUpdatedDelegate, BetUpdatedDelegate betUpdatedDelegate, OutcomeCalculatedDelegate outcomeCalculatedDelegate, ShuffleDelegate shuffleDelegate) : IGamePlayLogic
 {
     /// <summary>
     /// Shuffles the shoe of the table in the session.
@@ -335,7 +335,8 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
                         await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.BjWin);
                         continue;
                     }
-                    else hand.Bet += hand.Bet * ruleBook.StandardPayoutMultiplier; //pay out bet
+                    
+                    hand.Bet += hand.Bet * ruleBook.StandardPayoutMultiplier; //pay out bet
                     await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.Win);
                     continue;
                 }
@@ -396,5 +397,13 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
         session.Table.Dealer.Hand = new ();
         session.Table.Dealer.ShowAllCards = false;
         await handUpdatedDelegate(sessionId);
+        
+        var shuffled = ShuffleIfNeeded(sessionId, Random.Shared);
+        if (shuffled)
+        {
+            await shuffleDelegate(sessionId);
+            await Task.Delay(2000);
+        }
+        
     }
 }
