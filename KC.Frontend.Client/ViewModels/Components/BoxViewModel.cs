@@ -170,11 +170,18 @@ public partial class BoxViewModel : ReactiveObject
             });
 
         ExternalCommunicatorService.SignalREvents.OutcomeCalculated.ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(dto =>
+            .Subscribe(async dto =>
             {
                 if (dto.boxIdx != _boxIdx) return;
-                if (dto.handIdx == 0) Task.Run(() => RightHand.ShowOutcome(dto.outcome)).ContinueWith(t => { if (t.Exception != null) Debug.WriteLine(t.Exception); }, TaskContinuationOptions.OnlyOnFaulted);
-                if (dto.handIdx == 1) Task.Run(() => LeftHand.ShowOutcome(dto.outcome)).ContinueWith(t => { if (t.Exception != null) Debug.WriteLine(t.Exception); }, TaskContinuationOptions.OnlyOnFaulted);
+                switch (dto.handIdx)
+                {
+                    case 0:
+                        await RightHand.ShowOutcome(dto.outcome);
+                        break;
+                    case 1:
+                        await LeftHand.ShowOutcome(dto.outcome);
+                        break;
+                }
             });
     }
 
