@@ -333,6 +333,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
                         hand.Bet += hand.Bet *
                                     ruleBook.BlackjackPayoutMultiplier; //if player has blackjack, pay out 1.5x bet
                         await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.BjWin);
+                        continue;
                     }
                     else hand.Bet += hand.Bet * ruleBook.StandardPayoutMultiplier; //pay out bet
                     await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.Win);
@@ -345,13 +346,10 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
                     {
                         hand.Bet = 0; //if player doesn't have blackjack, lose bet, else bet stays the same
                         await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.Lose);
+                        continue;
                     }
-                    else
-                    {
-                        hand.Bet += hand.Bet * ruleBook.BjVsBjPayoutMultiplier;
-                        await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.BjPush);
-                    }
-
+                    hand.Bet += hand.Bet * ruleBook.BjVsBjPayoutMultiplier;
+                    await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.BjPush);
                     continue;
                 }
 
