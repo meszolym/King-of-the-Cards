@@ -243,7 +243,6 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
             
             #region dealers turn handling
             //if it's the dealer's turn, transfer to the first player's turn
-            // TODO: check this (i know this is for starting the round, but it's not good when there's a new round)
             if (!session.CurrentTurnInfo.PlayersTurn)
             {
                 session.CurrentTurnInfo = new TurnInfo(true, BoxesInPlay(sessionId).First().IdxOnTable, 0);
@@ -267,6 +266,9 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
             {
                 session.CurrentTurnInfo = session.CurrentTurnInfo with { HandIdx = session.CurrentTurnInfo.HandIdx + 1 };
                 await AddCardToHand(sessionId, session.CurrentTurnInfo.BoxIdx, session.CurrentTurnInfo.HandIdx);
+                
+                //if a move cannot be made, mark hand as finished
+                if (!GetPossibleActionsOnHand(hand).Any()) hand.Finished = true;
                 return;
             }
             #endregion
