@@ -61,7 +61,7 @@ namespace KC.Frontend.Client.ViewModels
                 }
                 catch (Exception e)
                 {
-                    await Task.Delay(3000);
+                    await Task.Delay(3000); //backoff
                 }
             }
             

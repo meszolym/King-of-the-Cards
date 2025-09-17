@@ -18,4 +18,5 @@ public static class SignalRMethods
     public static SignalRMethod<SessionReadDto> SessionOccupancyChanged { get; } = new("SessionOccupancyChanged");
     public static SignalRMethod<TurnInfo> TurnChanged { get; } = new("TurnChanged");
     public static SignalRMethod<OutcomeReadDto> OutcomeCalculated { get; } = new("OutcomeCalculated");
+    public static SignalRMethod<Guid> Shuffling { get; } = new("Shuffling");
 }

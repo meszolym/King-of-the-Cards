@@ -31,7 +31,8 @@ partial class SessionView : ReactiveUserControl<SessionViewModel>
             this.OneWayBind(ViewModel, vm => vm.Id, v => v.SessionIdTextBlock.Text, i => $"Session ID: {i}").DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.BettingPhase, v => v.BetPlacementStackPanel.IsVisible).DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.BettingTimeLeft, v => v.BetTimerTextBlock.Text).DisposeWith(d);
-            
+            this.OneWayBind(ViewModel, vm => vm.Shuffling, v => v.ShufflingTextBlock.IsVisible).DisposeWith(d);
+
         });
     }
 }

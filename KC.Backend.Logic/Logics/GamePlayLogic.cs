@@ -13,7 +13,7 @@ using KC.Shared.Models.Misc;
 
 namespace KC.Backend.Logic.Logics;
 
-public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid> macToPlayerGuid, IRuleBook ruleBook, HandUpdatedDelegate handUpdatedDelegate, BetUpdatedDelegate betUpdatedDelegate, OutcomeCalculatedDelegate outcomeCalculatedDelegate) : IGamePlayLogic
+public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid> macToPlayerGuid, IRuleBook ruleBook, HandUpdatedDelegate handUpdatedDelegate, BetUpdatedDelegate betUpdatedDelegate, OutcomeCalculatedDelegate outcomeCalculatedDelegate, ShuffleDelegate shuffleDelegate) : IGamePlayLogic
 {
     /// <summary>
     /// Shuffles the shoe of the table in the session.
@@ -91,7 +91,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// </summary>
     /// <exception cref="InvalidOperationException">"It's not the dealer's turn."</exception>
     /// <exception cref="InvalidOperationException">"Dealer's hand is already finished."</exception>
-    public async Task DealerPlayHand(Guid sessionId, TimeSpan delayBetweenCards)
+    public async Task DealerPlayHand(Guid sessionId)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         if (session.CurrentTurnInfo.PlayersTurn) throw new InvalidOperationException("It's not the dealer's turn.");
@@ -106,7 +106,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
         
         session.Table.Dealer.ShowAllCards = true;
         await handUpdatedDelegate(sessionId);
-        await Task.Delay(delayBetweenCards);
+        await Task.Delay(Constants.BetweenCardsDelayMs);
 
         if (handsInPlayNotBustNoBj.Length == 0)
         {
@@ -118,7 +118,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
         while (ruleBook.DealerShouldHit(dealerHand))
         {
             await AddCardToHand(session.Id, -1, -1); //add card to dealer hand
-            await Task.Delay(delayBetweenCards);
+            await Task.Delay(Constants.BetweenCardsDelayMs);
         }
         
         dealerHand.Finished = true;
@@ -128,7 +128,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
     /// Deals cards to the players and the dealer at the start of a round.
     /// </summary>
     /// <exception cref="InvalidOperationException">Shoe needs shuffling.</exception>
-    public async Task DealStartingCards(Guid sessionId, TimeSpan delayBetweenCards, bool checkShuffle = false)
+    public async Task DealStartingCards(Guid sessionId, bool checkShuffle = false)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         session.DestructionTimer.Reset();
@@ -147,7 +147,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
             }
             await AddCardToHand(session.Id, -1, -1); //add card to dealer hand
             
-            await Task.Delay(delayBetweenCards);
+            await Task.Delay(Constants.BetweenCardsDelayMs);
         }
     }
 
@@ -337,7 +337,7 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
                         await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.BjWin);
                         continue;
                     }
-                    else hand.Bet += hand.Bet * ruleBook.StandardPayoutMultiplier; //pay out bet
+                    hand.Bet += hand.Bet * ruleBook.StandardPayoutMultiplier; //pay out bet
                     await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.Win);
                     continue;
                 }
@@ -398,5 +398,13 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
         session.Table.Dealer.Hand = new ();
         session.Table.Dealer.ShowAllCards = false;
         await handUpdatedDelegate(sessionId);
+        
+        var shuffled = ShuffleIfNeeded(sessionId, Random.Shared);
+        if (shuffled)
+        {
+            await shuffleDelegate(sessionId);
+            await Task.Delay(Constants.ShufflingDelayMs);
+        }
+        
     }
 }
