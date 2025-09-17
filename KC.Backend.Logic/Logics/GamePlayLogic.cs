@@ -335,7 +335,6 @@ public class GamePlayLogic(IList<Session> sessions, IDictionary<MacAddress, Guid
                         await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.BjWin);
                         continue;
                     }
-                    
                     hand.Bet += hand.Bet * ruleBook.StandardPayoutMultiplier; //pay out bet
                     await outcomeCalculatedDelegate(sessionId, box.IdxOnTable, index, Outcome.Win);
                     continue;
