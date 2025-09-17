@@ -41,13 +41,13 @@ public interface IGamePlayLogic
     /// </summary>
     /// <exception cref="InvalidOperationException">"It's not the dealer's turn."</exception>
     /// <exception cref="InvalidOperationException">"Dealer's hand is already finished."</exception>
-    Task DealerPlayHand(Guid sessionId, TimeSpan delayBetweenCards);
+    Task DealerPlayHand(Guid sessionId);
 
     /// <summary>
     /// Deals cards to the players and the dealer at the start of a round.
     /// </summary>
     /// <exception cref="InvalidOperationException">Shoe needs shuffling.</exception>
-    Task DealStartingCards(Guid sessionId, TimeSpan delayBetweenCards, bool checkShuffle = false);
+    Task DealStartingCards(Guid sessionId, bool checkShuffle = false);
 
     /// <summary>
     /// Checks for dealer blackjack.

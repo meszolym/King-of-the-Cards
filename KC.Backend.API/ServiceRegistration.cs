@@ -33,8 +33,6 @@ public static class ServiceRegistration
         return services;
     }
     
-    private const int DelaySecsBetweenCards = 2;
-    
     public static IServiceCollection RegisterDelegates(this IServiceCollection services)
     {
         //Shuffle -> Defined in Logic.ServiceRegistration
@@ -70,12 +68,12 @@ public static class ServiceRegistration
                 await hub.SendMessageToGroupAsync(sessId, SignalRMethods.TurnChanged, session.CurrentTurnInfo);
                 if (session.CurrentTurnInfo.PlayersTurn) return;
 
-                await gamePlayLogic.DealerPlayHand(sessId, TimeSpan.FromSeconds(DelaySecsBetweenCards));
+                await gamePlayLogic.DealerPlayHand(sessId);
                 
                 gamePlayLogic.FinishAllHandsInPlay(sessId);
                 
                 await gamePlayLogic.PayOutBetsToBettingBoxes(sessId);
-                await Task.Delay(TimeSpan.FromSeconds(DelaySecsBetweenCards));
+                await Task.Delay(Constants.BetweenCardsDelayMs);
                 
                 //Pay out to players from the betting boxes
                 foreach (var b in session.Table.BettingBoxes)
@@ -118,13 +116,13 @@ public static class ServiceRegistration
                 gamePlayLogic.ShuffleIfNeeded(sessId); //First shuffle of the game will not be announced
         
                 var session = sessionLogic.Get(sessId);
-                await gamePlayLogic.DealStartingCards(sessId, TimeSpan.FromSeconds(DelaySecsBetweenCards));
+                await gamePlayLogic.DealStartingCards(sessId);
                 var dealerBj = gamePlayLogic.DealerCheck(sessId);
                 if (dealerBj)
                 {
                     gamePlayLogic.FinishAllHandsInPlay(sessId);
                     await gamePlayLogic.PayOutBetsToBettingBoxes(sessId);
-                    await Task.Delay(TimeSpan.FromSeconds(DelaySecsBetweenCards));
+                    await Task.Delay(Constants.BetweenCardsDelayMs);
                     
                     //Pay out to players from the betting boxes
                     foreach (var b in session.Table.BettingBoxes)

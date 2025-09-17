@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DynamicData;
 using KC.Shared.Models.Dtos;
 using KC.Shared.Models.GameItems;
+using KC.Shared.Models.Misc;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 
@@ -65,7 +66,7 @@ namespace KC.Frontend.Client.ViewModels.Components;
                     OutcomeText = string.Empty;
                     break;
             }
-            await Task.Delay(2000);
+            await Task.Delay(Constants.ShowOutcomeDelayMs);
             OutcomeText = string.Empty;
         }
     }
