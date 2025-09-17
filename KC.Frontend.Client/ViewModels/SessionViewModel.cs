@@ -13,7 +13,6 @@ using KC.Frontend.Client.Utilities;
 using KC.Frontend.Client.ViewModels.Components;
 using KC.Shared.Models.Dtos;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.VisualBasic;
 using Splat;
 using Constants = KC.Shared.Models.Misc.Constants;
 
