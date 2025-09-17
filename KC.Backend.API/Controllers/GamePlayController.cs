@@ -22,7 +22,17 @@ public class GamePlayController(IGamePlayLogic gamePlayLogic, ISessionLogic sess
     {
         moveOrchestrator.MakeMove(MacAddress.Parse(macAddress), dto);
         var session = sessionLogic.Get(dto.sessionId);
-        var nextPossibleMoves = gamePlayLogic.GetPossibleActionsOnHand(dto.sessionId, session.CurrentTurnInfo.BoxIdx, session.CurrentTurnInfo.HandIdx).ToArray();
+        Move[] nextPossibleMoves;
+        try
+        {
+            nextPossibleMoves = gamePlayLogic.GetPossibleActionsOnHand(dto.sessionId, session.CurrentTurnInfo.BoxIdx, session.CurrentTurnInfo.HandIdx).ToArray();
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine($"Failed to get possible actions on hand for session {dto.sessionId}: {e}");
+            nextPossibleMoves = [];
+        }
+        
         if (nextPossibleMoves.Length == 0 || nextPossibleMoves.All(m => m == Move.Stand))
         {
             gamePlayLogic.TransferTurn(dto.sessionId);
