@@ -36,6 +36,10 @@
 			<TextBlock x:Name="BetTimerTextBlock" Text="Waiting for first bet..." Foreground="White" FontSize="20" 
 			           TextAlignment="Center" Padding="20,4,20,20"></TextBlock>
 		</StackPanel>
+		<TextBlock x:Name="ShufflingTextBlock" Grid.Row="1" Grid.ColumnSpan="3"
+		           VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"
+		           Padding="20" Background="#4a8b40" Foreground="White" FontSize="20"
+		           Text="Shuffling..." IsVisible="False"></TextBlock>
 		
 		<comp:SessionBoxControlsView Grid.Row="2" Grid.Column="1" x:Name="ControlsView"/>
 	</Grid>

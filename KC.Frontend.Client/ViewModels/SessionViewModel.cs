@@ -13,7 +13,9 @@ using KC.Frontend.Client.Utilities;
 using KC.Frontend.Client.ViewModels.Components;
 using KC.Shared.Models.Dtos;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.VisualBasic;
 using Splat;
+using Constants = KC.Shared.Models.Misc.Constants;
 
 namespace KC.Frontend.Client.ViewModels
 {
@@ -48,6 +50,8 @@ namespace KC.Frontend.Client.ViewModels
 
         [Reactive]
         private string _bettingTimeLeft = "Waiting for first bet...";
+
+        [Reactive] private bool _shuffling;
         
         public SessionViewModel(IScreen hostScreen, SessionReadDto session)
         {
@@ -73,6 +77,14 @@ namespace KC.Frontend.Client.ViewModels
                 {
                     BettingPhase = dto.CanPlaceBets;
                     BettingTimeLeft = "Waiting for first bet...";
+                });
+
+            ExternalCommunicatorService.SignalREvents.Shuffling.ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe( async guid =>
+                {
+                    Shuffling = true;
+                    await Task.Delay(Constants.ShufflingDelayMs);
+                    Shuffling = false;
                 });
         }
 

@@ -28,6 +28,7 @@ public partial class ExternalCommunicatorService
         public static IObservable<SessionReadDto> SessionOccupancyChanged => SessionOccupancyChangedSubject.AsObservable();
         public static IObservable<TurnInfo> TurnChanged => TurnChangedSubject.AsObservable();
         public static IObservable<OutcomeReadDto> OutcomeCalculated => OutcomeCalculatedSubject.AsObservable();
+        public static IObservable<Guid> Shuffling => ShufflingSubject.AsObservable();
     
         private static readonly Subject<SessionReadDto> SessionCreatedSubject = new();
         private static readonly Subject<Guid> SessionDeletedSubject = new();
@@ -42,6 +43,7 @@ public partial class ExternalCommunicatorService
         private static readonly Subject<SessionReadDto> SessionOccupancyChangedSubject = new();
         private static readonly Subject<TurnInfo> TurnChangedSubject = new();
         private static readonly Subject<OutcomeReadDto> OutcomeCalculatedSubject = new();
+        private static readonly Subject<Guid> ShufflingSubject = new();
         
         public static void Init(HubConnection conn)
         {
@@ -58,6 +60,7 @@ public partial class ExternalCommunicatorService
             conn.On(SignalRMethods.SessionOccupancyChanged, dto => SessionOccupancyChangedSubject.OnNext(dto));
             conn.On(SignalRMethods.TurnChanged, dto => TurnChangedSubject.OnNext(dto));
             conn.On(SignalRMethods.OutcomeCalculated, dto => OutcomeCalculatedSubject.OnNext(dto));
+            conn.On(SignalRMethods.Shuffling, id => ShufflingSubject.OnNext(id));
 
         }
     }
