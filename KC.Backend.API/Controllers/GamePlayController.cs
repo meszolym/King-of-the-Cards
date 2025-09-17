@@ -29,7 +29,7 @@ public class GamePlayController(IGamePlayLogic gamePlayLogic, ISessionLogic sess
         }
         catch (Exception e)
         {
-            Debug.WriteLine(e);
+            Debug.WriteLine($"Failed to get possible actions on hand for session {dto.sessionId}: {e}");
             nextPossibleMoves = [];
         }
         
