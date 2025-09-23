@@ -1,0 +1,1 @@
+#Implement basic strategy here, read from file, then find the necessary action for the player vs dealer upcard
