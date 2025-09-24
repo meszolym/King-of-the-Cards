@@ -25,5 +25,6 @@ class Suit(IntEnum):
 class Move(IntEnum):
     Hit = 0
     Stand = 1
-    Double = 2
-    Split = 3
+    DoubleHit = 2
+    DoubleStand = 3
+    Split = 4

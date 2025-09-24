@@ -18,6 +18,10 @@ class HandValue:
         handval.is_blackjack = False
         handval.is_bust = False
         handval.value = int(value[1:])
+
+        if handval.is_pair: # if it's a pair, the incoming value represents the rank of the pair
+            handval.value = handval.value * 2
+
         return handval
     @staticmethod
     def from_hand (hand: Hand) -> 'HandValue':
