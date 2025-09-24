@@ -16,10 +16,7 @@
 # 5. Képek feldolgozása (CardFinder, CardInterpreter + MessageFinder, MessageInterpreter)
 # 6. Eredmény megjelenítése (GUI frissítése)
 
-from ImageProcessing import GUI
-
 def main():
-    GUI.startgui()
-
+    return
 if __name__ == "__main__":
     main()

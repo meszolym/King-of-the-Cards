@@ -21,3 +21,8 @@ class Table:
 
     def hilo_true_count(self) -> int:
         return self.hilo_running_count() / (len(self.played_cards) / 52) if self.played_cards else 0
+
+    def reset(self) -> None:
+        self.hands = []
+        self.dealer_hand.clear()
+        self.played_cards = []
