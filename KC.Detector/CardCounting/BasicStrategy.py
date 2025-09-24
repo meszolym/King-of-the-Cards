@@ -26,4 +26,4 @@ class BasicStrategy:
         if hand_value.value < self.lower_bound:
             return Move.Hit
 
-        return self.strategy_table.get((hand_value, dealer_upcard), Move.Stand)
+        return self.strategy_table.get((hand_value, dealer_upcard), Move.Unknown)

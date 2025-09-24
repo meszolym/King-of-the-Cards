@@ -23,8 +23,14 @@ class Suit(IntEnum):
     Spades = 4
 
 class Move(IntEnum):
-    Hit = 0
-    Stand = 1
-    DoubleHit = 2
-    DoubleStand = 3
-    Split = 4
+    Unknown = 0
+    Hit = 1
+    Stand = 2
+    DoubleHit = 3
+    DoubleStand = 4
+    Split = 5
+
+class Messages(IntEnum):
+    Unknown = 0
+    Shuffling = 1
+    WaitingForBets = 2
