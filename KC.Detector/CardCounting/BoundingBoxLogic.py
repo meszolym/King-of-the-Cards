@@ -16,3 +16,6 @@ def boxes_overlap(box1: BoundingBox, box2: BoundingBox) -> float:
     smaller_area = min(box_area(box1), box_area(box2))
 
     return intersection_area / smaller_area
+
+def boxes_match(box1: BoundingBox, box2: BoundingBox) -> bool:
+    return boxes_overlap(box1, box2) >= 0.95
