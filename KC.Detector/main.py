@@ -22,5 +22,6 @@ def main():
     main_window = MainWindow(False)
     main_window.window.mainloop()
     return
+
 if __name__ == "__main__":
     main()
