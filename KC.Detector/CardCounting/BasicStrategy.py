@@ -21,9 +21,13 @@ class BasicStrategy:
                 self.strategy_table[(hand_value, dealer_card)] = move
 
     def get_actions(self, hand_value: HandValue, dealer_upcard: int) -> Move:
+        move = self.strategy_table.get((hand_value, dealer_upcard), Move.Unknown)
+        if move != Move.Unknown:
+            return move
+
         if hand_value.value > self.upper_bound:
             return Move.Stand
         if hand_value.value < self.lower_bound:
             return Move.Hit
 
-        return self.strategy_table.get((hand_value, dealer_upcard), Move.Unknown)
+        return Move.Unknown
