@@ -1,3 +1,5 @@
+from GUI.MainWindow import MainWindow
+
 #Milyen elemekre van szükség:
 # - minimal starter GUI (roi selector indítása, mentése, betöltése, lapszámolás indítása)
 # - roi selector (kijelölés, mentés, betöltés)
@@ -17,6 +19,8 @@
 # 6. Eredmény megjelenítése (GUI frissítése)
 
 def main():
+    main_window = MainWindow(False)
+    main_window.window.mainloop()
     return
 if __name__ == "__main__":
     main()
