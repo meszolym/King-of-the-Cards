@@ -34,4 +34,10 @@ class Organizer:
 
     @staticmethod
     def overlap(card: Card, hand: Hand) -> bool:
+        for hand_card in hand.cards:
+            if (card.x < hand_card.x + hand_card.w and
+                card.x + card.w > hand_card.x and
+                card.y < hand_card.y + hand_card.h and
+                card.y + card.h > hand_card.y):
+                return True
         return False
