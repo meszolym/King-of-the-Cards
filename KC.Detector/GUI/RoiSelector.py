@@ -23,6 +23,7 @@ class RoiSelector:
             tmp = img.copy()
             # Create a named window to show the prompt in its title bar
             cv.namedWindow(window_name, cv.WINDOW_NORMAL)
+            cv.resizeWindow(window_name, 800, 600)
             cv.imshow(window_name, tmp)
             # Use selectROI with the window title
             x, y, w, h = cv.selectROI(window_name, tmp, showCrosshair=True)
