@@ -3,6 +3,8 @@ from Models.BoundingBox import BoundingBox
 from Models.RoisContainer import RoisContainer
 import cv2 as cv
 from ImageProcessing.ScreenCapturer import take_screenshot
+from screeninfo import get_monitors
+
 
 class RoiSelector:
     rois_selected_observable: Subject
@@ -24,7 +26,7 @@ class RoiSelector:
             tmp = img.copy()
             # Create a named window to show the prompt in its title bar
             cv.namedWindow(window_name, cv.WINDOW_NORMAL)
-            cv.resizeWindow(window_name, 1440, 810)
+            cv.resizeWindow(window_name, int(get_monitors()[0].width*0.9), int(get_monitors()[0].height*0.9))
             cv.imshow(window_name, tmp)
             # Use selectROI with the window title
             x, y, w, h = cv.selectROI(window_name, tmp, showCrosshair=True)

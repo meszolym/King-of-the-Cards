@@ -58,4 +58,4 @@ class GuiConductor:
 
     def show_rois(self):
         show_rois(self.rois)
-        pass
+        return

@@ -1,4 +1,5 @@
-Rx~=3.2.0
 opencv-python~=4.12.0.88
+Rx~=3.2.0
 numpy~=2.3.3
-Pillow~=11.3.0
+pyscreenshot~=3.1
+screeninfo~=0.8.1

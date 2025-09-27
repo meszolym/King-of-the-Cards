@@ -1,11 +1,13 @@
 from Models.RoisContainer import RoisContainer
 import cv2 as cv
+from screeninfo import get_monitors
 
 def show_rois(rois : RoisContainer):
     img = rois.base_image.copy()
     window_name = "Selected ROIs"
     cv.namedWindow(window_name, cv.WINDOW_NORMAL)
-    cv.resizeWindow(window_name, 1440, 810)
+
+    cv.resizeWindow(window_name, int(get_monitors()[0].width*0.9), int(get_monitors()[0].height*0.9))
 
     for label, bb in (
             ("Dealer", rois.dealer_roi),
