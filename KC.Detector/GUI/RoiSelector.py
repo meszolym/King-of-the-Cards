@@ -9,6 +9,6 @@ class RoiSelector:
 
     def open_roi_selector(self):
         rois = RoisContainer()
-        # Placeholder for ROI selection logic
-        self.rois_selected_observable.on_next(rois) # Emit empty RoisContainer for
+        # Placeholder for ROI selection logic TODO
+        self.rois_selected_observable.on_next(rois) # Emit RoisContainer
         pass

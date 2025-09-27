@@ -32,28 +32,20 @@ class MainWindow:
                                    state="normal" if self.detection_started else "disabled", command=self.stop_detection)
         self.stop_button.pack(pady=10)
 
-    def select_roi(self):
-        self.roi_selected = True
-        self.select_roi_button.config(state="normal" if not self.roi_selected else "disabled")
+    def update_state(self):
         self.start_button.config(state="normal" if self.roi_selected and not self.detection_started else "disabled")
+        self.stop_button.config(state="normal" if self.detection_started else "disabled")
+        self.select_roi_button.config(state="normal" if not self.roi_selected else "disabled")
+        return
+
+    def select_roi(self):
         self.select_roi_observable.on_next(None)
         return
 
     def start_detection(self):
-        self.detection_started = True
-        self.start_button.config(state="normal" if self.roi_selected and not self.detection_started else "disabled")
-        self.stop_button.config(state="normal" if self.detection_started else "disabled")
-
-        self.window.iconify()
         self.start_detection_observable.on_next(None)
         return
 
     def stop_detection(self):
-        self.detection_started = False
-        self.start_button.config(state="normal" if self.roi_selected and not self.detection_started else "disabled")
-        self.stop_button.config(state="normal" if self.detection_started else "disabled")
-
-        self.window.deiconify()
         self.stop_detection_observable.on_next(None)
-
         return
