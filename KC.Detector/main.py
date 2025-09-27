@@ -1,5 +1,3 @@
-from GUI.MainWindow import MainWindow
-
 #Milyen elemekre van szükség:
 # - minimal starter GUI (roi selector indítása, mentése, betöltése, lapszámolás indítása)
 # - roi selector (kijelölés, mentés, betöltés)
@@ -18,9 +16,16 @@ from GUI.MainWindow import MainWindow
 # 5. Képek feldolgozása (CardFinder, CardInterpreter + MessageFinder, MessageInterpreter)
 # 6. Eredmény megjelenítése (GUI frissítése)
 
+from GUI.GuiConductor import GuiConductor
+from ProcessConductor import ProcessConductor
+
 def main():
-    main_window = MainWindow(False)
-    main_window.window.mainloop()
+    process_conductor = ProcessConductor()
+    gui = GuiConductor()
+
+    gui.rois_selected_observable.subscribe(lambda rois: process_conductor.rois_selected_handler(rois))
+
+    gui.start_main_window()
     return
 
 if __name__ == "__main__":

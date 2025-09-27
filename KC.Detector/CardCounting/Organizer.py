@@ -4,6 +4,10 @@ from ..Models.Hand import Hand
 from ..Models.Card import Card
 from BoundingBoxLogic import *
 
+def organize_dealer_cards(detected_cards: list[Card], table: Table) -> None:
+    #TODO: Organize dealer cards.
+    return
+
 def organize_players_cards(detected_cards: list[Card], table: Table) -> None:
     #Organize cards based on the coordinates.
 

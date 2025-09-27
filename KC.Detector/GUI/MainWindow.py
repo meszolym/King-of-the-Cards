@@ -1,13 +1,20 @@
 from tkinter import *
-
+from rx.subject import Subject
 
 class MainWindow:
     roi_selected : bool = False
     detection_started : bool = False
     window : Tk
+    start_detection_observable : Subject
+    stop_detection_observable : Subject
+    select_roi_observable : Subject
 
     def __init__(self, roi_sel: bool):
         self.roi_selected = roi_sel
+        self.start_detection_observable = Subject()
+        self.stop_detection_observable = Subject()
+        self.select_roi_observable = Subject()
+
         self.window = Tk()
         self.window.title("KC Detector")
         self.window.geometry("300x300")
@@ -26,27 +33,27 @@ class MainWindow:
         self.stop_button.pack(pady=10)
 
     def select_roi(self):
-        # Placeholder for ROI selection logic
         self.roi_selected = True
         self.select_roi_button.config(state="normal" if not self.roi_selected else "disabled")
         self.start_button.config(state="normal" if self.roi_selected and not self.detection_started else "disabled")
+        self.select_roi_observable.on_next(None)
         return
 
     def start_detection(self):
-        # Placeholder for starting detection logic
         self.detection_started = True
         self.start_button.config(state="normal" if self.roi_selected and not self.detection_started else "disabled")
         self.stop_button.config(state="normal" if self.detection_started else "disabled")
 
-
         self.window.iconify()
+        self.start_detection_observable.on_next(None)
         return
 
     def stop_detection(self):
-        # Placeholder for stopping detection logic
         self.detection_started = False
         self.start_button.config(state="normal" if self.roi_selected and not self.detection_started else "disabled")
         self.stop_button.config(state="normal" if self.detection_started else "disabled")
 
         self.window.deiconify()
+        self.stop_detection_observable.on_next(None)
+
         return

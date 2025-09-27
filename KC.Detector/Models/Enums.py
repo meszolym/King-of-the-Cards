@@ -30,7 +30,7 @@ class Move(IntEnum):
     DoubleStand = 4
     Split = 5
 
-class Messages(IntEnum):
+class Message(IntEnum):
     Unknown = 0
     Shuffling = 1
     WaitingForBets = 2
