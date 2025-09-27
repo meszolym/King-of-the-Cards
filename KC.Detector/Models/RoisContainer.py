@@ -1,4 +1,4 @@
-from BoundingBox import BoundingBox
+from Models.BoundingBox import BoundingBox
 class RoisContainer:
     dealer_roi: BoundingBox
     player_roi: BoundingBox

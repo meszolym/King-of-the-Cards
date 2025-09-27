@@ -1,6 +1,6 @@
 #Do ROI, edge detection, etc here
-from ..Models.BoundingBox import BoundingBox
-from ..Models.RoisContainer import RoisContainer
+from Models.BoundingBox import BoundingBox
+from Models.RoisContainer import RoisContainer
 from rx.subject import Subject
 class Preprocessor:
     run : bool = False

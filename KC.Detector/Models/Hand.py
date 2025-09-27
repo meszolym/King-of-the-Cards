@@ -1,5 +1,4 @@
-from Card import Card
-from HandValue import HandValue
+from Models.Card import Card
 
 class Hand:
     cards: list[Card]

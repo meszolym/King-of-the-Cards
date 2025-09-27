@@ -1,5 +1,5 @@
 from rx.subject import Subject
-from ..Models.RoisContainer import RoisContainer
+from Models.RoisContainer import RoisContainer
 class RoiSelector:
     rois_selected_observable : Subject
     #TODO: Implement ROI selection logic

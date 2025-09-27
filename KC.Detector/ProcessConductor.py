@@ -21,8 +21,14 @@ class ProcessConductor:
         self.preprocessor.message_image_observable.subscribe(lambda img: self.message_image_handler(img))
         self.preprocessor.dealer_image_observable.subscribe(lambda img: self.dealer_image_handler(img))
         self.preprocessor.player_image_observable.subscribe(lambda img: self.player_image_handler(img))
+        return
 
+    def start_preprocessor(self):
         self.preprocessor.mainloop()
+        return
+
+    def stop_preprocessor(self):
+        self.preprocessor.stop()
         return
 
     @staticmethod

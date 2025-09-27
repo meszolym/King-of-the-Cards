@@ -1,5 +1,3 @@
-from Enums import Rank
-from Hand import Hand
 class HandValue:
     value: int
     is_soft: bool

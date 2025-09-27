@@ -1,8 +1,8 @@
 #Do organization of cards into hands here
-from ..Models.Table import Table
-from ..Models.Hand import Hand
-from ..Models.Card import Card
-from BoundingBoxLogic import *
+from Models.Table import Table
+from Models.Hand import Hand
+from Models.Card import Card
+from CardCounting.BoundingBoxLogic import *
 
 def organize_dealer_cards(detected_cards: list[Card], table: Table) -> None:
     #TODO: Organize dealer cards.

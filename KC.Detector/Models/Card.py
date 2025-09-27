@@ -1,6 +1,5 @@
-from BoundingBox import BoundingBox
-
-from Enums import Rank, Suit
+from Models.BoundingBox import BoundingBox
+from Models.Enums import Rank, Suit
 class Card:
     rank: Rank
     suit: Suit

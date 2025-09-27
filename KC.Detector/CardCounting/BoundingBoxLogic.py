@@ -1,4 +1,4 @@
-from ..Models.BoundingBox import BoundingBox
+from Models.BoundingBox import BoundingBox
 
 def box_area(box: BoundingBox) -> float:
     return box.w * box.h

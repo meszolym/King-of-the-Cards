@@ -1,7 +1,7 @@
-from ..Models.HandValue import HandValue
-from ..Models.Hand import Hand
-from ..Models.Enums import Rank
-from CardLogic import card_value
+from Models.HandValue import HandValue
+from Models.Hand import Hand
+from Models.Enums import Rank
+from CardCounting.CardLogic import card_value
 
 def hand_value_from_string(value: str) -> HandValue:
     hand_value = HandValue()

@@ -1,7 +1,7 @@
 import json
-from ..Models.BasicStrategy import BasicStrategy
-from ..Models.Enums import Move
-from ..Models.HandValue import HandValue
+from Models.BasicStrategy import BasicStrategy
+from Models.Enums import Move
+from Models.HandValue import HandValue
 from HandValueLogic import hand_value_from_string
 
 def read_strategy(filepath: str) -> BasicStrategy:

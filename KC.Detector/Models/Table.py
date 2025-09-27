@@ -1,6 +1,6 @@
-from Hand import Hand
-from Card import Card
-from Enums import Rank
+from Models.Hand import Hand
+from Models.Card import Card
+from Models.Enums import Rank
 class Table:
     dealer_hand: Hand
     played_cards: list[Card]
