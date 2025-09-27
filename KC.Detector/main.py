@@ -28,6 +28,7 @@ def main():
     gui.stop_detection_observable.subscribe(lambda _: process_conductor.stop_preprocessor())
 
     gui.start_main_window()
+
     return
 
 if __name__ == "__main__":
