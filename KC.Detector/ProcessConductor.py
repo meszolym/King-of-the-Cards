@@ -13,11 +13,15 @@ class ProcessConductor:
 
     def __init__(self):
         self.table_state = Table()
+        self.preprocessor = None
         return
 
     def rois_selected_handler(self, rois : RoisContainer):
-        self.preprocessor = Preprocessor(rois)
+        if self.preprocessor is not None:
+            self.preprocessor.rois = rois
+            return
 
+        self.preprocessor = Preprocessor(rois)
         self.preprocessor.message_image_observable.subscribe(lambda img: self.message_image_handler(img))
         self.preprocessor.dealer_image_observable.subscribe(lambda img: self.dealer_image_handler(img))
         self.preprocessor.player_image_observable.subscribe(lambda img: self.player_image_handler(img))
