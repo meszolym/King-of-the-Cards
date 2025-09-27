@@ -5,7 +5,24 @@ from Models.Card import Card
 from CardCounting.BoundingBoxLogic import *
 
 def organize_dealer_cards(detected_cards: list[Card], table: Table) -> None:
-    #TODO: Organize dealer cards.
+    if table.dealer_hand is None:
+        table.dealer_hand = Hand()
+        table.dealer_hand.cards = detected_cards
+        return
+
+    for c in detected_cards:
+        assigned = False
+        for existing_card in table.dealer_hand.cards:
+            if (existing_card.rank == c.rank and existing_card.suit == c.suit and
+                boxes_match(existing_card.box, c.box)):
+                # Update bounding box if new box is smaller (more accurate)
+                if box_area(c.box) < box_area(existing_card.box):
+                    existing_card.box = c.box
+                assigned = True
+                break
+        if not assigned:
+            table.dealer_hand.cards.append(c)
+
     return
 
 def organize_players_cards(detected_cards: list[Card], table: Table) -> None:
