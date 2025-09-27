@@ -63,10 +63,9 @@ class MainWindow:
             state="normal",
             text="Re-select ROIs" if self.roi_selected else "Select ROIs"
         )
-        if self.roi_selected:
-            self.show_rois_button.pack(side="left", padx=(10, 0))
-        else:
-            self.show_rois_button.pack_forget()
+        self.show_rois_button.config(
+            state="normal" if self.roi_selected else "disabled"
+        )
 
     def select_roi(self):
         self.select_roi_observable.on_next(None)
