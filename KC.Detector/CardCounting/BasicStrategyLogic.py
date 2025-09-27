@@ -5,19 +5,21 @@ from Models.HandValue import HandValue
 from HandValueLogic import hand_value_from_string
 
 def read_strategy(filepath: str) -> BasicStrategy:
-    strategy = BasicStrategy()
-    strategy.strategy_table = {}
+
+    strategy_table = {}
+    upper_bound = 0
+    lower_bound = 0
     with open(filepath, "r") as f:
         data = json.load(f)
-        strategy.upper_bound = data.get("UpperBoundary", 0)
-        strategy.lower_bound = data.get("LowerBoundary", 0)
+        upper_bound = data.get("UpperBoundary", 0)
+        lower_bound = data.get("LowerBoundary", 0)
         for entry in data.get("Entries", []):
             hand_value = hand_value_from_string(entry["HandValue"])
             dealer_card = int(entry["DealerCard"])
             move = Move[entry["Move"]]
-            strategy.strategy_table[(hand_value, dealer_card)] = move
+            strategy_table[(hand_value, dealer_card)] = move
 
-    return strategy
+    return BasicStrategy(strategy_table=strategy_table, upper_bound=upper_bound, lower_bound=lower_bound)
 
 def get_hand_actions(strategy: BasicStrategy, hand_value: HandValue, dealer_upcard: int) -> Move:
     move = strategy.strategy_table.get((hand_value, dealer_upcard), Move.Unknown)

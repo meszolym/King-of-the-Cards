@@ -1,3 +1,5 @@
+from typing import Optional
+
 from GUI.Overlay import Overlay
 from GUI.MainWindow import MainWindow
 from GUI.RoiSelector import RoiSelector
@@ -13,13 +15,12 @@ class GuiConductor:
     rois_selected_observable : Subject
     start_detection_observable : Subject
     stop_detection_observable : Subject
-    rois : RoisContainer
+    rois : Optional[RoisContainer]
 
     def __init__(self):
         self.main_window = MainWindow(False)
         self.overlay = Overlay()
         self.roi_selector = RoiSelector()
-        self.rois = None
 
         self.rois_selected_observable = Subject()
         self.start_detection_observable = Subject()

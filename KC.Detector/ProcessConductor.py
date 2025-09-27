@@ -12,7 +12,7 @@ class ProcessConductor:
     table_state: Table
 
     def __init__(self):
-        self.table_state = Table()
+        self.table_state = Table(None, None, None)
         self.preprocessor = None
         return
 

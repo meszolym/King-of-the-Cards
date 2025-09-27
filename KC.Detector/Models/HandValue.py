@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+
+@dataclass
 class HandValue:
     value: int
     is_soft: bool

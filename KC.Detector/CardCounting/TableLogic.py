@@ -15,6 +15,6 @@ def hilo_true_count(table: Table) -> int:
     return hilo_running_count(table) / (len(table.played_cards) / 52) if table.played_cards else 0
 
 def reset(table: Table) -> None:
-    table.hands = []
-    table.dealer_hand = Hand()
-    table.played_cards = []
+    table.hands.clear()
+    table.dealer_hand.cards.clear()
+    table.played_cards.clear()

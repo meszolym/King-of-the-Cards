@@ -1,4 +1,6 @@
 #Do organization of cards into hands here
+from typing import Optional
+
 from Models.Table import Table
 from Models.Hand import Hand
 from Models.Card import Card
@@ -6,8 +8,7 @@ from CardCounting.BoundingBoxLogic import *
 
 def organize_dealer_cards(detected_cards: list[Card], table: Table) -> None:
     if table.dealer_hand is None:
-        table.dealer_hand = Hand()
-        table.dealer_hand.cards = detected_cards
+        table.dealer_hand = Hand(detected_cards)
         return
 
     for c in detected_cards:
@@ -31,13 +32,13 @@ def organize_players_cards(detected_cards: list[Card], table: Table) -> None:
     #If no hands exist, create a new hand for each detected card
     if not table.hands:
         for c in detected_cards:
-            hand = Hand()
+            hand = Hand([])
             hand.cards.append(c)
             table.hands.append(hand)
             return
 
     #Go through each card, and check against each hand to find the one that has a card (latest) with a contour overlapping this card
-    split_origin: Hand = Hand()
+    split_origin: Optional[Hand] = None
     for c in detected_cards:
         assigned = False
 

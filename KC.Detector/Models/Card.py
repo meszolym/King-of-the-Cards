@@ -1,15 +1,8 @@
+from dataclasses import dataclass
 from Models.BoundingBox import BoundingBox
 from Models.Enums import Rank, Suit
+@dataclass
 class Card:
     rank: Rank
     suit: Suit
     box: BoundingBox
-
-    def __init__(self):
-        self.rank = Rank.Unknown
-        self.suit = Suit.Unknown
-        self.box = BoundingBox()
-
-
-    def __repr__(self):
-        return f"{self.rank} of {self.suit}"

@@ -18,8 +18,7 @@ class RoiSelector:
         img = take_screenshot()  # BGR numpy array
 
         # 2. Prepare container
-        rois = RoisContainer()
-        rois.base_image = img.copy()
+        base_img = img.copy()
 
         # 3. Generic ROI picker using window title only
         def pick(window_name: str) -> BoundingBox:
@@ -36,9 +35,12 @@ class RoiSelector:
                                float(w), float(h))
 
         # 4. Pick ROIs with window titles
-        rois.dealer_roi  = pick("DEALER ROI")
-        rois.player_roi  = pick("PLAYER ROI")
-        rois.message_roi = pick("MESSAGE ROI")
+        rois = RoisContainer(
+            dealer_roi=pick("Select Dealer ROI"),
+            player_roi=pick("Select Player ROI"),
+            message_roi=pick("Select Message ROI"),
+            base_image=base_img
+        );
 
         # 5. Emit result
         self.rois_selected_observable.on_next(rois)

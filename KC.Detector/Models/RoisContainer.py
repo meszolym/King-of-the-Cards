@@ -1,5 +1,7 @@
 import numpy as np
 from Models.BoundingBox import BoundingBox
+from dataclasses import dataclass
+@dataclass
 class RoisContainer:
     dealer_roi: BoundingBox
     player_roi: BoundingBox
