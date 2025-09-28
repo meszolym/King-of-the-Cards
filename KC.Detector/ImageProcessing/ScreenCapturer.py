@@ -14,6 +14,7 @@ def get_primary_monitor_bbox() -> tuple[int, int, int, int]:
 def take_screenshot() -> np.ndarray:
     """ Takes a screenshot of the primary monitor and returns it as a BGR numpy array. """
     try:
+        print("Available backends:", ImageGrab.backends())
         bbox = get_primary_monitor_bbox()
         print(f"[INFO] Capturing screenshot with bbox: {bbox}")
         img_pil = ImageGrab.grab(bbox=bbox) #this is where it dies
