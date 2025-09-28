@@ -1,3 +1,5 @@
+pytesseract
+#Also, have tesseract installed on PC and put on PATH
 opencv-python~=4.12.0.88
 Rx~=3.2.0
 numpy~=2.2.6
