@@ -12,6 +12,7 @@ def get_primary_monitor_bbox() -> tuple[int, int, int, int]:
     return left, top, right, bottom
 
 def take_screenshot() -> np.ndarray:
+    """ Takes a screenshot of the primary monitor and returns it as a BGR numpy array. """
     try:
         bbox = get_primary_monitor_bbox()
         img_pil = ImageGrab.grab(bbox=bbox)

@@ -33,8 +33,6 @@ class Preprocessor:
         self.worker_thread.start()
 
     def mainloop(self):
-        #Every second, take an image, preprocess it, emit event via observable with processed image
-        # 3 observables, one for each ROI
         self.run = True
 
         while self.run:
@@ -48,6 +46,7 @@ class Preprocessor:
 
     @staticmethod
     def get_roi(img: np.ndarray, box: BoundingBox) -> np.ndarray:
+        """Extracts the ROI from the image based on the bounding box."""
         h, w, _ = img.shape
         x1 = int(box.x * w)
         y1 = int(box.y * h)
