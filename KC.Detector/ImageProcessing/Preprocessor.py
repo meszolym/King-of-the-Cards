@@ -48,10 +48,10 @@ class Preprocessor:
     def get_roi(img: np.ndarray, box: BoundingBox) -> np.ndarray:
         """Extracts the ROI from the image based on the bounding box."""
         h, w, _ = img.shape
-        x1 = int(box.x * w)
-        y1 = int(box.y * h)
-        x2 = int((box.x + box.w) * w)
-        y2 = int((box.y + box.h) * h)
+        x1 = int(box.x)
+        y1 = int(box.y)
+        x2 = int((box.x + box.w))
+        y2 = int((box.y + box.h))
         return img[y1:y2, x1:x2]
 
     def stop(self):

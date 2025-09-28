@@ -22,6 +22,7 @@ class ProcessConductor:
         self.table_state = Table(None, None, None)
         self.preprocessor = None
         self.pool_scheduler = ThreadPoolScheduler(multiprocessing.cpu_count())
+        self.msg_processor = MessageProcessor()
         return
 
     def read_possible_messages(self, filepath: str):
