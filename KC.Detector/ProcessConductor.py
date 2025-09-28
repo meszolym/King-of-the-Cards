@@ -28,7 +28,7 @@ class ProcessConductor:
         return
 
     def start_preprocessor(self):
-        self.preprocessor.mainloop()
+        self.preprocessor.start()
         return
 
     def stop_preprocessor(self):

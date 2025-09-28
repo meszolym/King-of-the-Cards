@@ -40,7 +40,7 @@ class RoiSelector:
             player_roi=pick("Select Player ROI"),
             message_roi=pick("Select Message ROI"),
             base_image=base_img
-        );
+        )
 
         # 5. Emit result
         self.rois_selected_observable.on_next(rois)
