@@ -65,14 +65,12 @@ class ProcessConductor:
         # TODO: Update GUI
         return
 
-    @staticmethod
     def dealer_image_handler(self, image):
         cards : list[Card] = process_cards(image)
         #TODO: organizer call to update dealer hand
         #TODO: Update GUI
         return
 
-    @staticmethod
     def player_image_handler(self, image):
         cards : list[Card] = process_cards(image)
         organize_players_cards(cards, self.table_state)

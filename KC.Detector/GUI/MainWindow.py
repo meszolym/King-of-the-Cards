@@ -9,6 +9,7 @@ class MainWindow:
     stop_detection_observable : Subject
     select_roi_observable : Subject
     show_rois_observable : Subject
+    select_card_dimensions_observable : Subject
 
     def __init__(self, roi_sel: bool):
         self.roi_selected = roi_sel
@@ -16,6 +17,7 @@ class MainWindow:
         self.stop_detection_observable = Subject()
         self.select_roi_observable = Subject()
         self.show_rois_observable = Subject()
+        self.select_card_dimensions_observable = Subject()
 
         self.window = Tk()
         self.window.title("KC Detector")
@@ -38,6 +40,11 @@ class MainWindow:
         self.select_roi_button.pack(side="left")
         self.show_rois_button.pack(side="left", padx=(10, 0))
         self.roi_frame.pack(pady=10)
+
+        self.card_select_button = Button(
+            text="Select Card Dimensions", command=self.select_card_dimensions
+        )
+        self.card_select_button.pack(pady=10)
 
         self.control_frame = Frame(self.window)
         self.start_button = Button(
@@ -81,4 +88,8 @@ class MainWindow:
 
     def show_rois(self):
         self.show_rois_observable.on_next(None)
+        return
+
+    def select_card_dimensions(self):
+        self.select_card_dimensions_observable.on_next(None)
         return

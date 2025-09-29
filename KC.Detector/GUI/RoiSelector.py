@@ -1,10 +1,11 @@
+import numpy as np
 from rx.subject import Subject
+from ImageProcessing.BoxPicker import pick
 from Models.BoundingBox import BoundingBox
 from Models.RoisContainer import RoisContainer
 import cv2 as cv
 from ImageProcessing.ScreenCapturer import take_screenshot
 from screeninfo import get_monitors
-
 
 class RoiSelector:
     rois_selected_observable: Subject
@@ -21,24 +22,12 @@ class RoiSelector:
         base_img = img.copy()
 
         # 3. Generic ROI picker using window title only
-        def pick(window_name: str) -> BoundingBox:
-            tmp = img.copy()
-            # Create a named window to show the prompt in its title bar
-            cv.namedWindow(window_name, cv.WINDOW_NORMAL)
-            cv.resizeWindow(window_name, int(get_monitors()[0].width*0.9), int(get_monitors()[0].height*0.9))
-            cv.imshow(window_name, tmp)
-            # Use selectROI with the window title
-            x, y, w, h = cv.selectROI(window_name, tmp, showCrosshair=True)
-            cv.destroyWindow(window_name)
-            print(f"{window_name} picked: x={x}, y={y}, w={w}, h={h}")
-            return BoundingBox(float(x), float(y),
-                               float(w), float(h))
 
         # 4. Pick ROIs with window titles
         rois = RoisContainer(
-            dealer_roi=pick("Select Dealer ROI"),
-            player_roi=pick("Select Player ROI"),
-            message_roi=pick("Select Message ROI"),
+            dealer_roi=pick("Select Dealer ROI", img.copy()),
+            player_roi=pick("Select Player ROI", img.copy()),
+            message_roi=pick("Select Message ROI", img.copy()),
             base_image=base_img
         )
 

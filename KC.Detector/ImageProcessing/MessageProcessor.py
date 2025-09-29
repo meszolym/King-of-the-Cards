@@ -20,6 +20,7 @@ class MessageProcessor:
         img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
         pil_img = Image.fromarray(img_rgb)
         extracted_text = pytesseract.image_to_string(pil_img)
+        print(extracted_text)
         for k,v in self.possible_messages.items():
             if k in extracted_text:
                 return v
