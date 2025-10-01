@@ -26,7 +26,7 @@ def main():
     gui.rois_selected_observable.subscribe(lambda rois: process_conductor.rois_selected_handler(rois))
     gui.start_detection_observable.subscribe(lambda _: process_conductor.start_preprocessor())
     gui.stop_detection_observable.subscribe(lambda _: process_conductor.stop_preprocessor())
-
+    gui.card_sizes_selected_observable.subscribe(lambda sizes: process_conductor.card_sizes_selected_handler(sizes))
     gui.start_main_window()
 
     return

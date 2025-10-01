@@ -34,3 +34,8 @@ class Message(IntEnum):
     Unknown = 0
     Shuffling = 1
     WaitingForBets = 2
+
+class CardType(IntEnum):
+    Unknown = 0
+    Dealer = 1
+    Player = 2

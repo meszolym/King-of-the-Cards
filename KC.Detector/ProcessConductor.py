@@ -1,10 +1,11 @@
 from rx import operators
 
 from ImageProcessing.Preprocessor import Preprocessor
+from Models.CardSizesContainer import CardSizesContainer
 from Models.RoisContainer import RoisContainer
-from ImageProcessing.MessageProcessor import *
-from ImageProcessing.CardProcessor import *
-from Models.Enums import Message
+from ImageProcessing.MessageProcessor import MessageProcessor
+from ImageProcessing.CardProcessor import CardProcessor
+from Models.Enums import Message, CardType
 from Models.Card import Card
 from Models.Table import Table
 from CardCounting.Organizer import organize_players_cards, organize_dealer_cards
@@ -14,6 +15,8 @@ import multiprocessing
 class ProcessConductor:
 
     preprocessor: Preprocessor
+    card_processor: CardProcessor
+
     table_state: Table
     msg_processor: MessageProcessor
     pool_scheduler : ThreadPoolScheduler
@@ -21,11 +24,12 @@ class ProcessConductor:
     def __init__(self):
         self.table_state = Table(None, None, None)
         self.preprocessor = None
+        self.card_processor = CardProcessor()
         self.pool_scheduler = ThreadPoolScheduler(multiprocessing.cpu_count())
         self.msg_processor = MessageProcessor()
         return
 
-    def read_possible_messages(self, filepath: str):
+    def read_possible_messages(self, filepath: str): #TODO: use
         if self.msg_processor is None:
             self.msg_processor = MessageProcessor()
         self.msg_processor.read_possible_messages(filepath)
@@ -46,6 +50,10 @@ class ProcessConductor:
         self.preprocessor.player_image_observable.subscribe(lambda img: self.player_image_handler(img))
         return
 
+    def card_sizes_selected_handler(self, sizes : CardSizesContainer):
+        self.card_processor.card_sizes = sizes
+        pass
+
     def start_preprocessor(self):
         self.preprocessor.start()
         return
@@ -65,16 +73,14 @@ class ProcessConductor:
         # TODO: Update GUI
         return
 
-    @staticmethod
     def dealer_image_handler(self, image):
-        cards : list[Card] = process_cards(image)
+        cards : list[Card] = self.card_processor.process_cards(image, CardType.Dealer)
         #TODO: organizer call to update dealer hand
         #TODO: Update GUI
         return
 
-    @staticmethod
     def player_image_handler(self, image):
-        cards : list[Card] = process_cards(image)
-        organize_players_cards(cards, self.table_state)
+        cards : list[Card] = self.card_processor.process_cards(image, CardType.Player)
+        #organize_players_cards(cards, self.table_state)
         #TODO: Update GUI
         return

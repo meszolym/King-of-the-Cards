@@ -2,11 +2,10 @@
 import threading
 import time
 from threading import Thread
-
+from ImageProcessing.Utils import get_roi, take_screenshot
 from Models.BoundingBox import BoundingBox
 from Models.RoisContainer import RoisContainer
 from rx.subject import Subject
-from ImageProcessing.ScreenCapturer import  take_screenshot
 import numpy as np
 
 class Preprocessor:
@@ -38,21 +37,11 @@ class Preprocessor:
         while self.run:
             img = take_screenshot().copy()
 
-            self.dealer_image_observable.on_next(self.get_roi(img.copy(), self.rois.dealer_roi))
-            self.player_image_observable.on_next(self.get_roi(img.copy(), self.rois.player_roi))
-            self.message_image_observable.on_next(self.get_roi(img.copy(), self.rois.message_roi))
+            self.dealer_image_observable.on_next(get_roi(img.copy(), self.rois.dealer_roi))
+            self.player_image_observable.on_next(get_roi(img.copy(), self.rois.player_roi))
+            self.message_image_observable.on_next(get_roi(img.copy(), self.rois.message_roi))
             time.sleep(1)
         return
-
-    @staticmethod
-    def get_roi(img: np.ndarray, box: BoundingBox) -> np.ndarray:
-        """Extracts the ROI from the image based on the bounding box."""
-        h, w, _ = img.shape
-        x1 = int(box.x)
-        y1 = int(box.y)
-        x2 = int((box.x + box.w))
-        y2 = int((box.y + box.h))
-        return img[y1:y2, x1:x2]
 
     def stop(self):
         if self.worker_thread.is_alive():
