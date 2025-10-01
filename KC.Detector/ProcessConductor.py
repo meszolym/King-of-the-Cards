@@ -66,13 +66,13 @@ class ProcessConductor:
         return
 
     def dealer_image_handler(self, image):
-        cards : list[Card] = process_cards(image)
+        cards : list[Card] = process_cards(image, 1)
         #TODO: organizer call to update dealer hand
         #TODO: Update GUI
         return
 
     def player_image_handler(self, image):
-        cards : list[Card] = process_cards(image)
-        organize_players_cards(cards, self.table_state)
+        #cards : list[Card] = process_cards(image)
+        #organize_players_cards(cards, self.table_state)
         #TODO: Update GUI
         return

@@ -10,7 +10,7 @@ def process_cards(img : np.ndarray, approx_size: float): #-> list[Card]:
 
     gray = cv.cvtColor(img.copy(), cv.COLOR_BGR2GRAY)
     canny = cv.Canny(gray, 200,200)
-    dilated = cv.dilate(canny,cv.getStructuringElement(cv.MORPH_ELLIPSE, (5,5)), iterations = 2)
+    dilated = cv.dilate(canny,cv.getStructuringElement(cv.MORPH_ELLIPSE, (3,3)), iterations = 2)
     contours, hierarchy = cv.findContours(dilated, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
 
     card_boxes : list[BoundingBox] = []
