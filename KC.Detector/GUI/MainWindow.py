@@ -21,7 +21,9 @@ class MainWindow:
 
         self.window = Tk()
         self.window.title("KC Detector")
-        self.window.geometry("300x200")
+        self.window.geometry("300x225")
+        self.window.minsize(300, 225)
+        self.window.maxsize(300, 225)
 
         self.title_label = Label(self.window, text="Welcome to KC Detector")
         self.title_label.pack(pady=(20, 10))
