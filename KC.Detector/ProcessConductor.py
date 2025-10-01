@@ -3,8 +3,8 @@ from rx import operators
 from ImageProcessing.Preprocessor import Preprocessor
 from Models.CardSizesContainer import CardSizesContainer
 from Models.RoisContainer import RoisContainer
-from ImageProcessing.MessageProcessor import *
-from ImageProcessing.CardProcessor import *
+from ImageProcessing.MessageProcessor import MessageProcessor
+from ImageProcessing.CardProcessor import CardProcessor, CardType
 from Models.Enums import Message
 from Models.Card import Card
 from Models.Table import Table
