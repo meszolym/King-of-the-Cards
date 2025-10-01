@@ -5,7 +5,6 @@ from GUI.MainWindow import MainWindow
 from GUI.BoxSelector import BoxSelector
 from rx.subject import Subject
 
-from Models.BoundingBox import BoundingBox
 from Models.CardSizesContainer import CardSizesContainer
 from Models.RoisContainer import RoisContainer
 from GUI.RoiShower import show_rois

@@ -28,11 +28,11 @@ class CardProcessor:
         if self.card_sizes is None:
             raise Exception("Card sizes not set")
 
-        if card_type not in [CardType.DEALER, CardType.PLAYER]:
-            raise Exception("Invalid card type")
+        if card_type not in [CardType.Dealer, CardType.Player]:
+            raise ValueError(f"Invalid card type: {card_type}")
 
         cards : list[Card] = []
-        approx_size = self.card_sizes.dealer_card_size if card_type == CardType.DEALER else self.card_sizes.player_card_size
+        approx_size = self.card_sizes.dealer_card if card_type == CardType.Dealer else self.card_sizes.player_card
         gray = cv.cvtColor(img.copy(), cv.COLOR_BGR2GRAY)
         canny = cv.Canny(gray, self.CONST_CANNY_THRESHOLD1,self.CONST_CANNY_THRESHOLD2)
         dilated = cv.dilate(canny,cv.getStructuringElement(cv.MORPH_ELLIPSE, self.CONST_KERNEL_SIZE), iterations = self.CONST_ITERATIONS)
@@ -41,7 +41,7 @@ class CardProcessor:
         card_boxes : list[BoundingBox] = []
 
         for contour in contours:
-            if approx_size*self.CONST_CONTOUR_AREA_PCT_MIN < cv.contourArea(contour) < approx_size*self.CONST_CONTOUR_AREA_PCT_MIN:
+            if approx_size*self.CONST_CONTOUR_AREA_PCT_MIN < cv.contourArea(contour) < approx_size*self.CONST_CONTOUR_AREA_PCT_MAX:
                 epsilon = 0.1*cv.arcLength(contour,True)
                 approx = cv.approxPolyDP(contour,epsilon,True)
                 x, y, w, h = cv.boundingRect(contour)

@@ -8,7 +8,6 @@ from Models.BoundingBox import BoundingBox
 
 def get_roi(img: np.ndarray, box: BoundingBox) -> np.ndarray:
     """Extracts the ROI from the image based on the bounding box."""
-    h, w, _ = img.shape
     x1 = int(box.x)
     y1 = int(box.y)
     x2 = int((box.x + box.w))
@@ -30,7 +29,7 @@ def take_screenshot() -> np.ndarray:
     try:
         bbox = _get_primary_monitor_bbox()
         print(f"[INFO] Capturing screenshot with bbox: {bbox}")
-        img_pil = psc.grab(bbox=bbox)  #this is where it dies
+        img_pil = psc.grab(bbox=bbox)
         print("[INFO] Screenshot captured, converting to numpy array.")
         img_rgb = np.array(img_pil)
         print("[INFO] Converted to numpy array.")
