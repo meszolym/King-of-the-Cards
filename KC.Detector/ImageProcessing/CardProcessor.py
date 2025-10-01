@@ -42,8 +42,6 @@ class CardProcessor:
 
         for contour in contours:
             if approx_size*self.CONST_CONTOUR_AREA_PCT_MIN < cv.contourArea(contour) < approx_size*self.CONST_CONTOUR_AREA_PCT_MAX:
-                epsilon = 0.1*cv.arcLength(contour,True)
-                approx = cv.approxPolyDP(contour,epsilon,True)
                 x, y, w, h = cv.boundingRect(contour)
                 card_boxes.append(BoundingBox(x,y,w,h))
 
