@@ -29,7 +29,7 @@ class CardProcessor:
             raise Exception("Card sizes not set")
 
         if card_type not in [CardType.Dealer, CardType.Player]:
-            raise ValueError(f"Invalid card type: {card_type}")
+            raise ValueError(f"Invalid card type: {card_type}. Valid types are CardType.Dealer and CardType.Player. Please pass a valid card type to process_cards().")
 
         cards : list[Card] = []
         approx_size = self.card_sizes.dealer_card if card_type == CardType.Dealer else self.card_sizes.player_card
