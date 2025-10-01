@@ -4,8 +4,8 @@ from ImageProcessing.Preprocessor import Preprocessor
 from Models.CardSizesContainer import CardSizesContainer
 from Models.RoisContainer import RoisContainer
 from ImageProcessing.MessageProcessor import MessageProcessor
-from ImageProcessing.CardProcessor import CardProcessor, CardType
-from Models.Enums import Message
+from ImageProcessing.CardProcessor import CardProcessor
+from Models.Enums import Message, CardType
 from Models.Card import Card
 from Models.Table import Table
 from CardCounting.Organizer import organize_players_cards, organize_dealer_cards
