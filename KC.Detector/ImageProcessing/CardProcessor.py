@@ -7,7 +7,7 @@ from Models.BoundingBox import BoundingBox
 import cv2 as cv
 
 from Models.CardSizesContainer import CardSizesContainer
-from Models.Enums import CardType
+from Models.Enums import CardType, Rank, Suit
 
 
 class CardProcessor:
@@ -33,6 +33,12 @@ class CardProcessor:
 
         cards : list[Card] = []
         approx_size = self.card_sizes.dealer_card if card_type == CardType.Dealer else self.card_sizes.player_card
+        boxes = self.find_card_boxes(img, approx_size)
+        for box in boxes:
+            cards.append(self.process_card(img, box))
+        return cards
+
+    def find_card_boxes(self, img: np.ndarray, approx_size: int) -> list[BoundingBox]:
         gray = cv.cvtColor(img.copy(), cv.COLOR_BGR2GRAY)
         canny = cv.Canny(gray, self.CONST_CANNY_THRESHOLD1,self.CONST_CANNY_THRESHOLD2)
         dilated = cv.dilate(canny,cv.getStructuringElement(cv.MORPH_ELLIPSE, self.CONST_KERNEL_SIZE), iterations = self.CONST_ITERATIONS)
@@ -45,5 +51,13 @@ class CardProcessor:
                 x, y, w, h = cv.boundingRect(contour)
                 card_boxes.append(BoundingBox(x,y,w,h))
 
-        #TODO: Implement card processing here
-        return cards
+        return card_boxes
+
+    @staticmethod
+    def process_card(img: np.ndarray, box: BoundingBox) -> Card:
+        card_top_left = img[box.y:box.y + box.h / 2, box.x:box.x + box.w / 2].copy()
+        #TODO: do template matching
+        rank = Rank.Unknown
+        suit = Suit.Unknown
+
+        return Card(rank, suit, box)
