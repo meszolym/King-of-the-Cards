@@ -1,4 +1,6 @@
 #Do the processing of cards (rank, suit, etc.) here
+import os
+import re
 from typing import Optional
 
 import numpy as np
@@ -33,7 +35,7 @@ class CardProcessor:
 
         cards : list[Card] = []
         approx_size = self.card_sizes.dealer_card if card_type == CardType.Dealer else self.card_sizes.player_card
-        boxes = self.find_card_boxes(img, approx_size)
+        boxes = self.find_card_boxes(img, round(approx_size))
         for box in boxes:
             cards.append(self.process_card(img, box))
         return cards
@@ -55,9 +57,66 @@ class CardProcessor:
 
     @staticmethod
     def process_card(img: np.ndarray, box: BoundingBox) -> Card:
-        card_top_left = img[box.y:box.y + box.h / 2, box.x:box.x + box.w / 2].copy()
-        #TODO: do template matching
-        rank = Rank.Unknown
-        suit = Suit.Unknown
+        # Extract the top-left region of the card
+        card_top_left = img[
+            int(box.y):int(box.y + box.h / 3),
+            int(box.x):int(box.x + box.w / 3)
+        ].copy()
+
+        directory = "Assets/CardsCut/"
+        best_score = float('-inf')
+        best_match_name = None
+
+        card_top_left_gray = cv.cvtColor(card_top_left, cv.COLOR_BGR2GRAY)
+
+        for filename in os.listdir(directory):
+            if not filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+                continue
+            template_path = os.path.join(directory, filename)
+            template_img = cv.imread(template_path)
+            if template_img is None:
+                continue
+            template_img_gray = cv.cvtColor(template_img, cv.COLOR_BGR2GRAY)
+            res = cv.matchTemplate(card_top_left_gray, template_img_gray, cv.TM_CCOEFF_NORMED)
+            _, max_val, _, _ = cv.minMaxLoc(res)
+            if max_val > best_score:
+                best_score = max_val
+                best_match_name = filename
+
+        suit, rank = CardProcessor.parse_filename(best_match_name or "")
 
         return Card(rank, suit, box)
+
+    @staticmethod
+    def parse_filename(filename: str) -> tuple[Suit,Rank]:
+        suit_map = {
+            "Hearts": Suit.Hearts,
+            "Diamonds": Suit.Diamonds,
+            "Clubs": Suit.Clubs,
+            "Spades": Suit.Spades,
+        }
+        rank_map = {
+            "A": Rank.Ace,
+            "2": Rank.Two,
+            "3": Rank.Three,
+            "4": Rank.Four,
+            "5": Rank.Five,
+            "6": Rank.Six,
+            "7": Rank.Seven,
+            "8": Rank.Eight,
+            "9": Rank.Nine,
+            "T": Rank.Ten,
+            "10": Rank.Ten,
+            "J": Rank.Jack,
+            "Q": Rank.Queen,
+            "K": Rank.King,
+        }
+
+        match = re.match(r'card([A-Za-z]+)([A2-9TJQK]|10)\.png', filename)
+        if match:
+            suit_str, rank_str = match.groups()
+            suit = suit_map.get(suit_str, Suit.Unknown)
+            rank = rank_map.get(rank_str, Rank.Unknown)
+        else:
+            suit, rank = Suit.Unknown, Rank.Unknown
+        return suit, rank
