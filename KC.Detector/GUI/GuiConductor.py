@@ -1,3 +1,4 @@
+from tkinter import filedialog
 from typing import Optional
 
 from GUI.Overlay import Overlay
@@ -18,6 +19,8 @@ class GuiConductor:
     card_sizes_selected_observable : Subject
     start_detection_observable : Subject
     stop_detection_observable : Subject
+    read_rois_and_card_dimensions_json_observable : Subject
+    write_rois_and_card_dimensions_json_observable : Subject
 
     rois : Optional[RoisContainer]
 
@@ -30,12 +33,16 @@ class GuiConductor:
         self.card_sizes_selected_observable = Subject()
         self.start_detection_observable = Subject()
         self.stop_detection_observable = Subject()
+        self.read_rois_and_card_dimensions_json_observable = Subject()
+        self.write_rois_and_card_dimensions_json_observable = Subject()
 
         self.main_window.start_detection_observable.subscribe(lambda _: self.start_detection())
         self.main_window.stop_detection_observable.subscribe(lambda _: self.stop_detection())
         self.main_window.select_roi_observable.subscribe(lambda _: self.box_selector.open_roi_selector())
-        self.main_window.show_rois_observable.subscribe(lambda _: self.show_rois())
+        self.main_window.show_rois_observable.subscribe(lambda _: show_rois(self.rois))
         self.main_window.select_card_dimensions_observable.subscribe(lambda _: self.box_selector.open_card_box_selector())
+        self.main_window.read_rois_and_card_dimensions_json_observable.subscribe(lambda _: self.read_rois_and_card_sizes())
+        self.main_window.write_rois_and_card_dimensions_json_observable.subscribe(lambda _: self.write_rois_and_card_sizes())
 
         self.box_selector.rois_selected_observable.subscribe(lambda rois: self.rois_selected(rois))
         self.box_selector.card_box_selected_observable.subscribe(lambda sizes: self.card_sizes_selected(sizes))
@@ -69,11 +76,18 @@ class GuiConductor:
         self.main_window.update_state()
         self.card_sizes_selected_observable.on_next(sizes)
 
-        pass
-
-    def show_rois(self):
-        show_rois(self.rois)
         return
 
+    def read_rois_and_card_sizes(self):
+        filename = filedialog.askopenfilename(defaultextension=".json")
+        if filename is None or filename == "":
+            return
+        self.read_rois_and_card_dimensions_json_observable.on_next(filename)
+        return
 
-
+    def write_rois_and_card_sizes(self):
+        filename = filedialog.asksaveasfilename(defaultextension=".json")
+        if filename is None or filename == "":
+            return
+        self.write_rois_and_card_dimensions_json_observable.on_next(filename)
+        return

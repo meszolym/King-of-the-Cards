@@ -11,6 +11,8 @@ class MainWindow:
     select_roi_observable : Subject
     show_rois_observable : Subject
     select_card_dimensions_observable : Subject
+    read_rois_and_card_dimensions_json_observable : Subject
+    write_rois_and_card_dimensions_json_observable : Subject
 
     def __init__(self, roi_sel: bool):
         self.roi_selected = roi_sel
@@ -19,12 +21,14 @@ class MainWindow:
         self.select_roi_observable = Subject()
         self.show_rois_observable = Subject()
         self.select_card_dimensions_observable = Subject()
+        self.read_rois_and_card_dimensions_json_observable = Subject()
+        self.write_rois_and_card_dimensions_json_observable = Subject()
 
         self.window = Tk()
         self.window.title("KC Detector")
-        self.window.geometry("300x250")
-        self.window.minsize(300, 250)
-        self.window.maxsize(300, 250)
+        self.window.geometry("300x320")
+        self.window.minsize(300, 320)
+        self.window.maxsize(300, 320)
 
         self.title_label = Label(self.window, text="Welcome to KC Detector")
         self.title_label.pack(pady=(20, 10))
@@ -33,31 +37,37 @@ class MainWindow:
         self.select_roi_button = Button(
             self.roi_frame,
             text="Re-select ROIs" if self.roi_selected else "Select ROIs",
-            command=self.select_roi
+            command=lambda: self.select_roi_observable.on_next(None)
         )
         self.show_rois_button = Button(
             self.roi_frame,
             text="Show ROIs",
-            command=self.show_rois
+            command=lambda: self.show_rois_observable.on_next(None)
         )
         self.select_roi_button.pack(side="left")
         self.show_rois_button.pack(side="left", padx=(10, 0))
         self.roi_frame.pack(pady=10)
 
         self.card_select_button = Button(
-            text="Select Card Dimensions", command=self.select_card_dimensions
+            text="Select Card Dimensions", command=lambda: self.select_card_dimensions_observable.on_next(None)
         )
         self.card_select_button.pack()
 
         self.card_sizes_label = Label(self.window, text="(Not selected)")
         self.card_sizes_label.pack(pady=10)
 
+        self.read_json_button = Button(self.window, text="Read ROIs and dimensions from JSON", command=lambda: self.read_rois_and_card_dimensions_json_observable.on_next(None))
+        self.read_json_button.pack()
+
+        self.write_json_button = Button(self.window, text="Write ROIs and dimensions to JSON", command=lambda: self.write_rois_and_card_dimensions_json_observable.on_next(None))
+        self.write_json_button.pack(pady=10)
+
         self.control_frame = Frame(self.window)
         self.start_button = Button(
-            self.control_frame, text="Start Detection", command=self.start_detection
+            self.control_frame, text="Start Detection", command=lambda: self.start_detection_observable.on_next(None)
         )
         self.stop_button = Button(
-            self.control_frame, text="Stop Detection", command=self.stop_detection
+            self.control_frame, text="Stop Detection", command=lambda: self.stop_detection_observable.on_next(None)
         )
         self.start_button.pack(side="left", padx=(0, 10))
         self.stop_button.pack(side="left")
@@ -89,22 +99,6 @@ class MainWindow:
             text="(Selected)" if self.card_sizes_selected else "(Not selected)"
         )
 
-    def select_roi(self):
-        self.select_roi_observable.on_next(None)
-        return
-
-    def start_detection(self):
-        self.start_detection_observable.on_next(None)
-        return
-
-    def stop_detection(self):
-        self.stop_detection_observable.on_next(None)
-        return
-
-    def show_rois(self):
-        self.show_rois_observable.on_next(None)
-        return
-
-    def select_card_dimensions(self):
-        self.select_card_dimensions_observable.on_next(None)
-        return
+        self.write_json_button.config(
+            state="normal" if self.roi_selected and self.card_sizes_selected else "disabled"
+        )

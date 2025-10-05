@@ -27,6 +27,11 @@ def main():
     gui.start_detection_observable.subscribe(lambda _: process_conductor.start_preprocessor())
     gui.stop_detection_observable.subscribe(lambda _: process_conductor.stop_preprocessor())
     gui.card_sizes_selected_observable.subscribe(lambda sizes: process_conductor.card_sizes_selected_handler(sizes))
+    gui.read_rois_and_card_dimensions_json_observable.subscribe(lambda filepath: process_conductor.read_rois_and_card_dimensions(filepath))
+    gui.write_rois_and_card_dimensions_json_observable.subscribe(lambda filepath: process_conductor.write_rois_and_card_dimensions(filepath))
+    process_conductor.done_reading_rois_and_card_dimensions_json_observable.subscribe(lambda json_data: gui.rois_selected(json_data.rois_container))
+    process_conductor.done_reading_rois_and_card_dimensions_json_observable.subscribe(lambda json_data: gui.card_sizes_selected(json_data.sizes_container))
+
     gui.start_main_window()
 
     return

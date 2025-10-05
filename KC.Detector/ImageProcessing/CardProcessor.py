@@ -26,6 +26,18 @@ class CardProcessor:
     def __init__(self):
         self.card_sizes = None
         return
+
+
+    @staticmethod
+    def _show_boxes(img, boxes, message):
+        for box in boxes:
+            cv.rectangle(img, (int(box.x), int(box.y)), (int(box.x + box.w), int(box.y + box.h)), (0, 255, 0), 2)
+            if message:
+                cv.putText(img, message, (int(box.x), int(box.y) - 10), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+        cv.imshow("Detected Cards", img)
+        cv.waitKey(0)
+        cv.destroyAllWindows()
+
     def process_cards(self, img : np.ndarray, card_type: CardType) -> list[Card]:
         if self.card_sizes is None:
             raise Exception("Card sizes not set")
@@ -36,6 +48,9 @@ class CardProcessor:
         cards : list[Card] = []
         approx_size = self.card_sizes.dealer_card if card_type == CardType.Dealer else self.card_sizes.player_card
         boxes = self.find_card_boxes(img, round(approx_size))
+
+        self._show_boxes(img.copy(), boxes,"") # for debugging
+
         for box in boxes:
             cards.append(self.process_card(img, box))
         return cards

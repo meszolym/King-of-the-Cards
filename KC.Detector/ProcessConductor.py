@@ -1,7 +1,12 @@
+import json
+
 from rx import operators
+from rx.subject import Subject
 
 from ImageProcessing.Preprocessor import Preprocessor
+from Models.BoundingBox import BoundingBox
 from Models.CardSizesContainer import CardSizesContainer
+from Models.JsonDataContainer import JsonDataContainer
 from Models.RoisContainer import RoisContainer
 from ImageProcessing.MessageProcessor import MessageProcessor
 from ImageProcessing.CardProcessor import CardProcessor
@@ -11,6 +16,7 @@ from Models.Table import Table
 from CardCounting.Organizer import organize_players_cards, organize_dealer_cards
 from rx.scheduler import ThreadPoolScheduler
 import multiprocessing
+import cv2 as cv
 
 class ProcessConductor:
 
@@ -21,18 +27,49 @@ class ProcessConductor:
     msg_processor: MessageProcessor
     pool_scheduler : ThreadPoolScheduler
 
+    done_reading_rois_and_card_dimensions_json_observable : Subject
+
     def __init__(self):
         self.table_state = Table(None, None, None)
         self.preprocessor = None
         self.card_processor = CardProcessor()
         self.pool_scheduler = ThreadPoolScheduler(multiprocessing.cpu_count())
         self.msg_processor = MessageProcessor()
+
+        self.done_reading_rois_and_card_dimensions_json_observable = Subject()
         return
 
     def read_possible_messages(self, filepath: str): #TODO: use
         if self.msg_processor is None:
             self.msg_processor = MessageProcessor()
         self.msg_processor.read_possible_messages(filepath)
+        return
+
+    def read_rois_and_card_dimensions(self, filepath: str):
+        with open(filepath, "r") as f:
+            data = json.load(f)
+        rois = data.get("Rois", {})
+        sizes = data.get("Sizes", {})
+
+        dealer_roi_raw = rois.get("DealerRoi", [0.0, 0.0, 0.0, 0.0])
+        dealer_roi = BoundingBox(dealer_roi_raw[0], dealer_roi_raw[1], dealer_roi_raw[2], dealer_roi_raw[3])
+        player_roi_raw = rois.get("PlayerRoi", [0.0, 0.0, 0.0, 0.0])
+        player_roi = BoundingBox(player_roi_raw[0], player_roi_raw[1], player_roi_raw[2], player_roi_raw[3])
+        message_roi_raw = rois.get("MessageRoi", [0.0, 0.0, 0.0, 0.0])
+        message_roi = BoundingBox(message_roi_raw[0], message_roi_raw[1], message_roi_raw[2], message_roi_raw[3])
+        base_image_path = rois.get("BaseImagePath", "")
+
+        dealer_card_size = sizes.get("DealerCardSize", 0.0)
+        player_card_size = sizes.get("PlayerCardSize", 0.0)
+        img = cv.imread(base_image_path)
+
+        rois_container = RoisContainer(dealer_roi, player_roi, message_roi, img)
+        sizes_container = CardSizesContainer(dealer_card_size, player_card_size)
+
+        self.rois_selected_handler(rois_container)
+        self.card_sizes_selected_handler(sizes_container)
+
+        self.done_reading_rois_and_card_dimensions_json_observable.on_next(JsonDataContainer(rois_container, sizes_container))
         return
 
     def rois_selected_handler(self, rois : RoisContainer):
@@ -83,4 +120,31 @@ class ProcessConductor:
         cards : list[Card] = self.card_processor.process_cards(image, CardType.Player)
         #organize_players_cards(cards, self.table_state)
         #TODO: Update GUI
+        return
+
+    def write_rois_and_card_dimensions(self, filepath):
+        if self.preprocessor is None or self.card_processor is None:
+            return
+        rois = self.preprocessor.rois
+        sizes = self.card_processor.card_sizes
+        image_path = filepath[:-5] + ".jpg"
+
+
+        data = {
+            "Rois": {
+                "DealerRoi": [rois.dealer_roi.x, rois.dealer_roi.y, rois.dealer_roi.w, rois.dealer_roi.h],
+                "PlayerRoi": [rois.player_roi.x, rois.player_roi.y, rois.player_roi.w, rois.player_roi.h],
+                "MessageRoi": [rois.message_roi.x, rois.message_roi.y, rois.message_roi.w, rois.message_roi.h],
+                "BaseImagePath": image_path
+            },
+            "Sizes": {
+                "DealerCardSize": sizes.dealer_card,
+                "PlayerCardSize": sizes.player_card
+            },
+        }
+        with open(filepath, "w") as f:
+            json.dump(data, f, indent=4)
+
+        cv.imwrite(image_path, rois.base_image)
+
         return
