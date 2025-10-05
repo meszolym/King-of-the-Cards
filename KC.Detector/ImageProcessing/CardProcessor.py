@@ -13,11 +13,10 @@ from Models.Enums import CardType, Rank, Suit
 
 
 class CardProcessor:
-
-    CONST_KERNEL_SIZE = (3,3)
+    CONST_CANNY_THRESHOLD1 = 250
+    CONST_CANNY_THRESHOLD2 = 250
+    CONST_KERNEL_SIZE = (3, 3)
     CONST_ITERATIONS = 2
-    CONST_CANNY_THRESHOLD1 = 200
-    CONST_CANNY_THRESHOLD2 = 200
     CONST_CONTOUR_AREA_PCT_MIN = 0.9
     CONST_CONTOUR_AREA_PCT_MAX = 1.1
 
@@ -49,7 +48,7 @@ class CardProcessor:
         approx_size = self.card_sizes.dealer_card if card_type == CardType.Dealer else self.card_sizes.player_card
         boxes = self.find_card_boxes(img, round(approx_size))
 
-        self._show_boxes(img.copy(), boxes,"") # for debugging
+        # self._show_boxes(img.copy(), boxes,"") # for debugging
 
         for box in boxes:
             cards.append(self.process_card(img, box))
@@ -60,6 +59,12 @@ class CardProcessor:
         canny = cv.Canny(gray, self.CONST_CANNY_THRESHOLD1,self.CONST_CANNY_THRESHOLD2)
         dilated = cv.dilate(canny,cv.getStructuringElement(cv.MORPH_ELLIPSE, self.CONST_KERNEL_SIZE), iterations = self.CONST_ITERATIONS)
         contours, hierarchy = cv.findContours(dilated, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
+
+        # debug_img = img.copy()
+        # cv.drawContours(debug_img, contours, -1, (255, 0, 0), 2)
+        # cv.imshow("All Contours", debug_img)
+        # cv.waitKey(0)
+        # cv.destroyAllWindows()
 
         card_boxes : list[BoundingBox] = []
 
