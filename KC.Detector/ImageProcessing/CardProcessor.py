@@ -112,7 +112,7 @@ class CardProcessor:
             template_top_left = template_total[:template_total.shape[0]//3, :template_total.shape[1]//3]
             template_top_left = cv.resize(template_top_left, target_size_top_left)
 
-            res_top_left = cv.matchTemplate(card_top_left, template_top_left, cv.TM_CCOEFF_NORMED)
+            res_top_left = cv.matchTemplate(card_top_left, template_top_left, cv.TM_CCOEFF_NORMED) #TODO: Maybe use multiple methods and average the scores?
             _, max_val_top_left, _, _ = cv.minMaxLoc(res_top_left)
 
             res_total = cv.matchTemplate(card_total, template_total, cv.TM_CCOEFF_NORMED)
