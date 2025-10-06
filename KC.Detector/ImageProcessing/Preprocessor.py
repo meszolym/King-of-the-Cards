@@ -2,11 +2,12 @@
 import threading
 import time
 from threading import Thread
-from ImageProcessing.Utils import get_roi, take_screenshot
-from Models.BoundingBox import BoundingBox
-from Models.RoisContainer import RoisContainer
+
 from rx.subject import Subject
-import numpy as np
+
+from ImageProcessing.Utils import get_roi, take_screenshot
+from Models.RoisContainer import RoisContainer
+
 
 class Preprocessor:
     run : bool = False

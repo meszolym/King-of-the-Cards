@@ -1,6 +1,5 @@
-from Models.Table import Table
 from Models.Enums import Rank
-from Models.Hand import Hand
+from Models.Table import Table
 
 
 def hilo_running_count(table: Table) -> int:

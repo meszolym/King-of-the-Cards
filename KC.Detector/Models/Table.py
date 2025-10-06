@@ -1,7 +1,9 @@
-from Models.Hand import Hand
-from Models.Card import Card
-from Models.Enums import Rank
 from dataclasses import dataclass
+
+from Models.Card import Card
+from Models.Hand import Hand
+
+
 @dataclass
 class Table:
     dealer_hand: Hand

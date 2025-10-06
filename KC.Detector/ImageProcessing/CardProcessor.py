@@ -13,8 +13,7 @@ from Models.Enums import CardType, Rank, Suit
 
 
 class CardProcessor:
-    CONST_CANNY_THRESHOLD1 = 250
-    CONST_CANNY_THRESHOLD2 = 250
+    CONST_CANNY_CARD_EDGE_THRESHOLD1, CONST_CANNY_CARD_EDGE_THRESHOLD2 = 250, 250
     CONST_KERNEL_SIZE = (3, 3)
     CONST_ITERATIONS = 2
     CONST_CONTOUR_AREA_PCT_MIN = 0.9
@@ -31,7 +30,7 @@ class CardProcessor:
     def _show_cards(img, cards):
         for card in cards:
             cv.rectangle(img, (int(card.box.x), int(card.box.y)), (int(card.box.x + card.box.w), int(card.box.y + card.box.h)), (0, 255, 0), 2)
-            cv.putText(img, f"{card.rank.name} of {card.suit.name}", (int(card.box.x), int(card.box.y) - 10), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            cv.putText(img, f"{card.rank.name} of {card.suit.name} ({card.recognition_confidence})", (int(card.box.x), int(card.box.y) - 10), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
         cv.imshow("Detected Cards", img)
         cv.waitKey(0)
         cv.destroyAllWindows()
@@ -59,7 +58,7 @@ class CardProcessor:
 
     def find_card_boxes(self, img: np.ndarray, approx_size: int) -> list[BoundingBox]:
         gray = cv.cvtColor(img.copy(), cv.COLOR_BGR2GRAY)
-        canny = cv.Canny(gray, self.CONST_CANNY_THRESHOLD1,self.CONST_CANNY_THRESHOLD2)
+        canny = cv.Canny(gray, self.CONST_CANNY_CARD_EDGE_THRESHOLD1, self.CONST_CANNY_CARD_EDGE_THRESHOLD2)
         dilated = cv.dilate(canny,cv.getStructuringElement(cv.MORPH_ELLIPSE, self.CONST_KERNEL_SIZE), iterations = self.CONST_ITERATIONS)
         contours, hierarchy = cv.findContours(dilated, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
 
@@ -84,13 +83,14 @@ class CardProcessor:
             int(box.y):int(box.y + box.h),
             int(box.x):int(box.x + box.w)
         ].copy()
-        card_total_gray = cv.cvtColor(card_total, cv.COLOR_BGR2GRAY)
-        card_total_gray = cv.equalizeHist(card_total_gray)
-        crop_height_total, crop_width_total = card_total_gray.shape
+        card_total = cv.cvtColor(card_total, cv.COLOR_BGR2GRAY)
+        card_total = cv.threshold(card_total, 120, 255, cv.THRESH_BINARY)[1]
+
+        crop_height_total, crop_width_total = card_total.shape
         target_size_total = (crop_width_total, crop_height_total)
 
-        card_top_left_gray = card_total_gray[:card_total_gray.shape[0]//3, :card_total_gray.shape[1]//3].copy()
-        crop_height_top_left, crop_width_top_left = card_top_left_gray.shape
+        card_top_left = card_total[:card_total.shape[0]//3, :card_total.shape[1]//3].copy()
+        crop_height_top_left, crop_width_top_left = card_top_left.shape
         target_size_top_left = (crop_width_top_left, crop_height_top_left)
 
         directory = "Assets/Cards/"
@@ -101,20 +101,21 @@ class CardProcessor:
             if not filename.lower().endswith(('.png', '.jpg', '.jpeg')):
                 continue
             template_path = os.path.join(directory, filename)
-            template_img = cv.imread(template_path)
-            if template_img is None:
+            template_total = cv.imread(template_path)
+            if template_total is None:
                 continue
 
-            template_img_gray = cv.cvtColor(template_img, cv.COLOR_BGR2GRAY)
-            template_img_gray = cv.equalizeHist(template_img_gray)
-            template_img_top_left = template_img_gray[:template_img_gray.shape[0]//3, :template_img_gray.shape[1]//3]
-            template_top_left_resized = cv.resize(template_img_top_left, target_size_top_left)
-            template_total_resized = cv.resize(template_img_gray, target_size_total)
+            template_total = cv.cvtColor(template_total, cv.COLOR_BGR2GRAY)
+            template_total = cv.resize(template_total, target_size_total)
+            template_total = cv.threshold(template_total, 120, 255, cv.THRESH_BINARY)[1]
 
-            res_top_left = cv.matchTemplate(card_top_left_gray, template_top_left_resized, cv.TM_CCOEFF_NORMED)
+            template_top_left = template_total[:template_total.shape[0]//3, :template_total.shape[1]//3]
+            template_top_left = cv.resize(template_top_left, target_size_top_left)
+
+            res_top_left = cv.matchTemplate(card_top_left, template_top_left, cv.TM_CCOEFF_NORMED)
             _, max_val_top_left, _, _ = cv.minMaxLoc(res_top_left)
 
-            res_total = cv.matchTemplate(card_total_gray, template_total_resized, cv.TM_CCOEFF_NORMED)
+            res_total = cv.matchTemplate(card_total, template_total, cv.TM_CCOEFF_NORMED)
             _, max_val_total, _, _ = cv.minMaxLoc(res_total)
 
             if (max_val_top_left+max_val_total)/2 > best_score:
@@ -126,7 +127,7 @@ class CardProcessor:
         if best_score < 0.6:
             suit, rank = Suit.Unknown, Rank.Unknown
 
-        return Card(rank, suit, box)
+        return Card(rank, suit, box, best_score)
 
     @staticmethod
     def parse_filename(filename: str) -> tuple[Suit,Rank]:
