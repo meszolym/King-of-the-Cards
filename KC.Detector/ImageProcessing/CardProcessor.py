@@ -28,11 +28,10 @@ class CardProcessor:
 
 
     @staticmethod
-    def _show_boxes(img, boxes, message):
-        for box in boxes:
-            cv.rectangle(img, (int(box.x), int(box.y)), (int(box.x + box.w), int(box.y + box.h)), (0, 255, 0), 2)
-            if message:
-                cv.putText(img, message, (int(box.x), int(box.y) - 10), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+    def _show_cards(img, cards):
+        for card in cards:
+            cv.rectangle(img, (int(card.box.x), int(card.box.y)), (int(card.box.x + card.box.w), int(card.box.y + card.box.h)), (0, 255, 0), 2)
+            cv.putText(img, f"{card.rank.name} of {card.suit.name}", (int(card.box.x), int(card.box.y) - 10), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
         cv.imshow("Detected Cards", img)
         cv.waitKey(0)
         cv.destroyAllWindows()
@@ -52,6 +51,10 @@ class CardProcessor:
 
         for box in boxes:
             cards.append(self.process_card(img, box))
+
+        if len(cards) != 0: #for debugging
+            self._show_cards(img, cards)
+
         return cards
 
     def find_card_boxes(self, img: np.ndarray, approx_size: int) -> list[BoundingBox]:
@@ -77,17 +80,22 @@ class CardProcessor:
 
     @staticmethod
     def process_card(img: np.ndarray, box: BoundingBox) -> Card:
-        # Extract the top-left region of the card
-        card_top_left = img[
-            int(box.y):int(box.y + box.h / 3),
-            int(box.x):int(box.x + box.w / 3)
+        card_total = img[
+            int(box.y):int(box.y + box.h),
+            int(box.x):int(box.x + box.w)
         ].copy()
+        card_total_gray = cv.cvtColor(card_total, cv.COLOR_BGR2GRAY)
+        card_total_gray = cv.equalizeHist(card_total_gray)
+        crop_height_total, crop_width_total = card_total_gray.shape
+        target_size_total = (crop_width_total, crop_height_total)
 
-        directory = "Assets/CardsCut/"
+        card_top_left_gray = card_total_gray[:card_total_gray.shape[0]//3, :card_total_gray.shape[1]//3].copy()
+        crop_height_top_left, crop_width_top_left = card_top_left_gray.shape
+        target_size_top_left = (crop_width_top_left, crop_height_top_left)
+
+        directory = "Assets/Cards/"
         best_score = float('-inf')
         best_match_name = None
-
-        card_top_left_gray = cv.cvtColor(card_top_left, cv.COLOR_BGR2GRAY)
 
         for filename in os.listdir(directory):
             if not filename.lower().endswith(('.png', '.jpg', '.jpeg')):
@@ -96,14 +104,27 @@ class CardProcessor:
             template_img = cv.imread(template_path)
             if template_img is None:
                 continue
+
             template_img_gray = cv.cvtColor(template_img, cv.COLOR_BGR2GRAY)
-            res = cv.matchTemplate(card_top_left_gray, template_img_gray, cv.TM_CCOEFF_NORMED)
-            _, max_val, _, _ = cv.minMaxLoc(res)
-            if max_val > best_score:
-                best_score = max_val
+            template_img_gray = cv.equalizeHist(template_img_gray)
+            template_img_top_left = template_img_gray[:template_img_gray.shape[0]//3, :template_img_gray.shape[1]//3]
+            template_top_left_resized = cv.resize(template_img_top_left, target_size_top_left)
+            template_total_resized = cv.resize(template_img_gray, target_size_total)
+
+            res_top_left = cv.matchTemplate(card_top_left_gray, template_top_left_resized, cv.TM_CCOEFF_NORMED)
+            _, max_val_top_left, _, _ = cv.minMaxLoc(res_top_left)
+
+            res_total = cv.matchTemplate(card_total_gray, template_total_resized, cv.TM_CCOEFF_NORMED)
+            _, max_val_total, _, _ = cv.minMaxLoc(res_total)
+
+            if (max_val_top_left+max_val_total)/2 > best_score:
+                best_score = (max_val_top_left+max_val_total)/2
                 best_match_name = filename
 
         suit, rank = CardProcessor.parse_filename(best_match_name or "")
+
+        if best_score < 0.6:
+            suit, rank = Suit.Unknown, Rank.Unknown
 
         return Card(rank, suit, box)
 
