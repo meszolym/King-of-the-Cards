@@ -1,7 +1,9 @@
 from Models.BoundingBox import BoundingBox
 
+
 def box_area(box: BoundingBox) -> float:
     return box.w * box.h
+
 
 def boxes_overlap(box1: BoundingBox, box2: BoundingBox) -> float:
     x_left = max(box1.x, box2.x)

@@ -3,13 +3,13 @@ from Models.Hand import Hand
 from Models.Enums import Rank
 from CardCounting.CardLogic import card_value
 
+
 def hand_value_from_string(value: str) -> HandValue:
     return HandValue(value = int(value[1:])*2 if value[0] == 'P' else int(value[1:]),
                      is_soft = value[0] == 'S',
                      is_pair = value[0] == 'P',
                      is_blackjack = False,
                      is_bust = False)
-
 
 
 def hand_value_from_hand(hand: Hand) -> HandValue:

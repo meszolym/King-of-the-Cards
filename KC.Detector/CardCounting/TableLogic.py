@@ -10,8 +10,11 @@ def hilo_running_count(table: Table) -> int:
         elif card.rank in [Rank.Ten, Rank.Jack, Rank.Queen, Rank.King, Rank.Ace]: #high cards
             count -= 1
     return count
+
+
 def hilo_true_count(table: Table) -> int:
     return hilo_running_count(table) / (len(table.played_cards) / 52) if table.played_cards else 0
+
 
 def reset(table: Table) -> None:
     table.hands.clear()
