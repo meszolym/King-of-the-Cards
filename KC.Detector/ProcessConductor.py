@@ -1,22 +1,22 @@
 import json
+import multiprocessing
 
+import cv2 as cv
 from rx import operators
+from rx.scheduler import ThreadPoolScheduler
 from rx.subject import Subject
 
+from ImageProcessing.CardProcessor import CardProcessor
+from ImageProcessing.MessageProcessor import MessageProcessor
 from ImageProcessing.Preprocessor import Preprocessor
 from Models.BoundingBox import BoundingBox
+from Models.Card import Card
 from Models.CardSizesContainer import CardSizesContainer
+from Models.Enums import CardType
 from Models.JsonDataContainer import JsonDataContainer
 from Models.RoisContainer import RoisContainer
-from ImageProcessing.MessageProcessor import MessageProcessor
-from ImageProcessing.CardProcessor import CardProcessor
-from Models.Enums import Message, CardType
-from Models.Card import Card
 from Models.Table import Table
-from CardCounting.Organizer import organize_players_cards, organize_dealer_cards
-from rx.scheduler import ThreadPoolScheduler
-import multiprocessing
-import cv2 as cv
+
 
 class ProcessConductor:
 
@@ -92,7 +92,8 @@ class ProcessConductor:
         pass
 
     def start_preprocessor(self):
-        self.preprocessor.start()
+        #self.preprocessor.start()
+        self.preprocessor.mainloop()
         return
 
     def stop_preprocessor(self):
@@ -100,20 +101,20 @@ class ProcessConductor:
         return
 
     def message_image_handler(self, image):
-        msg : Message = self.msg_processor.process_message(image)
-        match msg:
-            case Message.Shuffling:
-                print("Shuffling detected") #TODO: reset stuff
-            case Message.WaitingForBets:
-                print("Waiting for bets detected")
-            #...
-        # TODO: Update GUI
+        # msg : Message = self.msg_processor.process_message(image)
+        # match msg:
+        #     case Message.Shuffling:
+        #         print("Shuffling detected") #TODO: reset stuff
+        #     case Message.WaitingForBets:
+        #         print("Waiting for bets detected")
+        #     #...
+        # # TODO: Update GUI
         return
 
     def dealer_image_handler(self, image):
-        cards : list[Card] = self.card_processor.process_cards(image, CardType.Dealer)
-        #TODO: organizer call to update dealer hand
-        #TODO: Update GUI
+        # cards : list[Card] = self.card_processor.process_cards(image, CardType.Dealer)
+        # #TODO: organizer call to update dealer hand
+        # #TODO: Update GUI
         return
 
     def player_image_handler(self, image):
