@@ -30,7 +30,7 @@ class CardProcessor:
     def _show_cards(img, cards):
         for card in cards:
             cv.rectangle(img, (int(card.box.x), int(card.box.y)), (int(card.box.x + card.box.w), int(card.box.y + card.box.h)), (0, 255, 0), 2)
-            cv.putText(img, f"{card.rank.name} of {card.suit.name} ({card.recognition_confidence})", (int(card.box.x), int(card.box.y) - 10), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            cv.putText(img, f"{card.rank.name} of {card.suit.name} ({round(card.recognition_confidence,2)})", (int(card.box.x), int(card.box.y) - 10), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
         cv.imshow("Detected Cards", img)
         cv.waitKey(0)
         cv.destroyAllWindows()
@@ -51,8 +51,8 @@ class CardProcessor:
         for box in boxes:
             cards.append(self.process_card(img, box))
 
-        if len(cards) != 0: #for debugging
-            self._show_cards(img, cards)
+        # if len(cards) != 0: #for debugging
+        #    self._show_cards(img, cards)
 
         return cards
 

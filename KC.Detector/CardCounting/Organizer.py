@@ -14,11 +14,14 @@ def organize_dealer_cards(detected_cards: list[Card], table: Table) -> None:
     for c in detected_cards:
         assigned = False
         for existing_card in table.dealer_hand.cards:
-            if (existing_card.rank == c.rank and existing_card.suit == c.suit and
-                boxes_match(existing_card.box, c.box)):
+            if boxes_match(existing_card.box, c.box):
                 # Update bounding box if new box is smaller (more accurate)
                 if box_area(c.box) < box_area(existing_card.box):
                     existing_card.box = c.box
+
+                if (existing_card.rank != c.rank or existing_card.suit != c.suit) and c.recognition_confidence > existing_card.recognition_confidence:
+                    existing_card.rank, existing_card.suit, existing_card.recognition_confidence = c.rank, c.suit, c.recognition_confidence
+
                 assigned = True
                 break
         if not assigned:
@@ -45,11 +48,14 @@ def organize_players_cards(detected_cards: list[Card], table: Table) -> None:
         # First, try to find the matching card in existing hands
         for h in table.hands:
             for existing_card in h.cards:
-                if (existing_card.rank == c.rank and existing_card.suit == c.suit and
-                    boxes_match(existing_card.box, c.box)):
+                if boxes_match(existing_card.box, c.box):
                     # Update bounding box if new box is smaller (more accurate)
                     if box_area(c.box) < box_area(existing_card.box):
                         existing_card.box = c.box
+
+                    if (existing_card.rank != c.rank or existing_card.suit != c.suit) and c.recognition_confidence > existing_card.recognition_confidence:
+                        existing_card.rank, existing_card.suit, existing_card.recognition_confidence = c.rank, c.suit, c.recognition_confidence
+
                     assigned = True
                     split_origin = h
                     break
@@ -67,8 +73,7 @@ def organize_players_cards(detected_cards: list[Card], table: Table) -> None:
             # Create new hand (split origin must exist to remove card from it)
             if split_origin.cards and c in split_origin.cards:
                 split_origin.cards.remove(c)
-            hand = Hand()
-            hand.cards.append(c)
+            hand = Hand([c])
             table.hands.append(hand)
             assigned = True
     return
