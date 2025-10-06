@@ -12,22 +12,15 @@ def organize_dealer_cards(detected_cards: list[Card], table: Table) -> None:
         return
 
     for c in detected_cards:
-        assigned = False
         for existing_card in table.dealer_hand.cards:
-            if boxes_match(existing_card.box, c.box):
-                # Update bounding box if new box is smaller (more accurate)
-                if box_area(c.box) < box_area(existing_card.box):
-                    existing_card.box = c.box
-
-                if (existing_card.rank != c.rank or existing_card.suit != c.suit) and c.recognition_confidence > existing_card.recognition_confidence:
-                    existing_card.rank, existing_card.suit, existing_card.recognition_confidence = c.rank, c.suit, c.recognition_confidence
-
-                assigned = True
+            updated = check_and_update_same_card(existing_card, c)
+            if updated:
                 break
-        if not assigned:
+
             table.dealer_hand.cards.append(c)
 
     return
+
 
 def organize_players_cards(detected_cards: list[Card], table: Table) -> None:
     #Organize cards based on the coordinates.
@@ -48,14 +41,8 @@ def organize_players_cards(detected_cards: list[Card], table: Table) -> None:
         # First, try to find the matching card in existing hands
         for h in table.hands:
             for existing_card in h.cards:
-                if boxes_match(existing_card.box, c.box):
-                    # Update bounding box if new box is smaller (more accurate)
-                    if box_area(c.box) < box_area(existing_card.box):
-                        existing_card.box = c.box
-
-                    if (existing_card.rank != c.rank or existing_card.suit != c.suit) and c.recognition_confidence > existing_card.recognition_confidence:
-                        existing_card.rank, existing_card.suit, existing_card.recognition_confidence = c.rank, c.suit, c.recognition_confidence
-
+                updated = check_and_update_same_card(existing_card, c)
+                if updated:
                     assigned = True
                     split_origin = h
                     break
@@ -77,6 +64,21 @@ def organize_players_cards(detected_cards: list[Card], table: Table) -> None:
             table.hands.append(hand)
             assigned = True
     return
+
+
+def check_and_update_same_card(old_card: Card, new_card: Card) -> bool:
+    if boxes_match(old_card.box, new_card.box):
+        # Update bounding box if new box is smaller (more accurate)
+        if box_area(new_card.box) < box_area(old_card.box):
+            old_card.box = new_card.box
+
+        # Update rank and suit if different and new confidence is higher
+        if (old_card.rank != new_card.rank or old_card.suit != new_card.suit) and new_card.recognition_confidence > old_card.recognition_confidence:
+            old_card.rank, old_card.suit, old_card.recognition_confidence = new_card.rank, new_card.suit, new_card.recognition_confidence
+
+        return True
+    return False
+
 
 def overlap(card: Card, hand: Hand) -> float:
     max_overlap = 0.0
