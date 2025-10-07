@@ -160,39 +160,7 @@ class CardProcessor:
         total_score += cv.minMaxLoc(res_total)[1]
         counter += 1
 
-
-        #Descriptors
-        card_solidity = CardProcessor.compute_solidity(card_top_left)
-        template_solidity = CardProcessor.compute_solidity(template_top_left)
-
-        descriptors_distance = abs(card_solidity - template_solidity)
-        total_score += 1.0 /(1+descriptors_distance)
-        counter += 1
-
-        # Hu Moments
-        hu_card = cv.HuMoments(cv.moments(card_top_left)).flatten()
-        hu_template = cv.HuMoments(cv.moments(template_top_left)).flatten()
-
-        log_hu_card = -np.sign(hu_card) * np.log10(np.abs(hu_card) + 1e-30)
-        log_hu_template = -np.sign(hu_template) * np.log10(np.abs(hu_template) + 1e-30)
-
-        hu_distance = np.linalg.norm(log_hu_card[:2] - log_hu_template[:2])
-        total_score += 1.0 /(1.0+float(hu_distance))
-        counter += 1
-
         return total_score/counter if counter != 0 else 0.0
-
-    @staticmethod
-    def compute_solidity(img: np.ndarray):
-        ys, xs = np.nonzero(img)
-        if len(xs) == 0:
-            return {'solidity': 0.0, 'aspect_ratio': 0.0}
-        pixel_area = len(xs)
-        pts = np.column_stack((xs, ys))
-        hull = cv.convexHull(pts)
-        hull_area = cv.contourArea(hull) or 1.0
-        return pixel_area / hull_area
-
 
 
     @staticmethod
