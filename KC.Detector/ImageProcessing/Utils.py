@@ -38,3 +38,9 @@ def take_screenshot() -> np.ndarray:
         return img_bgr
     except Exception as e:
         raise RuntimeError(f"Screenshot failed: {e}")
+
+def auto_canny(image, sigma=0.33):
+    v = np.median(image)
+    lower = int(max(0, (1.0 - sigma) * v))
+    upper = int(min(255, (1.0 + sigma) * v))
+    return cv.Canny(image, lower, upper)

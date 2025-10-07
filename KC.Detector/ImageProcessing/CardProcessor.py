@@ -4,6 +4,8 @@ import re
 from typing import Optional
 
 import numpy as np
+
+from ImageProcessing.Utils import auto_canny
 from Models.Card import Card
 from Models.BoundingBox import BoundingBox
 import cv2 as cv
@@ -18,6 +20,7 @@ class CardProcessor:
     CONST_ITERATIONS = 2
     CONST_CONTOUR_AREA_PCT_MIN = 0.9
     CONST_CONTOUR_AREA_PCT_MAX = 1.1
+    CONST_TM_THRESHOLD = 120
 
     card_sizes: Optional[CardSizesContainer]
 
@@ -51,14 +54,15 @@ class CardProcessor:
         for box in boxes:
             cards.append(self.process_card(img, box))
 
-        # if len(cards) != 0: #for debugging
-        #    self._show_cards(img, cards)
+        if len(cards) != 0: #for debugging
+            self._show_cards(img, cards)
 
         return cards
 
     def find_card_boxes(self, img: np.ndarray, approx_size: int) -> list[BoundingBox]:
         gray = cv.cvtColor(img.copy(), cv.COLOR_BGR2GRAY)
         canny = cv.Canny(gray, self.CONST_CANNY_CARD_EDGE_THRESHOLD1, self.CONST_CANNY_CARD_EDGE_THRESHOLD2)
+        #canny = auto_canny(gray) # Sometimes this doesn't find edges well enough
         dilated = cv.dilate(canny,cv.getStructuringElement(cv.MORPH_ELLIPSE, self.CONST_KERNEL_SIZE), iterations = self.CONST_ITERATIONS)
         contours, hierarchy = cv.findContours(dilated, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
 
@@ -79,19 +83,13 @@ class CardProcessor:
 
     @staticmethod
     def process_card(img: np.ndarray, box: BoundingBox) -> Card:
-        card_total = img[
+        card = img[
             int(box.y):int(box.y + box.h),
             int(box.x):int(box.x + box.w)
         ].copy()
-        card_total = cv.cvtColor(card_total, cv.COLOR_BGR2GRAY)
-        card_total = cv.threshold(card_total, 120, 255, cv.THRESH_BINARY)[1]
-
-        crop_height_total, crop_width_total = card_total.shape
-        target_size_total = (crop_width_total, crop_height_total)
-
-        card_top_left = card_total[:card_total.shape[0]//3, :card_total.shape[1]//3].copy()
-        crop_height_top_left, crop_width_top_left = card_top_left.shape
-        target_size_top_left = (crop_width_top_left, crop_height_top_left)
+        card_total, card_top_left = CardProcessor.prepare_images(card)
+        target_size_total = (card_total.shape[1], card_total.shape[0])
+        target_size_top_left = (card_top_left.shape[1], card_top_left.shape[0])
 
         directory = "Assets/Cards/"
         best_score = float('-inf')
@@ -100,26 +98,18 @@ class CardProcessor:
         for filename in os.listdir(directory):
             if not filename.lower().endswith(('.png', '.jpg', '.jpeg')):
                 continue
+
             template_path = os.path.join(directory, filename)
-            template_total = cv.imread(template_path)
-            if template_total is None:
+            template_base = cv.imread(template_path)
+            if template_base is None:
                 continue
 
-            template_total = cv.cvtColor(template_total, cv.COLOR_BGR2GRAY)
-            template_total = cv.resize(template_total, target_size_total)
-            template_total = cv.threshold(template_total, 120, 255, cv.THRESH_BINARY)[1]
+            template_total, template_top_left = CardProcessor.prepare_images(template_base, target_size_total, target_size_top_left)
 
-            template_top_left = template_total[:template_total.shape[0]//3, :template_total.shape[1]//3]
-            template_top_left = cv.resize(template_top_left, target_size_top_left)
+            score = CardProcessor.get_score_for_template(card_total, card_top_left, template_total, template_top_left)
 
-            res_top_left = cv.matchTemplate(card_top_left, template_top_left, cv.TM_CCOEFF_NORMED) #TODO: Maybe use multiple methods and average the scores?
-            _, max_val_top_left, _, _ = cv.minMaxLoc(res_top_left)
-
-            res_total = cv.matchTemplate(card_total, template_total, cv.TM_CCOEFF_NORMED)
-            _, max_val_total, _, _ = cv.minMaxLoc(res_total)
-
-            if (max_val_top_left+max_val_total)/2 > best_score:
-                best_score = (max_val_top_left+max_val_total)/2
+            if score > best_score:
+                best_score = score
                 best_match_name = filename
 
         suit, rank = CardProcessor.parse_filename(best_match_name or "")
@@ -128,6 +118,82 @@ class CardProcessor:
             suit, rank = Suit.Unknown, Rank.Unknown
 
         return Card(rank, suit, box, best_score)
+
+
+    @staticmethod
+    def prepare_images(img: np.ndarray, target_size_total = None, target_size_top_left = None):
+        total = img.copy()
+        if target_size_total:
+            total = cv.resize(total, target_size_total)
+
+        total = cv.cvtColor(total, cv.COLOR_BGR2GRAY)
+        total = cv.threshold(total, CardProcessor.CONST_TM_THRESHOLD, 255, cv.THRESH_BINARY)[1]
+
+        top_left = total[:total.shape[0] // 3, :total.shape[1] // 3].copy()
+        if target_size_top_left:
+            top_left = cv.resize(top_left, target_size_top_left)
+
+        return total, top_left
+
+    @staticmethod
+    def get_score_for_template(card_total, card_top_left, template_total, template_top_left) -> float:
+
+        total_score = 0.0
+        counter = 0
+
+        #TM_COEFF_NORMED
+        res_top_left = cv.matchTemplate(card_top_left, template_top_left, cv.TM_CCOEFF_NORMED)
+        total_score += cv.minMaxLoc(res_top_left)[1]
+        counter += 1
+
+        res_total = cv.matchTemplate(card_total, template_total, cv.TM_CCOEFF_NORMED)
+        total_score += cv.minMaxLoc(res_total)[1]
+        counter += 1
+
+
+        #TM_CCORR_NORMED
+        res_top_left = cv.matchTemplate(card_top_left, template_top_left, cv.TM_CCORR_NORMED)
+        total_score += cv.minMaxLoc(res_top_left)[1]
+        counter += 1
+
+        res_total = cv.matchTemplate(card_total, template_total, cv.TM_CCORR_NORMED)
+        total_score += cv.minMaxLoc(res_total)[1]
+        counter += 1
+
+
+        #Descriptors
+        card_solidity = CardProcessor.compute_solidity(card_top_left)
+        template_solidity = CardProcessor.compute_solidity(template_top_left)
+
+        descriptors_distance = abs(card_solidity - template_solidity)
+        total_score += 1.0 /(1+descriptors_distance)
+        counter += 1
+
+        # Hu Moments
+        hu_card = cv.HuMoments(cv.moments(card_top_left)).flatten()
+        hu_template = cv.HuMoments(cv.moments(template_top_left)).flatten()
+
+        log_hu_card = -np.sign(hu_card) * np.log10(np.abs(hu_card) + 1e-30)
+        log_hu_template = -np.sign(hu_template) * np.log10(np.abs(hu_template) + 1e-30)
+
+        hu_distance = np.linalg.norm(log_hu_card[:2] - log_hu_template[:2])
+        total_score += 1.0 /(1.0+float(hu_distance))
+        counter += 1
+
+        return total_score/counter if counter != 0 else 0.0
+
+    @staticmethod
+    def compute_solidity(img: np.ndarray):
+        ys, xs = np.nonzero(img)
+        if len(xs) == 0:
+            return {'solidity': 0.0, 'aspect_ratio': 0.0}
+        pixel_area = len(xs)
+        pts = np.column_stack((xs, ys))
+        hull = cv.convexHull(pts)
+        hull_area = cv.contourArea(hull) or 1.0
+        return pixel_area / hull_area
+
+
 
     @staticmethod
     def parse_filename(filename: str) -> tuple[Suit,Rank]:
