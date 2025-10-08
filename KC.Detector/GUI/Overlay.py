@@ -6,11 +6,13 @@ from Models import Enums
 @dataclass
 class OverlayModel:
     player_hand_info: list[tuple[int, int, str, Enums.Move]] # x, y, score, recommended move
-    dealer_hand_score: str
+    dealer_hand_info: tuple[int, int, str] # x, y, score
     table_running_count: int
     table_true_count: int
 
 class Overlay:
+    CONST_Y_OFFSET = 10 # Offset y to avoid overlap with cards
+
     window : Tk
     data : OverlayModel
 
@@ -25,13 +27,32 @@ class Overlay:
         self.window.attributes("-transparentcolor", "black")
         monitor = get_monitors()[0]
         self.window.geometry(f"{monitor.width}x{monitor.height}")
+        self.update_overlay()
+
+
+    def update_overlay(self):
+        for widget in self.window.winfo_children():
+            if isinstance(widget, Label):
+                widget.destroy()
 
         # Add labels for player hands
         for x, y, score, move in self.data.player_hand_info:
             move_info = Enums.Move(move).name if move != Enums.Move.Unknown else "No advice"
             text = f"{score}\n{move_info}"
-            player_label = Label(self.window, text=text, font=("Arial", 16), bg="black", fg="white")
-            player_label.place(x=x, y=y)
+            player_label = Label(self.window, text=text, font=("Arial", 16), bg="black", fg="yellow")
+            player_label.place(x=x, y=y + self.CONST_Y_OFFSET)
+
+        # Add label for dealer hand
+        dealer_x, dealer_y, dealer_score = self.data.dealer_hand_info
+        dealer_label = Label(self.window, text=f"{dealer_score}", font=("Arial", 16), bg="black", fg="yellow")
+        dealer_label.place(x=dealer_x, y=dealer_y + self.CONST_Y_OFFSET)
+
+        # Add label for counts
+        count_text = f"Running Count: {self.data.table_running_count}\nTrue Count: {self.data.table_true_count}"
+        count_label = Label(self.window, text=count_text, font=("Arial", 16), bg="black", fg="yellow")
+        count_label.place(x=10, y=10)
+
+        return
 
     def show_overlay(self):
         self._setup_window()
@@ -43,5 +64,3 @@ class Overlay:
         self.window.destroy()
         return
 
-    def update_overlay(self):
-        return
