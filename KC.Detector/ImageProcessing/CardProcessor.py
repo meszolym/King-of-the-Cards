@@ -141,24 +141,15 @@ class CardProcessor:
         total_score = 0.0
         counter = 0
 
-        #TM_COEFF_NORMED
-        res_top_left = cv.matchTemplate(card_top_left, template_top_left, cv.TM_CCOEFF_NORMED)
-        total_score += cv.minMaxLoc(res_top_left)[1]
-        counter += 1
+        for algo in [cv.TM_CCOEFF_NORMED, cv.TM_CCORR_NORMED]:
+            # TM_COEFF_NORMED
+            res_top_left = cv.matchTemplate(card_top_left, template_top_left, algo)
+            total_score += cv.minMaxLoc(res_top_left)[1]
+            counter += 1
 
-        res_total = cv.matchTemplate(card_total, template_total, cv.TM_CCOEFF_NORMED)
-        total_score += cv.minMaxLoc(res_total)[1]
-        counter += 1
-
-
-        #TM_CCORR_NORMED
-        res_top_left = cv.matchTemplate(card_top_left, template_top_left, cv.TM_CCORR_NORMED)
-        total_score += cv.minMaxLoc(res_top_left)[1]
-        counter += 1
-
-        res_total = cv.matchTemplate(card_total, template_total, cv.TM_CCORR_NORMED)
-        total_score += cv.minMaxLoc(res_total)[1]
-        counter += 1
+            res_total = cv.matchTemplate(card_total, template_total, algo)
+            total_score += cv.minMaxLoc(res_total)[1]
+            counter += 1
 
         return total_score/counter if counter != 0 else 0.0
 
