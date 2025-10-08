@@ -1,6 +1,6 @@
 #Do the processing of cards (rank, suit, etc.) here
 import os
-import re
+import re as regex
 from typing import Optional
 
 import numpy as np
@@ -54,8 +54,8 @@ class CardProcessor:
         for box in boxes:
             cards.append(self.process_card(img, box))
 
-        if len(cards) != 0: #for debugging
-            self._show_cards(img, cards)
+        # if len(cards) != 0: #for debugging
+        #     self._show_cards(img, cards)
 
         return cards
 
@@ -179,7 +179,7 @@ class CardProcessor:
             "K": Rank.King,
         }
 
-        match = re.match(r'card([A-Za-z]+)([A2-9TJQK]|10)\.png', filename)
+        match = regex.match(r'card([A-Za-z]+)([A2-9TJQK]|10)\.png', filename)
         if match:
             suit_str, rank_str = match.groups()
             suit = suit_map.get(suit_str, Suit.Unknown)

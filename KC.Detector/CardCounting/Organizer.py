@@ -28,8 +28,7 @@ def organize_players_cards(detected_cards: list[Card], table: Table) -> None:
     #If no hands exist, create a new hand for each detected card
     if not table.hands:
         for c in detected_cards:
-            hand = Hand([])
-            hand.cards.append(c)
+            hand = Hand([c])
             table.hands.append(hand)
             return
 

@@ -6,6 +6,7 @@ from rx import operators
 from rx.scheduler import ThreadPoolScheduler
 from rx.subject import Subject
 
+from CardCounting.Organizer import organize_dealer_cards, organize_players_cards
 from ImageProcessing.CardProcessor import CardProcessor
 from ImageProcessing.MessageProcessor import MessageProcessor
 from ImageProcessing.Preprocessor import Preprocessor
@@ -112,14 +113,14 @@ class ProcessConductor:
         return
 
     def dealer_image_handler(self, image):
-        # cards : list[Card] = self.card_processor.process_cards(image, CardType.Dealer)
-        # #TODO: organizer call to update dealer hand
+        cards : list[Card] = self.card_processor.process_cards(image, CardType.Dealer)
+        organize_dealer_cards(cards, self.table_state)
         # #TODO: Update GUI
         return
 
     def player_image_handler(self, image):
         cards : list[Card] = self.card_processor.process_cards(image, CardType.Player)
-        #organize_players_cards(cards, self.table_state)
+        organize_players_cards(cards, self.table_state)
         #TODO: Update GUI
         return
 
