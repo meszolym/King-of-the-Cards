@@ -6,15 +6,18 @@ from rx import operators
 from rx.scheduler import ThreadPoolScheduler
 from rx.subject import Subject
 
+from CardCounting.BasicStrategyLogic import read_strategy
 from CardCounting.Organizer import organize_dealer_cards, organize_players_cards
 from ImageProcessing.CardProcessor import CardProcessor
 from ImageProcessing.MessageProcessor import MessageProcessor
 from ImageProcessing.Preprocessor import Preprocessor
+from Models.BasicStrategy import BasicStrategy
 from Models.BoundingBox import BoundingBox
 from Models.Card import Card
 from Models.CardSizesContainer import CardSizesContainer
 from Models.Enums import CardType
 from Models.JsonDataContainer import JsonDataContainer
+from Models.OverlayData import overlay_data_from_table
 from Models.RoisContainer import RoisContainer
 from Models.Table import Table
 
@@ -23,27 +26,36 @@ class ProcessConductor:
 
     preprocessor: Preprocessor
     card_processor: CardProcessor
+    msg_processor: MessageProcessor
 
     table_state: Table
-    msg_processor: MessageProcessor
+    basic_strategy : BasicStrategy
+
     pool_scheduler : ThreadPoolScheduler
 
     done_reading_rois_and_card_dimensions_json_observable : Subject
+    overlay_data_update_observable : Subject
 
     def __init__(self):
         self.table_state = Table(None, None, None)
+        self.basic_strategy = BasicStrategy(None,0,0)
         self.preprocessor = None
         self.card_processor = CardProcessor()
         self.pool_scheduler = ThreadPoolScheduler(multiprocessing.cpu_count())
         self.msg_processor = MessageProcessor()
 
         self.done_reading_rois_and_card_dimensions_json_observable = Subject()
+        self.overlay_data_update_observable = Subject()
         return
 
-    def read_possible_messages(self, filepath: str): #TODO: use
+    def read_possible_messages(self, filepath: str):
         if self.msg_processor is None:
             self.msg_processor = MessageProcessor()
         self.msg_processor.read_possible_messages(filepath)
+        return
+
+    def read_basic_strategy(self, filepath: str):
+        self.basic_strategy = read_strategy(filepath)
         return
 
     def read_rois_and_card_dimensions(self, filepath: str):
@@ -93,8 +105,8 @@ class ProcessConductor:
         pass
 
     def start_preprocessor(self):
-        #self.preprocessor.start()
-        self.preprocessor.mainloop()
+        self.preprocessor.start()
+        #self.preprocessor.mainloop()
         return
 
     def stop_preprocessor(self):
@@ -109,19 +121,19 @@ class ProcessConductor:
         #     case Message.WaitingForBets:
         #         print("Waiting for bets detected")
         #     #...
-        # # TODO: Update GUI
+        # self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
         return
 
     def dealer_image_handler(self, image):
         cards : list[Card] = self.card_processor.process_cards(image, CardType.Dealer)
         organize_dealer_cards(cards, self.table_state)
-        # #TODO: Update GUI
+        self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
         return
 
     def player_image_handler(self, image):
         cards : list[Card] = self.card_processor.process_cards(image, CardType.Player)
         organize_players_cards(cards, self.table_state)
-        #TODO: Update GUI
+        self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
         return
 
     def write_rois_and_card_dimensions(self, filepath):

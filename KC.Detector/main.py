@@ -17,6 +17,7 @@
 # 6. Eredmény megjelenítése (GUI frissítése)
 
 from GUI.GuiConductor import GuiConductor
+from GUI.Overlay import OverlayModel
 from ProcessConductor import ProcessConductor
 
 def main():
@@ -31,6 +32,10 @@ def main():
     gui.write_rois_and_card_dimensions_json_observable.subscribe(lambda filepath: process_conductor.write_rois_and_card_dimensions(filepath))
     process_conductor.done_reading_rois_and_card_dimensions_json_observable.subscribe(lambda json_data: gui.rois_selected(json_data.rois_container))
     process_conductor.done_reading_rois_and_card_dimensions_json_observable.subscribe(lambda json_data: gui.card_sizes_selected(json_data.sizes_container))
+    process_conductor.overlay_data_update_observable.subscribe(lambda data: gui.update_overlay_model(data))
+
+    process_conductor.read_basic_strategy("Assets/BasicStrategy.json")
+    process_conductor.read_possible_messages("Assets/Messages.json")
 
     gui.start_main_window()
 

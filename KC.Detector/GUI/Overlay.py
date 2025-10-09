@@ -1,14 +1,10 @@
-from dataclasses import dataclass
 from tkinter import *
-from screeninfo import get_monitors
-from Models import Enums
 
-@dataclass
-class OverlayModel:
-    player_hand_info: list[tuple[int, int, str, Enums.Move]] # x, y, score, recommended move
-    dealer_hand_info: tuple[int, int, str] # x, y, score
-    table_running_count: int
-    table_true_count: int
+from screeninfo import get_monitors
+
+from Models import Enums
+from Models.OverlayData import OverlayModel
+
 
 class Overlay:
     CONST_Y_OFFSET = 10 # Offset y to avoid overlap with cards
@@ -21,6 +17,7 @@ class Overlay:
         return
 
     def _setup_window(self):
+
         self.window = Tk()
         self.window.overrideredirect(True)
         self.window.attributes("-topmost", True)
@@ -31,6 +28,7 @@ class Overlay:
 
 
     def update_overlay(self):
+
         for widget in self.window.winfo_children():
             if isinstance(widget, Label):
                 widget.destroy()

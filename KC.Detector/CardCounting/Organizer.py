@@ -16,7 +16,7 @@ def organize_dealer_cards(detected_cards: list[Card], table: Table) -> None:
 
     for card in detected_cards:
         for existing_card in table.dealer_hand.cards:
-            updated = check_and_update_same_card(existing_card, card)
+            updated = _check_and_update_same_card(existing_card, card)
             if updated:
                 break
 
@@ -43,7 +43,7 @@ def organize_players_cards(detected_cards: list[Card], table: Table) -> None:
         # First, try to find the matching card in existing hands
         for h in table.hands:
             for existing_card in h.cards:
-                updated = check_and_update_same_card(existing_card, c)
+                updated = _check_and_update_same_card(existing_card, c)
                 if updated:
                     assigned = True
                     split_origin = h
@@ -53,7 +53,7 @@ def organize_players_cards(detected_cards: list[Card], table: Table) -> None:
 
         if not assigned:
             for h in table.hands:
-                if overlap(c, h) > 0:
+                if _overlap(c, h) > 0:
                     h.cards.append(c)
                     assigned = True
                     break
@@ -68,7 +68,7 @@ def organize_players_cards(detected_cards: list[Card], table: Table) -> None:
     return
 
 
-def check_and_update_same_card(old_card: Card, new_card: Card) -> bool:
+def _check_and_update_same_card(old_card: Card, new_card: Card) -> bool:
     if boxes_match(old_card.box, new_card.box):
         # Update bounding box if new box is smaller (more accurate)
         if box_area(new_card.box) < box_area(old_card.box):
@@ -82,7 +82,7 @@ def check_and_update_same_card(old_card: Card, new_card: Card) -> bool:
     return False
 
 
-def overlap(card: Card, hand: Hand) -> float:
+def _overlap(card: Card, hand: Hand) -> float:
     max_overlap = 0.0
 
     for hand_card in hand.cards:

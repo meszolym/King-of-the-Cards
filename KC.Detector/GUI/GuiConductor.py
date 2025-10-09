@@ -1,7 +1,7 @@
 from tkinter import filedialog
 from typing import Optional
 
-from GUI.Overlay import Overlay
+from GUI.Overlay import Overlay, OverlayModel
 from GUI.MainWindow import MainWindow
 from GUI.BoxSelector import BoxSelector
 from rx.subject import Subject
@@ -26,7 +26,7 @@ class GuiConductor:
 
     def __init__(self):
         self.main_window = MainWindow(False)
-        self.overlay = Overlay()
+        self.overlay = Overlay(OverlayModel([], (0,0,""), 0,0))
         self.box_selector = BoxSelector()
 
         self.rois_selected_observable = Subject()
@@ -47,6 +47,11 @@ class GuiConductor:
         self.box_selector.rois_selected_observable.subscribe(lambda rois: self.rois_selected(rois))
         self.box_selector.card_box_selected_observable.subscribe(lambda sizes: self.card_sizes_selected(sizes))
 
+    def update_overlay_model(self, model: OverlayModel):
+        self.overlay.data = model
+        self.overlay.update_overlay()
+        return
+
     def start_main_window(self):
         self.main_window.window.mainloop()
         return
@@ -55,6 +60,7 @@ class GuiConductor:
         self.overlay.show_overlay()
         self.main_window.detection_started = True
         self.main_window.update_state()
+        self.main_window.window.iconify()
         self.start_detection_observable.on_next(None)
         return
     def stop_detection(self):
