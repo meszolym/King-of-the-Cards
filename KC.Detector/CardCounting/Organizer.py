@@ -6,12 +6,12 @@ from Models.Hand import Hand
 from Models.Card import Card
 from CardCounting.BoundingBoxLogic import *
 
-def organize_dealer_cards(detected_cards: list[Card], table: Table) -> None:
+def organize_dealer_cards(detected_cards: list[Card], table: Table, x_offset, y_offset) -> None:
     if table.dealer_hand is None:
         leftmost_card = min(detected_cards, key=lambda c: c.box.x)
         table.dealer_hand = Hand(detected_cards,
-                                 int(leftmost_card.box.x + leftmost_card.box.w // 2),
-                                 int(leftmost_card.box.y + leftmost_card.box.h))
+                                 x_offset + int(leftmost_card.box.x + leftmost_card.box.w // 2),
+                                 y_offset + int(leftmost_card.box.y + leftmost_card.box.h))
         return
 
     for card in detected_cards:
@@ -25,13 +25,15 @@ def organize_dealer_cards(detected_cards: list[Card], table: Table) -> None:
     return
 
 
-def organize_players_cards(detected_cards: list[Card], table: Table) -> None:
+def organize_players_cards(detected_cards: list[Card], table: Table, x_offset, y_offset) -> None:
     #Organize cards based on the coordinates.
 
     #If no hands exist, create a new hand for each detected card
     if not table.hands:
         for c in detected_cards:
-            hand = Hand([c], int(c.box.x + c.box.w // 2), int(c.box.y + c.box.h))
+            hand = Hand([c],
+                        x_offset + int(c.box.x + c.box.w // 2),
+                        y_offset + int(c.box.y + c.box.h))
             table.hands.append(hand)
             return
 
@@ -62,7 +64,9 @@ def organize_players_cards(detected_cards: list[Card], table: Table) -> None:
             # Create new hand (split origin must exist to remove card from it)
             if split_origin.cards and c in split_origin.cards:
                 split_origin.cards.remove(c)
-            hand = Hand([c], int(c.box.x + c.box.w // 2), int(c.box.y + c.box.h))
+            hand = Hand([c],
+                        x_offset + int(c.box.x + c.box.w // 2),
+                        y_offset + int(c.box.y + c.box.h))
             table.hands.append(hand)
             assigned = True
     return

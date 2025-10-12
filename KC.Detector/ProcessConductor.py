@@ -126,13 +126,15 @@ class ProcessConductor:
 
     def dealer_image_handler(self, image):
         cards : list[Card] = self.card_processor.process_cards(image, CardType.Dealer)
-        organize_dealer_cards(cards, self.table_state)
+        roi = self.preprocessor.rois.dealer_roi
+        organize_dealer_cards(cards, self.table_state, roi.x, roi.y)
         self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
         return
 
     def player_image_handler(self, image):
         cards : list[Card] = self.card_processor.process_cards(image, CardType.Player)
-        organize_players_cards(cards, self.table_state)
+        roi = self.preprocessor.rois.player_roi
+        organize_players_cards(cards, self.table_state, roi.x, roi.y)
         self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
         return
 
