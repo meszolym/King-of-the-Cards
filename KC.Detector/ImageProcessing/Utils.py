@@ -28,13 +28,9 @@ def take_screenshot() -> np.ndarray:
     """ Takes a screenshot of the primary monitor and returns it as a BGR numpy array. """
     try:
         bbox = _get_primary_monitor_bbox()
-        print(f"[INFO] Capturing screenshot with bbox: {bbox}")
         img_pil = psc.grab(bbox=bbox)
-        print("[INFO] Screenshot captured, converting to numpy array.")
         img_rgb = np.array(img_pil)
-        print("[INFO] Converted to numpy array.")
         img_bgr = cv.cvtColor(img_rgb, cv.COLOR_RGB2BGR)
-        print("[INFO] Screenshot captured of primary monitor.")
         return img_bgr
     except Exception as e:
         raise RuntimeError(f"Screenshot failed: {e}")

@@ -17,13 +17,18 @@
 # 6. Eredmény megjelenítése (GUI frissítése)
 
 from GUI.GuiConductor import GuiConductor
-from GUI.Overlay import OverlayModel
 from ProcessConductor import ProcessConductor
+import threading
+import time
 
 def main():
+    # Create process conductor first
     process_conductor = ProcessConductor()
+    
+    # Create GUI conductor (this will initialize PyQt6 for overlay)
     gui = GuiConductor()
 
+    # Set up observables
     gui.rois_selected_observable.subscribe(lambda rois: process_conductor.rois_selected_handler(rois))
     gui.start_detection_observable.subscribe(lambda _: process_conductor.start_preprocessor())
     gui.stop_detection_observable.subscribe(lambda _: process_conductor.stop_preprocessor())
@@ -34,6 +39,7 @@ def main():
     process_conductor.done_reading_rois_and_card_dimensions_json_observable.subscribe(lambda json_data: gui.card_sizes_selected(json_data.sizes_container))
     process_conductor.overlay_data_update_observable.subscribe(lambda data: gui.update_overlay_model(data))
 
+    # Load configuration
     process_conductor.read_basic_strategy("Assets/BasicStrategy.json")
     process_conductor.read_possible_messages("Assets/Messages.json")
 

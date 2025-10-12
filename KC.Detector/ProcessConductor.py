@@ -17,7 +17,7 @@ from Models.Card import Card
 from Models.CardSizesContainer import CardSizesContainer
 from Models.Enums import CardType
 from Models.JsonDataContainer import JsonDataContainer
-from Models.OverlayData import overlay_data_from_table
+from Models.OverlayModel import overlay_data_from_table
 from Models.RoisContainer import RoisContainer
 from Models.Table import Table
 
@@ -126,6 +126,8 @@ class ProcessConductor:
 
     def dealer_image_handler(self, image):
         cards : list[Card] = self.card_processor.process_cards(image, CardType.Dealer)
+        if len(cards) == 0:
+            return
         roi = self.preprocessor.rois.dealer_roi
         organize_dealer_cards(cards, self.table_state, roi.x, roi.y)
         self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
@@ -133,6 +135,8 @@ class ProcessConductor:
 
     def player_image_handler(self, image):
         cards : list[Card] = self.card_processor.process_cards(image, CardType.Player)
+        if len(cards) == 0:
+            return
         roi = self.preprocessor.rois.player_roi
         organize_players_cards(cards, self.table_state, roi.x, roi.y)
         self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
