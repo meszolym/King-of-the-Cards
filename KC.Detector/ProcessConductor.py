@@ -37,7 +37,7 @@ class ProcessConductor:
     overlay_data_update_observable : Subject
 
     def __init__(self):
-        self.table_state = Table(None, None, None)
+        self.table_state = Table(None, [], [])
         self.basic_strategy = BasicStrategy(None,0,0)
         self.preprocessor = None
         self.card_processor = CardProcessor()
