@@ -105,8 +105,8 @@ class ProcessConductor:
         pass
 
     def start_preprocessor(self):
-        self.preprocessor.start()
-        #self.preprocessor.mainloop()
+        #self.preprocessor.start()
+        self.preprocessor.mainloop()
         return
 
     def stop_preprocessor(self):

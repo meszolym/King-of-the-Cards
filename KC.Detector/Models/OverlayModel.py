@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 from CardCounting.BasicStrategyLogic import get_hand_actions
 from CardCounting.CardLogic import card_value
@@ -8,11 +9,17 @@ from Models import Enums
 from Models.BasicStrategy import BasicStrategy
 from Models.Table import Table
 
+@dataclass
+class HandRecord:
+    x: int
+    y: int
+    score: str
+    recommended_move: Optional[Enums.Move]
 
 @dataclass
 class OverlayModel:
-    player_hand_info: list[tuple[int, int, str, Enums.Move]] # x, y, score, recommended move
-    dealer_hand_info: tuple[int, int, str] # x, y, score
+    player_hand_info: list[HandRecord]
+    dealer_hand_info: HandRecord
     table_running_count: int
     table_true_count: int
 
@@ -24,7 +31,7 @@ def overlay_data_from_table(table: Table, basic_strategy: BasicStrategy) -> Over
             y = hand.bottom_center_y
             score = hand_value_from_hand(hand).__str__()
             move = get_hand_actions(basic_strategy, hand_value_from_hand(hand), card_value(table.dealer_hand.cards[0]))
-            player_hand_info.append((x, y, score, move))
+            player_hand_info.append(HandRecord(x, y, score, move))
 
     dealer_x, dealer_y, dealer_score = (0, 0, "")
     if table.dealer_hand is not None:
@@ -37,7 +44,7 @@ def overlay_data_from_table(table: Table, basic_strategy: BasicStrategy) -> Over
 
     return OverlayModel(
         player_hand_info=player_hand_info,
-        dealer_hand_info=(dealer_x, dealer_y, dealer_score),
+        dealer_hand_info=HandRecord(dealer_x, dealer_y, dealer_score, None),
         table_running_count=running_count,
         table_true_count=true_count
     )

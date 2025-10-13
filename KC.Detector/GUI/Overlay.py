@@ -20,6 +20,7 @@ class Overlay:
 
         self.window = Tk()
         self.window.overrideredirect(True)
+        self.window.geometry("300x300")
         # self.window.attributes("-topmost", True)
         # self.window.attributes("-transparentcolor", "black")
         # monitor = get_monitors()[0]
@@ -34,17 +35,16 @@ class Overlay:
                 widget.destroy()
 
         # Add labels for player hands
-        for x, y, score, move in self.data.player_hand_info:
-            move_info = Enums.Move(move).name if move != Enums.Move.Unknown else "No advice"
-            text = f"{score}\n{move_info}"
-            text += f"\n{x},{y}"  # For debugging position
+        for hand_model in self.data.player_hand_info:
+            move_info = Enums.Move(hand_model.recommended_move).name if hand_model.recommended_move != Enums.Move.Unknown else "No advice"
+            text = f"{hand_model.score}\n{hand_model.recommended_move}"
+            text += f"\n{hand_model.x},{hand_model.y}"  # For debugging position
             player_label = Label(self.window, text=text, font=("Arial", 16), bg="black", fg="yellow")
             # player_label.place(x=x, y=y + self.CONST_Y_OFFSET)
             player_label.pack(pady=5)
 
         # Add label for dealer hand
-        dealer_x, dealer_y, dealer_score = self.data.dealer_hand_info
-        dealer_label = Label(self.window, text=f"{dealer_score}", font=("Arial", 16), bg="black", fg="yellow")
+        dealer_label = Label(self.window, text=f"{self.data.dealer_hand_info.score}", font=("Arial", 16), bg="black", fg="yellow")
         # dealer_label.place(x=dealer_x, y=dealer_y + self.CONST_Y_OFFSET)
         dealer_label.pack(pady=5)
 
