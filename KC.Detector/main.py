@@ -1,25 +1,7 @@
-#Milyen elemekre van szükség:
-# - minimal starter GUI (roi selector indítása, mentése, betöltése, lapszámolás indítása)
-# - roi selector (kijelölés, mentés, betöltés)
-# - lapok megtalálása (keretek keresése a roi-n belül)
-# - lapértékek értelmezése (sarkok alapján maszkolással)
-# - kiment lapok kezelése
-# - lapok számlálása (értékek összeadása)
-# - eredmény megjelenítése (összeg, lapok, hibák)
-
-# Pipeline:
-# 1. GUI indítása
-# 2. ROI kijelölés (ha nincs elmentve)
-# FŐ VONAL:
-# 3. Képek megszerzése (ImageCapturer)
-# 4. Képek vágása (ImageSplitter)
-# 5. Képek feldolgozása (CardFinder, CardInterpreter + MessageFinder, MessageInterpreter)
-# 6. Eredmény megjelenítése (GUI frissítése)
+import asyncio
 
 from GUI.GuiConductor import GuiConductor
 from ProcessConductor import ProcessConductor
-import threading
-import time
 
 def main():
     # Create process conductor first
@@ -30,7 +12,7 @@ def main():
 
     # Set up observables
     gui.rois_selected_observable.subscribe(lambda rois: process_conductor.rois_selected_handler(rois))
-    gui.start_detection_observable.subscribe(lambda _: process_conductor.start_detection())
+    gui.start_detection_observable.subscribe(lambda _: (asyncio.create_task(process_conductor.start_detection()), None)[1])
     gui.stop_detection_observable.subscribe(lambda _: process_conductor.stop_detection())
     gui.card_sizes_selected_observable.subscribe(lambda sizes: process_conductor.card_sizes_selected_handler(sizes))
     gui.read_rois_and_card_dimensions_json_observable.subscribe(lambda filepath: process_conductor.read_rois_and_card_dimensions(filepath))

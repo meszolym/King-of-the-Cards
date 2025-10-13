@@ -1,3 +1,4 @@
+import asyncio
 import json
 import multiprocessing
 
@@ -16,7 +17,7 @@ from Models.BasicStrategy import BasicStrategy
 from Models.BoundingBox import BoundingBox
 from Models.Card import Card
 from Models.CardSizesContainer import CardSizesContainer
-from Models.Enums import CardType
+from Models.Enums import CardType, Message
 from Models.JsonDataContainer import JsonDataContainer
 from Models.OverlayModel import overlay_data_from_table
 from Models.RoisContainer import RoisContainer
@@ -41,7 +42,7 @@ class ProcessConductor:
     def __init__(self):
         self.running_image_processing = False
         self.table_state = Table(None, [], [])
-        self.basic_strategy = BasicStrategy(None,0,0)
+        self.basic_strategy = BasicStrategy([],0,0)
         self.rois = None
         self.card_processor = CardProcessor()
         self.pool_scheduler = ThreadPoolScheduler(multiprocessing.cpu_count())
@@ -96,30 +97,30 @@ class ProcessConductor:
         self.card_processor.card_sizes = sizes
         pass
 
-    def start_detection(self):
+    async def start_detection(self):
         self.running_image_processing = True
-
+        await self.detection_loop()
         return
 
-    def detection_loop(self):
+    async def detection_loop(self):
+        if self.rois is None:
+            raise (Exception("ROIs not set"))
+
         while self.running_image_processing:
             img = take_screenshot()
 
-            if self.rois is None:
-                raise(Exception("ROIs not set"))
-
-            self.message_image_handler(get_roi(img.copy(), self.rois.message_roi))
-            self.dealer_image_handler(get_roi(img.copy(), self.rois.dealer_roi))
-            self.player_image_handler(get_roi(img.copy(), self.rois.player_roi))
-            #TODO: Non-blocking wait 1 sec
+            await self.message_image_handler(get_roi(img.copy(), self.rois.message_roi))
+            await self.dealer_image_handler(get_roi(img.copy(), self.rois.dealer_roi))
+            await self.player_image_handler(get_roi(img.copy(), self.rois.player_roi))
+            await asyncio.sleep(1)
         return
 
     def stop_detection(self):
         self.running_image_processing = False
         return
 
-    def message_image_handler(self, image):
-        # msg : Message = self.msg_processor.process_message(image)
+    async def message_image_handler(self, image):
+        # msg : Message = await self.msg_processor.process_message(image)
         # match msg:
         #     case Message.Shuffling:
         #         print("Shuffling detected") #TODO: reset stuff
@@ -129,21 +130,21 @@ class ProcessConductor:
         # self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
         return
 
-    def dealer_image_handler(self, image):
-        cards : list[Card] = self.card_processor.process_cards(image, CardType.Dealer)
+    async def dealer_image_handler(self, image):
+        cards : list[Card] = await self.card_processor.process_cards(image, CardType.Dealer)
         if len(cards) == 0:
             return
         roi = self.rois.dealer_roi
-        organize_dealer_cards(cards, self.table_state, roi.x, roi.y)
+        await organize_dealer_cards(cards, self.table_state, roi.x, roi.y)
         self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
         return
 
-    def player_image_handler(self, image):
-        cards : list[Card] = self.card_processor.process_cards(image, CardType.Player)
+    async def player_image_handler(self, image):
+        cards : list[Card] = await self.card_processor.process_cards(image, CardType.Player)
         if len(cards) == 0:
             return
         roi = self.rois.player_roi
-        organize_players_cards(cards, self.table_state, roi.x, roi.y)
+        await organize_players_cards(cards, self.table_state, roi.x, roi.y)
         self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
         return
 

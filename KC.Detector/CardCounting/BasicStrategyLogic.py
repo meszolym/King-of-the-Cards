@@ -1,5 +1,5 @@
 import json
-from Models.BasicStrategy import BasicStrategy
+from Models.BasicStrategy import BasicStrategy, BasicStrategyEntry
 from Models.Enums import Move
 from Models.HandValue import HandValue
 from CardCounting.HandValueLogic import hand_value_from_string
@@ -17,15 +17,15 @@ def read_strategy(filepath: str) -> BasicStrategy:
             hand_value = hand_value_from_string(entry["HandValue"])
             dealer_card = int(entry["DealerCard"])
             move = Move[entry["Move"]]
-            strategy.append((hand_value, dealer_card, move))
+            strategy.append(BasicStrategyEntry(hand_value, dealer_card, move))
 
     return BasicStrategy(strategy_list=strategy, upper_bound=upper_bound, lower_bound=lower_bound)
 
 
 def get_hand_actions(strategy: BasicStrategy, hand_value: HandValue, dealer_upcard: int) -> Move:
-    move_entry = next((x for x in strategy.strategy_list if x[0] == hand_value and x[1] == dealer_upcard), None)
+    move_entry = next((x for x in strategy.strategy_list if x.hand_value == hand_value and x.dealer_upcard == dealer_upcard), None)
 
-    move = move_entry[2] if move_entry is not None else Move.Unknown
+    move = move_entry.move if move_entry is not None else Move.Unknown
 
     if move != Move.Unknown:
         return move

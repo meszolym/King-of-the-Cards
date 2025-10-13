@@ -7,6 +7,7 @@ from GUI.BoxSelector import BoxSelector
 from rx.subject import Subject
 
 from Models.CardSizesContainer import CardSizesContainer
+from Models.OverlayModel import HandRecord
 from Models.RoisContainer import RoisContainer
 from GUI.RoiShower import show_rois
 
@@ -26,7 +27,7 @@ class GuiConductor:
 
     def __init__(self):
         self.main_window = MainWindow(False)
-        self.overlay = Overlay(OverlayModel([], (0,0,""), 0,0))
+        self.overlay = Overlay(OverlayModel([], None, 0,0))
         self.box_selector = BoxSelector()
 
         self.rois_selected_observable = Subject()

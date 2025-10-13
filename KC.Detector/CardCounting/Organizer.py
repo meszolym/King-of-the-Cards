@@ -6,7 +6,7 @@ from Models.Hand import Hand
 from Models.Card import Card
 from CardCounting.BoundingBoxLogic import *
 
-def organize_dealer_cards(detected_cards: list[Card], table: Table, x_offset, y_offset) -> None:
+async def organize_dealer_cards(detected_cards: list[Card], table: Table, x_offset, y_offset) -> None:
     if table.dealer_hand is None:
         leftmost_card = min(detected_cards, key=lambda c: c.box.x)
         table.dealer_hand = Hand(detected_cards,
@@ -25,7 +25,7 @@ def organize_dealer_cards(detected_cards: list[Card], table: Table, x_offset, y_
     return
 
 
-def organize_players_cards(detected_cards: list[Card], table: Table, x_offset, y_offset) -> None:
+async def organize_players_cards(detected_cards: list[Card], table: Table, x_offset, y_offset) -> None:
     #Organize cards based on the coordinates.
 
     #If no hands exist, create a new hand for each detected card

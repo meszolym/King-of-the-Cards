@@ -15,7 +15,7 @@ class MessageProcessor:
         with open(filepath) as f:
             self.possible_messages = json.load(f)
 
-    def process_message(self, img : np.ndarray) -> Message:
+    async def process_message(self, img : np.ndarray) -> Message:
         results = self.reader.readtext(img)
 
         extracted_text = ' '.join([text for (bbox, text, confidence) in results])
