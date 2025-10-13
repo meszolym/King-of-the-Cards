@@ -10,7 +10,8 @@ from CardCounting.BasicStrategyLogic import read_strategy
 from CardCounting.Organizer import organize_dealer_cards, organize_players_cards
 from ImageProcessing.CardProcessor import CardProcessor
 from ImageProcessing.MessageProcessor import MessageProcessor
-from ImageProcessing.Preprocessor import Preprocessor
+
+from ImageProcessing.Utils import take_screenshot, get_roi
 from Models.BasicStrategy import BasicStrategy
 from Models.BoundingBox import BoundingBox
 from Models.Card import Card
@@ -24,9 +25,10 @@ from Models.Table import Table
 
 class ProcessConductor:
 
-    preprocessor: Preprocessor
     card_processor: CardProcessor
     msg_processor: MessageProcessor
+
+    rois: RoisContainer
 
     table_state: Table
     basic_strategy : BasicStrategy
@@ -37,9 +39,10 @@ class ProcessConductor:
     overlay_data_update_observable : Subject
 
     def __init__(self):
+        self.running_image_processing = False
         self.table_state = Table(None, [], [])
         self.basic_strategy = BasicStrategy(None,0,0)
-        self.preprocessor = None
+        self.rois = None
         self.card_processor = CardProcessor()
         self.pool_scheduler = ThreadPoolScheduler(multiprocessing.cpu_count())
         self.msg_processor = MessageProcessor()
@@ -86,31 +89,33 @@ class ProcessConductor:
         return
 
     def rois_selected_handler(self, rois : RoisContainer):
-        if self.preprocessor is not None:
-            self.preprocessor.rois = rois
-            return
-
-        self.preprocessor = Preprocessor(rois)
-        self.preprocessor.message_image_observable.pipe(
-            operators.observe_on(self.pool_scheduler)
-        ).subscribe(lambda img: self.message_image_handler(img))
-
-
-        self.preprocessor.dealer_image_observable.subscribe(lambda img: self.dealer_image_handler(img))
-        self.preprocessor.player_image_observable.subscribe(lambda img: self.player_image_handler(img))
+        self.rois = rois
         return
 
     def card_sizes_selected_handler(self, sizes : CardSizesContainer):
         self.card_processor.card_sizes = sizes
         pass
 
-    def start_preprocessor(self):
-        #self.preprocessor.start()
-        self.preprocessor.mainloop()
+    def start_detection(self):
+        self.running_image_processing = True
+
         return
 
-    def stop_preprocessor(self):
-        self.preprocessor.stop()
+    def detection_loop(self):
+        while self.running_image_processing:
+            img = take_screenshot()
+
+            if self.rois is None:
+                raise(Exception("ROIs not set"))
+
+            self.message_image_handler(get_roi(img.copy(), self.rois.message_roi))
+            self.dealer_image_handler(get_roi(img.copy(), self.rois.dealer_roi))
+            self.player_image_handler(get_roi(img.copy(), self.rois.player_roi))
+            #TODO: Non-blocking wait 1 sec
+        return
+
+    def stop_detection(self):
+        self.running_image_processing = False
         return
 
     def message_image_handler(self, image):
@@ -128,7 +133,7 @@ class ProcessConductor:
         cards : list[Card] = self.card_processor.process_cards(image, CardType.Dealer)
         if len(cards) == 0:
             return
-        roi = self.preprocessor.rois.dealer_roi
+        roi = self.rois.dealer_roi
         organize_dealer_cards(cards, self.table_state, roi.x, roi.y)
         self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
         return
@@ -137,15 +142,15 @@ class ProcessConductor:
         cards : list[Card] = self.card_processor.process_cards(image, CardType.Player)
         if len(cards) == 0:
             return
-        roi = self.preprocessor.rois.player_roi
+        roi = self.rois.player_roi
         organize_players_cards(cards, self.table_state, roi.x, roi.y)
         self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
         return
 
     def write_rois_and_card_dimensions(self, filepath):
-        if self.preprocessor is None or self.card_processor is None:
+        if self.rois is None or self.card_processor is None:
             return
-        rois = self.preprocessor.rois
+        rois = self.rois
         sizes = self.card_processor.card_sizes
         image_path = filepath[:-5] + ".jpg"
 
