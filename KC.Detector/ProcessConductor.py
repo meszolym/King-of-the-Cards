@@ -1,6 +1,6 @@
-import asyncio
 import json
 import multiprocessing
+import threading
 
 import cv2 as cv
 from rx import operators
@@ -97,30 +97,34 @@ class ProcessConductor:
         self.card_processor.card_sizes = sizes
         pass
 
-    async def start_detection(self):
+    def start_detection(self):
         self.running_image_processing = True
-        await self.detection_loop()
+        detection = threading.Thread(target=self.detection_loop)
+        detection.start()
         return
 
-    async def detection_loop(self):
+    def detection_loop(self):
         if self.rois is None:
             raise (Exception("ROIs not set"))
 
+        print("Detection started")
+
         while self.running_image_processing:
             img = take_screenshot()
-
-            await self.message_image_handler(get_roi(img.copy(), self.rois.message_roi))
-            await self.dealer_image_handler(get_roi(img.copy(), self.rois.dealer_roi))
-            await self.player_image_handler(get_roi(img.copy(), self.rois.player_roi))
-            await asyncio.sleep(1)
+            print("Screenshot taken")
+            self.message_image_handler(get_roi(img.copy(), self.rois.message_roi))
+            self.dealer_image_handler(get_roi(img.copy(), self.rois.dealer_roi))
+            self.player_image_handler(get_roi(img.copy(), self.rois.player_roi))
+            print("Rois passed")
+            #TODO: Non-blocking wait
         return
 
     def stop_detection(self):
         self.running_image_processing = False
         return
 
-    async def message_image_handler(self, image):
-        # msg : Message = await self.msg_processor.process_message(image)
+    def message_image_handler(self, image):
+        # msg : Message = self.msg_processor.process_message(image)
         # match msg:
         #     case Message.Shuffling:
         #         print("Shuffling detected") #TODO: reset stuff
@@ -130,21 +134,21 @@ class ProcessConductor:
         # self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
         return
 
-    async def dealer_image_handler(self, image):
-        cards : list[Card] = await self.card_processor.process_cards(image, CardType.Dealer)
+    def dealer_image_handler(self, image):
+        cards : list[Card] = self.card_processor.process_cards(image, CardType.Dealer)
         if len(cards) == 0:
             return
         roi = self.rois.dealer_roi
-        await organize_dealer_cards(cards, self.table_state, roi.x, roi.y)
+        organize_dealer_cards(cards, self.table_state, roi.x, roi.y)
         self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
         return
 
-    async def player_image_handler(self, image):
-        cards : list[Card] = await self.card_processor.process_cards(image, CardType.Player)
+    def player_image_handler(self, image):
+        cards : list[Card] = self.card_processor.process_cards(image, CardType.Player)
         if len(cards) == 0:
             return
         roi = self.rois.player_roi
-        await organize_players_cards(cards, self.table_state, roi.x, roi.y)
+        organize_players_cards(cards, self.table_state, roi.x, roi.y)
         self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
         return
 

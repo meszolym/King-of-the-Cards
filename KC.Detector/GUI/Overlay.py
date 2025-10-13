@@ -14,11 +14,10 @@ class Overlay:
 
     def __init__(self, data: OverlayModel):
         self.data = data
+        self.window = Tk()
         return
 
     def _setup_window(self):
-
-        self.window = Tk()
         self.window.overrideredirect(True)
         self.window.geometry("300x300")
         # self.window.attributes("-topmost", True)
@@ -58,11 +57,12 @@ class Overlay:
 
     def show_overlay(self):
         self._setup_window()
+        self.window.deiconify()
         self.window.mainloop()
         return
 
 
     def hide_overlay(self):
-        self.window.destroy()
+        self.window.iconify()
         return
 
