@@ -38,7 +38,7 @@ class CardProcessor:
         cv.waitKey(0)
         cv.destroyAllWindows()
 
-    async def process_cards(self, img : np.ndarray, card_type: CardType) -> list[Card]:
+    def process_cards(self, img : np.ndarray, card_type: CardType) -> list[Card]:
         if self.card_sizes is None:
             raise Exception("Card sizes not set")
 
