@@ -7,13 +7,12 @@ from CardCounting.HandValueLogic import hand_value_from_hand
 from CardCounting.TableLogic import hilo_running_count, hilo_true_count
 from Models import Enums
 from Models.BasicStrategy import BasicStrategy
+from Models.Hand import Hand
 from Models.Table import Table
 
 @dataclass
 class HandRecord:
-    x: int
-    y: int
-    score: str
+    hand: Hand
     recommended_move: Optional[Enums.Move]
 
 @dataclass

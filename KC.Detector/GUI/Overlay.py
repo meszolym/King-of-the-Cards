@@ -1,68 +1,91 @@
-from tkinter import *
+from CardCounting.HandValueLogic import hand_value_from_hand
 
-from screeninfo import get_monitors
+import tkinter as tk
+from typing import Optional
 
-from Models import Enums
+from Models.BoundingBox import BoundingBox
 from Models.OverlayModel import OverlayModel
 
+def move_to_string(move: int) -> str:
+    if move is None:
+        return "..."
+
+    move_map: dict[int, str] = {
+        1: "Hit",
+        2: "Stand",
+        3: "Double/Hit",
+        4: "Double/Stand",
+        5: "Split",
+        0: "..."
+    }
+    return move_map.get(move, "...")
 
 class Overlay:
-    CONST_Y_OFFSET = 10 # Offset y to avoid overlap with cards
+    window: tk.Tk
+    placement: BoundingBox
+    current_overlay: Optional[OverlayModel]
+    dealer_label: tk.Label
+    hands_label: tk.Label
+    running_count_label: tk.Label
+    true_count_label: tk.Label
 
-    window : Tk
-    data : OverlayModel
+    def __init__(self, placement) -> None:
+        self.placement = placement
+        self.current_overlay = None
 
-    def __init__(self, data: OverlayModel):
-        self.data = data
-        self.window = Tk()
-        return
+        self.window = tk.Tk()
+        self.window.title("Blackjack Display")
 
-    def _setup_window(self):
-        self.window.overrideredirect(True)
-        self.window.geometry("300x300")
-        # self.window.attributes("-topmost", True)
-        # self.window.attributes("-transparentcolor", "black")
-        # monitor = get_monitors()[0]
-        # self.window.geometry(f"{monitor.width}x{monitor.height}")
-        self.update_overlay()
+        x = int(placement.x)
+        y = int(placement.y)
+        width = int(placement.w)
+        height = int(placement.h)
 
+        self.window.geometry(f"{width}x{height}+{x}+{y}")
+        self.window.attributes('-topmost', True)
+        self.window.resizable(True, True)
 
-    def update_overlay(self):
+        self.setup_ui()
 
-        for widget in self.window.winfo_children():
-            if isinstance(widget, Label):
-                widget.destroy()
+    def setup_ui(self) -> None:
+        self.dealer_label = tk.Label(self.window, text="Dealer: --", anchor="w", font=('Courier', 10))
+        self.dealer_label.pack(fill='x', padx=5, pady=(5, 2))
 
-        # Add labels for player hands
-        for hand_model in self.data.player_hand_info:
-            move_info = Enums.Move(hand_model.recommended_move).name if hand_model.recommended_move != Enums.Move.Unknown else "No advice"
-            text = f"{hand_model.score}\n{hand_model.recommended_move}"
-            text += f"\n{hand_model.x},{hand_model.y}"  # For debugging position
-            player_label = Label(self.window, text=text, font=("Arial", 16), bg="black", fg="yellow")
-            # player_label.place(x=x, y=y + self.CONST_Y_OFFSET)
-            player_label.pack(pady=5)
+        self.running_count_label = tk.Label(self.window, text="Running count: --", anchor="w", font=('Courier', 10))
+        self.running_count_label.pack(fill='x', padx=5, pady=2)
 
-        # Add label for dealer hand
-        dealer_label = Label(self.window, text=f"{self.data.dealer_hand_info.score}", font=("Arial", 16), bg="black", fg="yellow")
-        # dealer_label.place(x=dealer_x, y=dealer_y + self.CONST_Y_OFFSET)
-        dealer_label.pack(pady=5)
+        self.true_count_label = tk.Label(self.window, text="True count: --", anchor="w", font=('Courier', 10))
+        self.true_count_label.pack(fill='x', padx=5, pady=2)
 
-        # Add label for counts
-        count_text = f"Running Count: {self.data.table_running_count}\nTrue Count: {self.data.table_true_count}"
-        count_label = Label(self.window, text=count_text, font=("Arial", 16), bg="black", fg="yellow")
-        # count_label.place(x=10, y=10)
-        count_label.pack(pady=5)
+        self.hands_label = tk.Label(self.window, text="", anchor="nw", justify='left', font=('Courier', 10))
+        self.hands_label.pack(fill='both', expand=True, padx=5, pady=(5, 5))
 
-        return
+    def update_from_overlay_model(self, overlay_model) -> None:
+        self.current_overlay = overlay_model
 
-    def show_overlay(self):
-        self._setup_window()
-        self.window.deiconify()
+        dealer_value = str(hand_value_from_hand(overlay_model.dealer_hand_info.hand))
+        self.dealer_label.config(text=f"Dealer: {dealer_value}")
+
+        running_count = overlay_model.table_running_count
+        true_count = overlay_model.table_true_count
+
+        self.running_count_label.config(text=f"Running count: {running_count}")
+        self.true_count_label.config(text=f"True count: {true_count}")
+
+        hands_text: str = self.build_hands_text()
+        self.hands_label.config(text=hands_text)
+
+    def build_hands_text(self) -> str:
+        if not self.current_overlay or not self.current_overlay.player_hand_info:
+            return ""
+
+        lines = []
+        for idx, hand_record in enumerate(self.current_overlay.player_hand_info):
+            hand_value: str = str(hand_value_from_hand(hand_record.hand))
+            recommendation: str = move_to_string(hand_record.recommended_move)
+            lines.append(f"Hand {idx + 1}: {hand_value} ({recommendation})")
+
+        return "\n".join(lines)
+
+    def run(self) -> None:
         self.window.mainloop()
-        return
-
-
-    def hide_overlay(self):
-        self.window.iconify()
-        return
-
