@@ -1,3 +1,5 @@
+from rx.scheduler.mainloop import TkinterScheduler
+
 from CardCounting.HandValueLogic import hand_value_from_hand
 
 import tkinter as tk
@@ -28,13 +30,17 @@ class Overlay:
     hands_label: tk.Label
     running_count_label: tk.Label
     true_count_label: tk.Label
+    scheduler: TkinterScheduler
 
     def __init__(self, placement) -> None:
         self.placement = placement
         self.current_overlay = None
 
+
         self.window = tk.Tk()
         self.window.title("Blackjack Display")
+
+        self.scheduler = TkinterScheduler(self.window)
 
         x = int(placement.x)
         y = int(placement.y)
@@ -89,3 +95,9 @@ class Overlay:
 
     def run(self) -> None:
         self.window.mainloop()
+
+    def show_overlay(self) -> None:
+        self.window.deiconify()
+
+    def hide_overlay(self):
+        self.window.withdraw()

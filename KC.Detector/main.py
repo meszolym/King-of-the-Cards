@@ -24,8 +24,8 @@ def main():
     process_conductor.done_reading_rois_and_card_dimensions_json_observable.subscribe(lambda json_data: gui.rois_selected(json_data.rois_container))
     process_conductor.done_reading_rois_and_card_dimensions_json_observable.subscribe(lambda json_data: gui.card_sizes_selected(json_data.sizes_container))
 
-    main_thread_scheduler = TkinterScheduler(gui.overlay.window) #TODO: replace with PyQt scheduler if needed
-    process_conductor.overlay_data_update_observable.pipe(ops.observe_on(main_thread_scheduler)).subscribe(lambda data: gui.update_overlay_model(data))
+    overlay_thread_scheduler = gui.overlay.scheduler
+    process_conductor.overlay_data_update_observable.pipe(ops.observe_on(overlay_thread_scheduler)).subscribe(lambda data: gui.overlay.update_from_overlay_model(data))
 
     # Load configuration
     process_conductor.read_basic_strategy("Assets/BasicStrategy.json")

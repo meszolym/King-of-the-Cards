@@ -28,6 +28,9 @@ class GuiConductor:
     def __init__(self):
         self.main_window = MainWindow(False)
         self.overlay = Overlay(OverlayModel([], None, 0,0))
+        self.overlay.run()
+        self.overlay.hide_overlay()
+
         self.box_selector = BoxSelector()
 
         self.rois_selected_observable = Subject()
@@ -48,24 +51,19 @@ class GuiConductor:
         self.box_selector.rois_selected_observable.subscribe(lambda rois: self.rois_selected(rois))
         self.box_selector.card_box_selected_observable.subscribe(lambda sizes: self.card_sizes_selected(sizes))
 
-    def update_overlay_model(self, model: OverlayModel):
-        self.overlay.data = model
-        # self.overlay.update_overlay()
-        return
-
     def start_main_window(self):
         self.main_window.window.mainloop()
         return
 
     def start_detection(self):
-        # self.overlay.show_overlay()
+        self.overlay.show_overlay()
         self.main_window.detection_started = True
         self.main_window.update_state()
         # self.main_window.window.iconify()
         self.start_detection_observable.on_next(None)
         return
     def stop_detection(self):
-        # self.overlay.hide_overlay()
+        self.overlay.hide_overlay()
         self.main_window.detection_started = False
         self.main_window.update_state()
         self.stop_detection_observable.on_next(None)
