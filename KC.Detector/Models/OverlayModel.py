@@ -30,7 +30,11 @@ def overlay_data_from_table(table: Table, basic_strategy: BasicStrategy) -> Over
             # x = hand.bottom_center_x
             # y = hand.bottom_center_y
             score = hand_value_from_hand(hand).__str__()
-            move = get_hand_actions(basic_strategy, hand_value_from_hand(hand), card_value(table.dealer_hand.cards[0]))
+            if table.dealer_hand is not None and table.dealer_hand.cards and len(table.dealer_hand.cards) > 0:
+                dealer_card_value = card_value(table.dealer_hand.cards[0])
+            else:
+                dealer_card_value = None
+            move = get_hand_actions(basic_strategy, hand_value_from_hand(hand), dealer_card_value)
             player_hand_info.append(HandRecord(hand, move))
 
     dealer_x, dealer_y, dealer_score = (0, 0, "")
