@@ -32,26 +32,28 @@ class Overlay:
     true_count_label: tk.Label
     scheduler: TkinterScheduler
 
-    def __init__(self, placement) -> None:
-        self.placement = placement
+    def __init__(self) -> None:
         self.current_overlay = None
-
-
         self.window = tk.Tk()
         self.window.title("Blackjack Display")
 
         self.scheduler = TkinterScheduler(self.window)
 
+        self.window.attributes('-topmost', True)
+        self.window.resizable(True, True)
+
+        self.setup_ui()
+
+
+    def set_placement(self, placement: BoundingBox) -> None:
+        self.placement = placement
         x = int(placement.x)
         y = int(placement.y)
         width = int(placement.w)
         height = int(placement.h)
 
         self.window.geometry(f"{width}x{height}+{x}+{y}")
-        self.window.attributes('-topmost', True)
-        self.window.resizable(True, True)
 
-        self.setup_ui()
 
     def setup_ui(self) -> None:
         self.dealer_label = tk.Label(self.window, text="Dealer: --", anchor="w", font=('Courier', 10))
@@ -93,11 +95,8 @@ class Overlay:
 
         return "\n".join(lines)
 
-    def run(self) -> None:
-        self.window.mainloop()
-
     def show_overlay(self) -> None:
-        self.window.deiconify()
+        self.window.mainloop()
 
     def hide_overlay(self):
         self.window.withdraw()

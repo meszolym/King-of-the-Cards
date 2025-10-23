@@ -6,6 +6,7 @@ from GUI.MainWindow import MainWindow
 from GUI.BoxSelector import BoxSelector
 from rx.subject import Subject
 
+from Models.BoundingBox import BoundingBox
 from Models.CardSizesContainer import CardSizesContainer
 from Models.OverlayModel import HandRecord
 from Models.RoisContainer import RoisContainer
@@ -27,9 +28,7 @@ class GuiConductor:
 
     def __init__(self):
         self.main_window = MainWindow(False)
-        self.overlay = Overlay(OverlayModel([], None, 0,0))
-        self.overlay.run()
-        self.overlay.hide_overlay()
+        self.overlay = Overlay()
 
         self.box_selector = BoxSelector()
 
@@ -73,6 +72,12 @@ class GuiConductor:
         self.main_window.roi_selected = True
         self.main_window.update_state()
         self.rois = rois
+        self.overlay.set_placement(BoundingBox(
+            x = rois.dealer_roi.x+rois.dealer_roi.w,
+            y = rois.dealer_roi.y,
+            w = 200, #TODO: set properly based on screen size
+            h = 100 #TODO: set properly based on screen size
+        ))
         self.rois_selected_observable.on_next(rois)
         return
 
