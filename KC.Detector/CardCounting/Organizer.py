@@ -35,7 +35,7 @@ def organize_players_cards(detected_cards: list[Card], table: Table, x_offset, y
                         x_offset + int(c.box.x + c.box.w // 2),
                         y_offset + int(c.box.y + c.box.h))
             table.hands.append(hand)
-            return
+        return
 
     #Go through each card, and check against each hand to find the one that has a card (latest) with a contour overlapping this card
     split_origin: Optional[Hand] = None
