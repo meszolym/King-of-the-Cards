@@ -27,7 +27,11 @@ sealed class Program
     
     private static void RegisterServices(AppBuilder appBuilder)
     {
-        var builder = new ConfigurationBuilder().AddJsonFile("appSettings.json", false, true);
+        var environment = Environment.GetEnvironmentVariable("ENVIRONMENT") ?? "Development";
+
+        var builder = new ConfigurationBuilder()
+            .AddJsonFile($"appSettings.{environment}.json", optional: false, reloadOnChange: true);
+
         var configuration = builder.Build();
         
         Locator.CurrentMutable.RegisterConstant(new ExternalCommunicatorService(new Uri(configuration["BaseUri"])));

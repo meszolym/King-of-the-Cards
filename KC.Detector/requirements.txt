@@ -1,0 +1,8 @@
+certifi
+easyocr
+opencv-python
+Rx
+numpy
+pyscreenshot
+screeninfo
+pillow
