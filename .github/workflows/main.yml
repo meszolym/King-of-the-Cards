@@ -2,11 +2,11 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - release
 
 jobs:
   run_push:
-    name: Push on master -> deploy
+    name: Push on release -> deploy
     runs-on: ubuntu-latest
 
     steps:
@@ -49,7 +49,7 @@ jobs:
             {
               echo "set -e"
               echo "cd ~/King-of-the-Cards"
-              echo "git checkout master"
+              echo "git checkout release"
               echo "git pull"
               echo "sudo systemctl restart kc-backend.service"
             } | ssh -o ConnectTimeout=10 ${{ secrets.SSH_USER }}@172.16.0.1 && break || sleep 5
