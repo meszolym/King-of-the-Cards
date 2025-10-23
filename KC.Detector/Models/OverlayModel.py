@@ -7,6 +7,7 @@ from CardCounting.HandValueLogic import hand_value_from_hand
 from CardCounting.TableLogic import hilo_running_count, hilo_true_count
 from Models import Enums
 from Models.BasicStrategy import BasicStrategy
+from Models.Enums import Move
 from Models.Hand import Hand
 from Models.Table import Table
 
@@ -26,16 +27,16 @@ def overlay_data_from_table(table: Table, basic_strategy: BasicStrategy) -> Over
     player_hand_info = []
     for hand in table.hands:
         if hand is not None:
-            x = hand.bottom_center_x
-            y = hand.bottom_center_y
+            # x = hand.bottom_center_x
+            # y = hand.bottom_center_y
             score = hand_value_from_hand(hand).__str__()
             move = get_hand_actions(basic_strategy, hand_value_from_hand(hand), card_value(table.dealer_hand.cards[0]))
-            player_hand_info.append(HandRecord(x, y, score, move))
+            player_hand_info.append(HandRecord(hand, move))
 
     dealer_x, dealer_y, dealer_score = (0, 0, "")
     if table.dealer_hand is not None:
-        dealer_x = table.dealer_hand.bottom_center_x
-        dealer_y = table.dealer_hand.bottom_center_y
+        # dealer_x = table.dealer_hand.bottom_center_x
+        # dealer_y = table.dealer_hand.bottom_center_y
         dealer_score = hand_value_from_hand(table.dealer_hand).__str__()
 
     running_count = hilo_running_count(table)
@@ -43,7 +44,7 @@ def overlay_data_from_table(table: Table, basic_strategy: BasicStrategy) -> Over
 
     return OverlayModel(
         player_hand_info=player_hand_info,
-        dealer_hand_info=HandRecord(dealer_x, dealer_y, dealer_score, None),
+        dealer_hand_info=HandRecord(table.dealer_hand, Move.Unknown),
         table_running_count=running_count,
         table_true_count=true_count
     )
