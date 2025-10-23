@@ -3,10 +3,6 @@ from rx.scheduler.mainloop import TkinterScheduler
 
 from GUI.GuiConductor import GuiConductor
 from ProcessConductor import ProcessConductor
-from rx.scheduler.mainloop import TkinterScheduler
-from rx import operators as ops
-
-
 def main():
     # Create process conductor first
     process_conductor = ProcessConductor()
