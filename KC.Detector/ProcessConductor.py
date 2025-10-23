@@ -113,7 +113,7 @@ class ProcessConductor:
         while self.running_image_processing:
             img = take_screenshot()
             print("Screenshot taken")
-            # self.message_image_handler(get_roi(img.copy(), self.rois.message_roi))
+            self.message_image_handler(get_roi(img.copy(), self.rois.message_roi))
             self.dealer_image_handler(get_roi(img.copy(), self.rois.dealer_roi))
             self.player_image_handler(get_roi(img.copy(), self.rois.player_roi))
             print("Rois passed")

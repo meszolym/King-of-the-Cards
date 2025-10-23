@@ -19,13 +19,16 @@ class MessageProcessor:
 
     def read_possible_messages(self, filepath: str):
         with open(filepath) as f:
-            self.possible_messages = json.load(f)
+            data = json.load(f)
+        self.possible_messages = {
+            item["Text"]: Message[item["EnumEquivalent"]] for item in data
+        }
 
     def process_message(self, img : np.ndarray) -> Message:
         results = self.reader.readtext(img)
 
         extracted_text = ' '.join([text for (bbox, text, confidence) in results])
-        print(extracted_text)
+        # print(extracted_text)
 
         for k, v in self.possible_messages.items():
             if k in extracted_text:

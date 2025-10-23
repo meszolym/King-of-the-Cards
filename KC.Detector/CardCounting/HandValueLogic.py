@@ -22,6 +22,13 @@ def hand_value_from_string(value: str) -> HandValue:
 
 
 def hand_value_from_hand(hand: Hand) -> HandValue:
+    if (hand is None) or (not hand.cards):
+        return HandValue(value = 0,
+                         is_soft = False,
+                         is_pair = False,
+                         is_blackjack = False,
+                         is_bust = False)
+
     value = 0
     aces = 0
     for card in hand.cards:
