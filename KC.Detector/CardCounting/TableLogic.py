@@ -18,5 +18,6 @@ def hilo_true_count(table: Table) -> int:
 
 def reset(table: Table) -> None:
     table.hands.clear()
-    table.dealer_hand.cards.clear()
+    if table.dealer_hand is not None:
+        table.dealer_hand.cards.clear()
     table.played_cards.clear()
