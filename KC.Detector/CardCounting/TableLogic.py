@@ -13,7 +13,7 @@ def hilo_running_count(table: Table) -> int:
 
 
 def hilo_true_count(table: Table) -> int:
-    return hilo_running_count(table) / (len(table.played_cards) / 52) if table.played_cards else 0
+    return hilo_running_count(table) // (len(table.played_cards) // 52) if table.played_cards else 0
 
 
 def reset(table: Table) -> None:
