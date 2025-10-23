@@ -1,6 +1,7 @@
 import json
 import multiprocessing
 import threading
+import time
 
 import cv2 as cv
 from rx import operators
@@ -112,11 +113,11 @@ class ProcessConductor:
         while self.running_image_processing:
             img = take_screenshot()
             print("Screenshot taken")
-            self.message_image_handler(get_roi(img.copy(), self.rois.message_roi))
+            # self.message_image_handler(get_roi(img.copy(), self.rois.message_roi))
             self.dealer_image_handler(get_roi(img.copy(), self.rois.dealer_roi))
             self.player_image_handler(get_roi(img.copy(), self.rois.player_roi))
             print("Rois passed")
-            #TODO: Non-blocking wait
+            time.sleep(0.3)  # To avoid excessive CPU usage
         return
 
     def stop_detection(self):
@@ -124,14 +125,19 @@ class ProcessConductor:
         return
 
     def message_image_handler(self, image):
-        # msg : Message = self.msg_processor.process_message(image)
-        # match msg:
-        #     case Message.Shuffling:
-        #         print("Shuffling detected") #TODO: reset stuff
-        #     case Message.WaitingForBets:
-        #         print("Waiting for bets detected")
-        #     #...
-        # self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
+        msg : Message = self.msg_processor.process_message(image)
+        match msg:
+            case Message.Shuffling:
+                print("Shuffling detected")
+                self.table_state.dealer_hand = None
+                self.table_state.hands = []
+                self.table_state.played_cards = []
+            case Message.WaitingForBets:
+                print("Waiting for bets detected")
+                self.table_state.dealer_hand = None
+                self.table_state.hands = []
+            #...
+        self.overlay_data_update_observable.on_next(overlay_data_from_table(self.table_state, self.basic_strategy))
         return
 
     def dealer_image_handler(self, image):
