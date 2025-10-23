@@ -18,8 +18,8 @@ class CardProcessor:
     CONST_CANNY_CARD_EDGE_THRESHOLD1, CONST_CANNY_CARD_EDGE_THRESHOLD2 = 250, 250
     CONST_KERNEL_SIZE = (3, 3)
     CONST_ITERATIONS = 2
-    CONST_CONTOUR_AREA_PCT_MIN = 0.9
-    CONST_CONTOUR_AREA_PCT_MAX = 1.1
+    CONST_CONTOUR_AREA_PCT_DEVIANCE_PLAYER = 0.1
+    CONST_CONTOUR_AREA_PCT_DEVIANCE_DEALER = 0.05
     CONST_TM_THRESHOLD = 120
 
     card_sizes: Optional[CardSizesContainer]
@@ -47,7 +47,7 @@ class CardProcessor:
 
         cards : list[Card] = []
         approx_size = self.card_sizes.dealer_card if card_type == CardType.Dealer else self.card_sizes.player_card
-        boxes = self.find_card_boxes(img, round(approx_size))
+        boxes = self.find_card_boxes(img, round(approx_size), self.CONST_CONTOUR_AREA_PCT_DEVIANCE_PLAYER if card_type == CardType.Player else self.CONST_CONTOUR_AREA_PCT_DEVIANCE_DEALER)
 
         # self._show_boxes(img.copy(), boxes,"") # for debugging
 
@@ -59,7 +59,7 @@ class CardProcessor:
 
         return cards
 
-    def find_card_boxes(self, img: np.ndarray, approx_size: int) -> list[BoundingBox]:
+    def find_card_boxes(self, img: np.ndarray, approx_size: int, deviance: float) -> list[BoundingBox]:
         gray = cv.cvtColor(img.copy(), cv.COLOR_BGR2GRAY)
         canny = cv.Canny(gray, self.CONST_CANNY_CARD_EDGE_THRESHOLD1, self.CONST_CANNY_CARD_EDGE_THRESHOLD2)
         #canny = auto_canny(gray) # Sometimes this doesn't find edges well enough
@@ -75,7 +75,7 @@ class CardProcessor:
         card_boxes : list[BoundingBox] = []
 
         for contour in contours:
-            if approx_size*self.CONST_CONTOUR_AREA_PCT_MIN < cv.contourArea(contour) < approx_size*self.CONST_CONTOUR_AREA_PCT_MAX:
+            if approx_size*(1-deviance) < cv.contourArea(contour) < approx_size*(1+deviance):
                 x, y, w, h = cv.boundingRect(contour)
                 card_boxes.append(BoundingBox(x,y,w,h))
 
