@@ -16,7 +16,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         InitializeComponent();
         this.WhenActivated(async d =>
         {
-            this.OneWayBind(ViewModel, vm=> vm.IsFullScreen, v=> v.WindowState, b => b ? WindowState.FullScreen : WindowState.Normal).DisposeWith(d); 
+            this.OneWayBind(ViewModel, vm=> vm.IsFullScreen, v=> v.WindowState, b => b ? WindowState.Maximized : WindowState.Normal).DisposeWith(d); 
             this.Bind(ViewModel, vm => vm.Router, v => v.RoutedViewHost.Router).DisposeWith(d);
             this.OneWayBind(ViewModel, vm => vm.IsConnected, v => v.RoutedViewHost.IsEnabled).DisposeWith(d);
             this.BindInteraction(ViewModel, vm => vm.PlayerNameInteraction, HandleNameChange).DisposeWith(d);
