@@ -23,7 +23,7 @@ def move_to_string(move: int) -> str:
     return move_map.get(move, "...")
 
 class Overlay:
-    window: tk.Tk
+    window: tk.Toplevel
     placement: BoundingBox
     current_overlay: Optional[OverlayModel]
     dealer_label: tk.Label
@@ -32,9 +32,9 @@ class Overlay:
     true_count_label: tk.Label
     scheduler: TkinterScheduler
 
-    def __init__(self) -> None:
+    def __init__(self, parent) -> None:
         self.current_overlay = None
-        self.window = tk.Tk()
+        self.window = tk.Toplevel(parent)
         self.window.title("Blackjack Display")
 
         self.scheduler = TkinterScheduler(self.window)
@@ -43,6 +43,8 @@ class Overlay:
         self.window.resizable(True, True)
 
         self.setup_ui()
+        self.hide_overlay()
+
 
 
     def set_placement(self, placement: BoundingBox) -> None:
@@ -53,7 +55,6 @@ class Overlay:
         height = int(placement.h)
 
         self.window.geometry(f"{width}x{height}+{x}+{y}")
-
 
     def setup_ui(self) -> None:
         self.dealer_label = tk.Label(self.window, text="Dealer: --", anchor="w", font=('Courier', 10))
@@ -96,7 +97,7 @@ class Overlay:
         return "\n".join(lines)
 
     def show_overlay(self) -> None:
-        self.window.mainloop()
+        self.window.deiconify()
 
     def hide_overlay(self):
         self.window.withdraw()

@@ -28,7 +28,7 @@ class GuiConductor:
 
     def __init__(self):
         self.main_window = MainWindow(False)
-        self.overlay = Overlay()
+        self.overlay = Overlay(self.main_window.window)
 
         self.box_selector = BoxSelector()
 
@@ -75,8 +75,8 @@ class GuiConductor:
         self.overlay.set_placement(BoundingBox(
             x = rois.dealer_roi.x+rois.dealer_roi.w,
             y = rois.dealer_roi.y,
-            w = 200, #TODO: set properly based on screen size
-            h = 100 #TODO: set properly based on screen size
+            w = 200, #TODO: dynamic width
+            h = rois.dealer_roi.h * 0.9 #Height slightly smaller than dealer ROI height, to account for window borders
         ))
         self.rois_selected_observable.on_next(rois)
         return
