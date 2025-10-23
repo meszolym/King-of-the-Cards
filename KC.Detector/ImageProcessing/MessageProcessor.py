@@ -1,6 +1,12 @@
 import numpy as np
 from Models.Enums import Message
 import json
+
+import os
+import certifi
+
+os.environ['SSL_CERT_FILE'] = certifi.where()
+
 import easyocr
 
 class MessageProcessor:
