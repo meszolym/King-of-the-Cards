@@ -27,7 +27,7 @@ sealed class Program
     
     private static void RegisterServices(AppBuilder appBuilder)
     {
-        var environment = Environment.GetEnvironmentVariable("ENVIRONMENT");
+        var environment = Environment.GetEnvironmentVariable("ENVIRONMENT") ?? "Development";
 
         var builder = new ConfigurationBuilder()
             .AddJsonFile($"appSettings.{environment}.json", optional: false, reloadOnChange: true);
