@@ -82,9 +82,7 @@ def organize_players_cards(detected_cards: list[Card], table: Table, x_offset, y
                             y_offset + int(card.box.y + card.box.h))
             table.hands.append(new_hand)
 
-        table.hands.sort(key=lambda h: h.bottom_center_x, reverse=True)
-
-
+    table.hands.sort(key=lambda h: h.bottom_center_x, reverse=True)
 def _check_and_update_same_card(old_card: Card, new_card: Card) -> bool:
     if boxes_match(old_card.box, new_card.box):
         # Update bounding box if new box is smaller (more accurate)
