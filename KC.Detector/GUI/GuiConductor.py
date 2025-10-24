@@ -77,7 +77,7 @@ class GuiConductor:
             x = rois.dealer_roi.x+rois.dealer_roi.w,
             y = rois.dealer_roi.y,
             w = 200, #TODO: dynamic width
-            h = rois.dealer_roi.h
+            h = rois.dealer_roi.h * 0.9 #Accounting for title bar
         ))
         self.rois_selected_observable.on_next(rois)
         return
