@@ -100,7 +100,7 @@ class ProcessConductor:
 
     def start_detection(self):
         self.running_image_processing = True
-        detection = threading.Thread(target=self.detection_loop)
+        detection = threading.Thread(target=self.detection_loop, daemon=True)
         detection.start()
         return
 

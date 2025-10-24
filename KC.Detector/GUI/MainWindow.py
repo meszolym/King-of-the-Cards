@@ -1,3 +1,4 @@
+import sys
 from tkinter import *
 from rx.subject import Subject
 
@@ -25,6 +26,7 @@ class MainWindow:
         self.write_rois_and_card_dimensions_json_observable = Subject()
 
         self.window = Tk()
+        self.window.protocol("WM_DELETE_WINDOW", lambda: self.window.destroy())
         self.window.title("KC Detector")
         self.window.geometry("300x320")
         self.window.minsize(300, 320)
