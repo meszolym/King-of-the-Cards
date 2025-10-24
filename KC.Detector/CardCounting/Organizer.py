@@ -17,12 +17,11 @@ def organize_dealer_cards(detected_cards: list[Card], table: Table, x_offset, y_
     for card in detected_cards:
         found_match = False
 
-        if not found_match:
-            for existing_card in table.dealer_hand.cards:
-                updated = _check_and_update_same_card(existing_card, card)
-                if updated:
-                    found_match = True
-                    break
+        for existing_card in table.dealer_hand.cards:
+            updated = _check_and_update_same_card(existing_card, card)
+            if updated:
+                found_match = True
+                break
 
         if not found_match:
             table.dealer_hand.cards.append(card)
