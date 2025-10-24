@@ -1,5 +1,5 @@
 from dataclasses import dataclass
 @dataclass
 class CardSizesContainer:
-    dealer_card: float
-    player_card: float
+    dealer_card: int
+    player_card: int
