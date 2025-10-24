@@ -39,8 +39,8 @@ class Overlay:
 
         self.scheduler = TkinterScheduler(self.window)
 
-        self.window.overrideredirect(True)
         self.window.attributes('-topmost', True)
+        self.window.attributes("-alpha", 0.7)
         self.window.resizable(True, True)
 
         self.setup_ui()
