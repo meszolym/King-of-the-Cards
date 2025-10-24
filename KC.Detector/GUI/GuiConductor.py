@@ -41,6 +41,7 @@ class GuiConductor:
 
         self.main_window.start_detection_observable.subscribe(lambda _: self.start_detection())
         self.main_window.stop_detection_observable.subscribe(lambda _: self.stop_detection())
+        self.overlay.on_closing_observable.subscribe(lambda _: self.stop_detection())
         self.main_window.select_roi_observable.subscribe(lambda _: self.box_selector.open_roi_selector())
         self.main_window.show_rois_observable.subscribe(lambda _: show_rois(self.rois))
         self.main_window.select_card_dimensions_observable.subscribe(lambda _: self.box_selector.open_card_box_selector())
@@ -55,14 +56,17 @@ class GuiConductor:
         return
 
     def start_detection(self):
+        print("Starting detection...")
         self.overlay.show_overlay()
         self.main_window.detection_started = True
         self.main_window.update_state()
-        # self.main_window.window.iconify()
+        self.main_window.window.iconify()
         self.start_detection_observable.on_next(None)
         return
     def stop_detection(self):
+        print("Stopping detection...")
         self.overlay.hide_overlay()
+        self.main_window.window.deiconify()
         self.main_window.detection_started = False
         self.main_window.update_state()
         self.stop_detection_observable.on_next(None)
@@ -76,7 +80,7 @@ class GuiConductor:
             x = rois.dealer_roi.x+rois.dealer_roi.w,
             y = rois.dealer_roi.y,
             w = 200, #TODO: dynamic width
-            h = rois.dealer_roi.h * 0.9 #Height slightly smaller than dealer ROI height, to account for window borders
+            h = rois.dealer_roi.h * 0.9 #Accounting for title bar
         ))
         self.rois_selected_observable.on_next(rois)
         return
