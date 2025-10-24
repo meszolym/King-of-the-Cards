@@ -1,4 +1,3 @@
-import sys
 from tkinter import *
 from rx.subject import Subject
 
