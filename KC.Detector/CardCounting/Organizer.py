@@ -32,50 +32,58 @@ def organize_dealer_cards(detected_cards: list[Card], table: Table, x_offset, y_
 
 
 def organize_players_cards(detected_cards: list[Card], table: Table, x_offset, y_offset) -> None:
-    #Organize cards based on the coordinates.
-
-    #If no hands exist, create a new hand for each detected card
     if not table.hands:
-        for c in detected_cards:
-            hand = Hand([c],
-                        x_offset + int(c.box.x + c.box.w // 2),
-                        y_offset + int(c.box.y + c.box.h))
-            table.hands.append(hand)
-        return
+        table.hands = []
 
-    #Go through each card, and check against each hand to find the one that has a card (latest) with a contour overlapping this card
-    split_origin: Optional[Hand] = None
-    for c in detected_cards:
-        assigned = False
+    split_count = 0
+    if len(table.hands) > 0:
+        split_count = len(detected_cards) - len(table.hands)
 
-        # First, try to find the matching card in existing hands
-        for h in table.hands:
-            for existing_card in h.cards:
-                updated = _check_and_update_same_card(existing_card, c)
-                if updated:
-                    assigned = True
-                    split_origin = h
-                    break
-            if assigned:
+    for card in detected_cards:
+        placed = False
+        for hand in table.hands:
+
+
+            if not hand.cards or len(hand.cards) == 0:
+                hand.cards = []
+                continue
+
+            last_card = hand.cards[-1]
+
+            # Case 1: Same card detected again: box matches, we have the same rank and suit, or better confidence
+            # Case 2: New card overlapping with last card in hand, we add it to that hand
+            # Case 3: Replaced card: box matches, but different rank/suit (no matter the confidence) -> Split happened, new top card appeared
+            #   and the old top card is moved to a different place
+            # Case 4: New card that does not overlap with any existing hand, move to next hand (or create new hand if none match)
+
+            if boxes_match(last_card.box, card.box):
+                if split_count == 0 or (last_card.rank == card.rank and last_card.suit == card.suit):
+                    # Case 1: Same card detected again
+                    _check_and_update_same_card(last_card, card)
+                else:
+                    # Case 3: Replaced card due to split
+                    hand.cards[-1] = card
+                    split_count -= 1
+
+                placed = True
                 break
 
-        if not assigned:
-            for h in table.hands:
-                if _overlap(c, h) > 0:
-                    h.cards.append(c)
-                    assigned = True
-                    break
+            if _overlap(card, hand):
+                # Case 2: New card overlapping with the existing hand
+                hand.cards.append(card)
+                placed = True
+                break
 
-        if not assigned:
-            # Create new hand (split origin must exist to remove card from it)
-            if split_origin.cards and c in split_origin.cards:
-                split_origin.cards.remove(c)
-            hand = Hand([c],
-                        x_offset + int(c.box.x + c.box.w // 2),
-                        y_offset + int(c.box.y + c.box.h))
-            table.hands.append(hand)
-            assigned = True
-    return
+            # Continue to next hand if no match found (Case 4)
+
+        if not placed:
+            # Create new hand for this card (Case 4)
+            new_hand = Hand([card],
+                            x_offset + int(card.box.x + card.box.w // 2),
+                            y_offset + int(card.box.y + card.box.h))
+            table.hands.append(new_hand)
+
+        table.hands.sort(key=lambda c: c.box.x, reverse=True)
 
 
 def _check_and_update_same_card(old_card: Card, new_card: Card) -> bool:
