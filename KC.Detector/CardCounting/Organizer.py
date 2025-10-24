@@ -43,7 +43,7 @@ def organize_players_cards(detected_cards: list[Card], table: Table, x_offset, y
         for hand in table.hands:
 
 
-            if not hand.cards or len(hand.cards) == 0:
+            if not hand.cards:
                 hand.cards = []
                 continue
 
