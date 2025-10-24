@@ -41,6 +41,7 @@ class GuiConductor:
 
         self.main_window.start_detection_observable.subscribe(lambda _: self.start_detection())
         self.main_window.stop_detection_observable.subscribe(lambda _: self.stop_detection())
+        self.overlay.on_closing_observable.subscribe(lambda _: self.stop_detection())
         self.main_window.select_roi_observable.subscribe(lambda _: self.box_selector.open_roi_selector())
         self.main_window.show_rois_observable.subscribe(lambda _: show_rois(self.rois))
         self.main_window.select_card_dimensions_observable.subscribe(lambda _: self.box_selector.open_card_box_selector())

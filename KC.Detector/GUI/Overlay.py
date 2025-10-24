@@ -1,4 +1,5 @@
 from rx.scheduler.mainloop import TkinterScheduler
+from rx.subject import Subject
 
 from CardCounting.HandValueLogic import hand_value_from_hand
 
@@ -31,8 +32,10 @@ class Overlay:
     running_count_label: tk.Label
     true_count_label: tk.Label
     scheduler: TkinterScheduler
+    on_closing_observable : Subject
 
     def __init__(self, parent) -> None:
+        self.on_closing_observable = Subject()
         self.current_overlay = None
         self.window = tk.Toplevel(parent)
         self.window.title("Blackjack Display")
@@ -41,12 +44,11 @@ class Overlay:
 
         self.window.attributes('-topmost', True)
         self.window.attributes("-alpha", 0.7)
+        self.window.protocol("WM_DELETE_WINDOW", lambda: self.on_closing_observable.on_next(None))
         self.window.resizable(True, True)
 
         self.setup_ui()
         self.hide_overlay()
-
-
 
     def set_placement(self, placement: BoundingBox) -> None:
         self.placement = placement
