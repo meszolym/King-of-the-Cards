@@ -56,14 +56,17 @@ class GuiConductor:
         return
 
     def start_detection(self):
+        print("Starting detection...")
         self.overlay.show_overlay()
         self.main_window.detection_started = True
         self.main_window.update_state()
-        # self.main_window.window.iconify()
+        self.main_window.window.iconify()
         self.start_detection_observable.on_next(None)
         return
     def stop_detection(self):
+        print("Stopping detection...")
         self.overlay.hide_overlay()
+        self.main_window.window.deiconify()
         self.main_window.detection_started = False
         self.main_window.update_state()
         self.stop_detection_observable.on_next(None)
