@@ -31,6 +31,7 @@ class Overlay:
     hands_label: tk.Label
     running_count_label: tk.Label
     true_count_label: tk.Label
+    played_cards_label: tk.Label
     scheduler: TkinterScheduler
     on_closing_observable : Subject
 
@@ -69,6 +70,9 @@ class Overlay:
         self.true_count_label = tk.Label(self.window, text="True count: --", anchor="w", font=('Courier', 10))
         self.true_count_label.pack(fill='x', padx=5, pady=2)
 
+        self.played_cards_label = tk.Label(self.window, text="Played cards: --", anchor="w", font=('Courier', 10))
+        self.played_cards_label.pack(fill='x', padx=5, pady=2)
+
         self.hands_label = tk.Label(self.window, text="", anchor="nw", justify='left', font=('Courier', 10))
         self.hands_label.pack(fill='both', expand=True, padx=5, pady=(5, 5))
 
@@ -83,6 +87,7 @@ class Overlay:
 
         self.running_count_label.config(text=f"Running count: {running_count}")
         self.true_count_label.config(text=f"True count: {true_count}")
+        self.played_cards_label.config(text=f"Played cards: {overlay_model.played_cards}")
 
         hands_text: str = self.build_hands_text()
         self.hands_label.config(text=hands_text)

@@ -12,8 +12,12 @@ def hilo_running_count(table: Table) -> int:
     return count
 
 
-def hilo_true_count(table: Table) -> int:
-    return hilo_running_count(table) // (len(table.played_cards) // 52) if table.played_cards else 0
+def hilo_true_count(table: Table) -> float:
+    running_count = hilo_running_count(table)
+    decks_played = len(table.played_cards) / 52.0
+    decks_remaining = 8 - decks_played #TODO: assuming an 8-deck shoe
+
+    return round(running_count/decks_remaining,2) if decks_remaining > 0 else 0
 
 
 def reset(table: Table) -> None:
