@@ -21,7 +21,8 @@ class OverlayModel:
     player_hand_info: list[HandRecord]
     dealer_hand_info: HandRecord
     table_running_count: int
-    table_true_count: int
+    table_true_count: float
+    played_cards: int = 0
 
 def overlay_data_from_table(table: Table, basic_strategy: BasicStrategy) -> OverlayModel:
     player_hand_info = []
@@ -50,5 +51,6 @@ def overlay_data_from_table(table: Table, basic_strategy: BasicStrategy) -> Over
         player_hand_info=player_hand_info,
         dealer_hand_info=HandRecord(table.dealer_hand, Move.Unknown),
         table_running_count=running_count,
-        table_true_count=true_count
+        table_true_count=true_count,
+        played_cards=len(table.played_cards)
     )

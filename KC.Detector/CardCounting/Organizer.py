@@ -12,6 +12,7 @@ def organize_dealer_cards(detected_cards: list[Card], table: Table, x_offset, y_
         table.dealer_hand = Hand(detected_cards,
                                  x_offset + int(leftmost_card.box.x + leftmost_card.box.w // 2),
                                  y_offset + int(leftmost_card.box.y + leftmost_card.box.h))
+        table.played_cards.extend(detected_cards)
         return
 
     for card in detected_cards:
@@ -25,6 +26,7 @@ def organize_dealer_cards(detected_cards: list[Card], table: Table, x_offset, y_
 
         if not found_match:
             table.dealer_hand.cards.append(card)
+            table.played_cards.append(card)
 
 
     return
@@ -61,7 +63,17 @@ def organize_players_cards(detected_cards: list[Card], table: Table, x_offset, y
                     _check_and_update_same_card(last_card, card)
                 else:
                     # Case 3: Replaced card due to split
+                    card_to_remove = next ((x for x in table.played_cards
+                                                    if x.suit == hand.cards[-1].suit
+                                                    and x.rank == hand.cards[-1].rank
+                                                    and boxes_match(x.box, hand.cards[-1].box)),None)
+
+                    if card_to_remove is None:
+                        raise Exception("Could not find card to remove during split handling")
+
+                    table.played_cards.remove(card_to_remove)
                     hand.cards[-1] = card
+                    table.played_cards.append(card)
                     split_count -= 1
 
                 placed = True
@@ -70,6 +82,7 @@ def organize_players_cards(detected_cards: list[Card], table: Table, x_offset, y
             if _overlap(card, hand):
                 # Case 2: New card overlapping with the existing hand
                 hand.cards.append(card)
+                table.played_cards.append(card)
                 placed = True
                 break
 
@@ -80,6 +93,7 @@ def organize_players_cards(detected_cards: list[Card], table: Table, x_offset, y
             new_hand = Hand([card],
                             x_offset + int(card.box.x + card.box.w // 2),
                             y_offset + int(card.box.y + card.box.h))
+            table.played_cards.append(card)
             table.hands.append(new_hand)
 
     table.hands.sort(key=lambda h: h.bottom_center_x, reverse=True)

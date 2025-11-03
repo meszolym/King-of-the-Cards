@@ -27,8 +27,7 @@ class BoxSelector:
         x, y, w, h = cv.selectROI(window_name, tmp, showCrosshair=True)
         cv.destroyWindow(window_name)
         print(f"{window_name} picked: x={x}, y={y}, w={w}, h={h}")
-        return BoundingBox(float(x), float(y),
-                           float(w), float(h))
+        return BoundingBox(x,y,w,h)
 
     def open_roi_selector(self):
         # 1. Capture screenshot
