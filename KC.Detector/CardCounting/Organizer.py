@@ -63,10 +63,15 @@ def organize_players_cards(detected_cards: list[Card], table: Table, x_offset, y
                     _check_and_update_same_card(last_card, card)
                 else:
                     # Case 3: Replaced card due to split
-                    table.played_cards.remove(next (x for x in table.played_cards
+                    card_to_remove = next ((x for x in table.played_cards
                                                     if x.suit == hand.cards[-1].suit
                                                     and x.rank == hand.cards[-1].rank
-                                                    and boxes_match(x.box, hand.cards[-1].box))) #TODO: Check this
+                                                    and boxes_match(x.box, hand.cards[-1].box)),None)
+
+                    if card_to_remove is None:
+                        raise Exception("Could not find card to remove during split handling")
+
+                    table.played_cards.remove(card_to_remove)
                     hand.cards[-1] = card
                     table.played_cards.append(card)
                     split_count -= 1
