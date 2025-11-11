@@ -47,8 +47,8 @@ class CardProcessor:
             raise ValueError(f"Invalid card type: {card_type}. Valid types are CardType.Dealer and CardType.Player. Please pass a valid card type to process_cards().")
 
         cards : list[Card] = []
-        approx_size = self.card_sizes.dealer_card if card_type == CardType.Dealer else self.card_sizes.player_card
-        boxes = self.find_card_boxes(img, round(approx_size), self.CONST_CONTOUR_AREA_PCT_DEVIANCE_PLAYER if card_type == CardType.Player else self.CONST_CONTOUR_AREA_PCT_DEVIANCE_DEALER)
+        approx_size_box = self.card_sizes.dealer_card_box if card_type == CardType.Dealer else self.card_sizes.player_card_box
+        boxes = self.find_card_boxes(img, approx_size_box, self.CONST_CONTOUR_AREA_PCT_DEVIANCE_PLAYER if card_type == CardType.Player else self.CONST_CONTOUR_AREA_PCT_DEVIANCE_DEALER)
 
         # self._show_boxes(img.copy(), boxes,"") # for debugging
 
@@ -60,7 +60,7 @@ class CardProcessor:
 
         return cards
 
-    def find_card_boxes(self, img: np.ndarray, approx_size: int, deviance: float) -> list[BoundingBox]:
+    def find_card_boxes(self, img: np.ndarray, approx_size: BoundingBox, deviance: float) -> list[BoundingBox]:
         gray = cv.cvtColor(img.copy(), cv.COLOR_BGR2GRAY)
         canny = cv.Canny(gray, self.CONST_CANNY_CARD_EDGE_THRESHOLD1, self.CONST_CANNY_CARD_EDGE_THRESHOLD2)
         #canny = auto_canny(gray) # Sometimes this doesn't find edges well enough
@@ -76,7 +76,7 @@ class CardProcessor:
         card_boxes : list[BoundingBox] = []
 
         for contour in contours:
-            if approx_size*(1-deviance) < cv.contourArea(contour) < approx_size*(1+deviance):
+            if approx_size.w*approx_size.h*(1-deviance) < cv.contourArea(contour) < approx_size.w*approx_size.h*(1+deviance):
                 x, y, w, h = cv.boundingRect(contour)
                 card_boxes.append(BoundingBox(x,y,w,h))
 
