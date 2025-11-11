@@ -4,6 +4,7 @@ import re as regex
 from typing import Optional
 
 import numpy as np
+from skimage.io import image_stack
 
 from ImageProcessing.Utils import auto_canny
 from Models.Card import Card
@@ -137,21 +138,17 @@ class CardProcessor:
 
     @staticmethod
     def get_score_for_template(card_total, card_top_left, template_total, template_top_left) -> float:
-
         total_score = 0.0
-        counter = 0
 
-        for algo in [cv.TM_CCOEFF_NORMED, cv.TM_CCORR_NORMED]:
-            # TM_COEFF_NORMED
-            res_top_left = cv.matchTemplate(card_top_left, template_top_left, algo)
-            total_score += cv.minMaxLoc(res_top_left)[1]
-            counter += 1
+        algos = [cv.TM_CCOEFF_NORMED, cv.TM_CCORR_NORMED]
+        image_pairs = [(card_total, template_total), (card_top_left, template_top_left)]
 
-            res_total = cv.matchTemplate(card_total, template_total, algo)
-            total_score += cv.minMaxLoc(res_total)[1]
-            counter += 1
+        for algo in algos:
+            for (card, template) in image_pairs:
+                res = cv.matchTemplate(card, template, algo)
+                total_score += cv.minMaxLoc(res)[1]
 
-        return total_score/counter if counter != 0 else 0.0
+        return total_score/(len(algos)*len(image_pairs))
 
 
     @staticmethod
