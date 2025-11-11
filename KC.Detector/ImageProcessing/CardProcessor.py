@@ -140,15 +140,13 @@ class CardProcessor:
     def get_score_for_template(card_total, card_top_left, template_total, template_top_left) -> float:
         total_score = 0.0
 
-        algos = [cv.TM_CCOEFF_NORMED, cv.TM_CCORR_NORMED]
         image_pairs = [(card_total, template_total), (card_top_left, template_top_left)]
 
-        for algo in algos:
-            for (card, template) in image_pairs:
-                res = cv.matchTemplate(card, template, algo)
-                total_score += cv.minMaxLoc(res)[1]
+        for (card, template) in image_pairs:
+            res = cv.matchTemplate(card, template, cv.TM_CCOEFF_NORMED)
+            total_score += cv.minMaxLoc(res)[1]
 
-        return total_score/(len(algos)*len(image_pairs))
+        return total_score/len(image_pairs)
 
 
     @staticmethod
