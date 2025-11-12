@@ -1,6 +1,6 @@
 import numpy as np
 from screeninfo import get_monitors
-import pyscreenshot as psc
+from ImageProcessing.ScreenShotUtils import take_screenshot as su_take_screenshot
 import cv2 as cv
 
 from Models.BoundingBox import BoundingBox
@@ -26,12 +26,9 @@ def _get_primary_monitor_bbox() -> tuple[int, int, int, int]:
 
 def take_screenshot() -> np.ndarray:
     """ Takes a screenshot of the primary monitor and returns it as a BGR numpy array. """
+    bbox = _get_primary_monitor_bbox()
     try:
-        bbox = _get_primary_monitor_bbox()
-        img_pil = psc.grab(bbox=bbox)
-        img_rgb = np.array(img_pil)
-        img_bgr = cv.cvtColor(img_rgb, cv.COLOR_RGB2BGR)
-        return img_bgr
+        return su_take_screenshot(bbox)
     except Exception as e:
         raise RuntimeError(f"Screenshot failed: {e}")
 

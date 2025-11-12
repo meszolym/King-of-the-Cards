@@ -3,6 +3,6 @@ easyocr
 opencv-python
 Rx
 numpy
-pyscreenshot
+mss
 screeninfo
 pillow
