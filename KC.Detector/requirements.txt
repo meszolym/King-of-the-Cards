@@ -6,3 +6,4 @@ numpy
 mss
 screeninfo
 pillow
+pytest
