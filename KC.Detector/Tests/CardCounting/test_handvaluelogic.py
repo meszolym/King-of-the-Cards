@@ -1,6 +1,5 @@
 import pytest
 
-from Models.Card import Card
 from Models.Enums import Rank
 from Models.Hand import Hand
 
