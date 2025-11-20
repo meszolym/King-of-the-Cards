@@ -46,8 +46,8 @@ class CardProcessor:
             raise ValueError(f"Invalid card type: {card_type}. Valid types are CardType.Dealer and CardType.Player. Please pass a valid card type to process_cards().")
 
         cards : list[Card] = []
-        approx_size = self.card_sizes.dealer_card if card_type == CardType.Dealer else self.card_sizes.player_card
-        boxes = self.find_card_boxes(img, round(approx_size), self.CONST_CONTOUR_AREA_PCT_DEVIANCE_PLAYER if card_type == CardType.Player else self.CONST_CONTOUR_AREA_PCT_DEVIANCE_DEALER)
+        approx_size_box = self.card_sizes.dealer_card_box if card_type == CardType.Dealer else self.card_sizes.player_card_box
+        boxes = self.find_card_boxes(img, approx_size_box, self.CONST_CONTOUR_AREA_PCT_DEVIANCE_PLAYER if card_type == CardType.Player else self.CONST_CONTOUR_AREA_PCT_DEVIANCE_DEALER)
 
         # self._show_boxes(img.copy(), boxes,"") # for debugging
 
@@ -59,7 +59,7 @@ class CardProcessor:
 
         return cards
 
-    def find_card_boxes(self, img: np.ndarray, approx_size: int, deviance: float) -> list[BoundingBox]:
+    def find_card_boxes(self, img: np.ndarray, approx_size: BoundingBox, deviance: float) -> list[BoundingBox]:
         gray = cv.cvtColor(img.copy(), cv.COLOR_BGR2GRAY)
         canny = cv.Canny(gray, self.CONST_CANNY_CARD_EDGE_THRESHOLD1, self.CONST_CANNY_CARD_EDGE_THRESHOLD2)
         #canny = auto_canny(gray) # Sometimes this doesn't find edges well enough
@@ -75,7 +75,7 @@ class CardProcessor:
         card_boxes : list[BoundingBox] = []
 
         for contour in contours:
-            if approx_size*(1-deviance) < cv.contourArea(contour) < approx_size*(1+deviance):
+            if approx_size.w*approx_size.h*(1-deviance) < cv.contourArea(contour) < approx_size.w*approx_size.h*(1+deviance):
                 x, y, w, h = cv.boundingRect(contour)
                 card_boxes.append(BoundingBox(x,y,w,h))
 
@@ -137,21 +137,15 @@ class CardProcessor:
 
     @staticmethod
     def get_score_for_template(card_total, card_top_left, template_total, template_top_left) -> float:
-
         total_score = 0.0
-        counter = 0
 
-        for algo in [cv.TM_CCOEFF_NORMED, cv.TM_CCORR_NORMED]:
-            # TM_COEFF_NORMED
-            res_top_left = cv.matchTemplate(card_top_left, template_top_left, algo)
-            total_score += cv.minMaxLoc(res_top_left)[1]
-            counter += 1
+        image_pairs = [(card_total, template_total), (card_top_left, template_top_left)]
 
-            res_total = cv.matchTemplate(card_total, template_total, algo)
-            total_score += cv.minMaxLoc(res_total)[1]
-            counter += 1
+        for (card, template) in image_pairs:
+            res = cv.matchTemplate(card, template, cv.TM_CCOEFF_NORMED)
+            total_score += cv.minMaxLoc(res)[1]
 
-        return total_score/counter if counter != 0 else 0.0
+        return total_score/len(image_pairs)
 
 
     @staticmethod

@@ -54,5 +54,4 @@ class BoxSelector:
         dealer_card_box = self._pick_bounding_box("Select Dealer Card", img.copy())
         player_card_box = self._pick_bounding_box("Select Player Card", img.copy())
 
-        self.card_box_selected_observable.on_next(CardSizesContainer(dealer_card_box.w * dealer_card_box.h,
-                                                                     player_card_box.w * player_card_box.h))
+        self.card_box_selected_observable.on_next(CardSizesContainer(dealer_card_box, player_card_box))
