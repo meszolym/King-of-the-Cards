@@ -2,7 +2,7 @@ import pytest
 
 from Models.Card import Card
 from Models.BoundingBox import BoundingBox
-from Models.Enums import Rank, Suit
+from Models.Enums import Rank
 from Models.Hand import Hand
 
 from CardCounting.HandValueLogic import hand_value_from_hand, hand_value_from_string
