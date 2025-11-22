@@ -97,20 +97,24 @@ def test_organize_players_append_or_new_hand(existing_box, new_box, should_appen
 def test_organize_players_split_replaces_old_card():
     """Handle split case: when boxes_match but rank changed and split_count > 0, old card should be removed from played_cards and replaced."""
     # initial hand with one card
-    old_card = make_card(Rank.Seven, Suit.Diamonds, 20, 20, 10, 10, conf=0.5)
+    old_card = make_card(Rank.Seven, Suit.Diamonds, 20, 20, 10, 10, conf=0.9)
     hand = Hand([old_card], 25, 30)
     # table.played_cards includes the original old_card (so card_to_remove can be found)
     table = Table(None, [old_card], [hand])
 
     # detected_cards length 2 => split_count = 2 - len(table.hands) = 1 -> allows split handling
     # new top card has same box (so boxes_match) but different rank
-    new_top = make_card(Rank.Ace, Suit.Diamonds, 20, 20, 10, 10, conf=0.9)
-    other = make_card(Rank.Ten, Suit.Clubs, 200, 5, 10, 10, conf=0.6)
+    new_top = make_card(Rank.Ace, Suit.Diamonds, 20, 20, 10, 10, conf=0.5)
+    other = make_card(Rank.Seven, Suit.Diamonds, 200, 5, 10, 10, conf=0.9)
 
     organize_players_cards([new_top, other], table, 0, 0)
 
-    # old_card should have been removed from played_cards and replaced in the hand
-    assert all(not (c.rank == old_card.rank and c.suit == old_card.suit and c.box.w == old_card.box.w and c.box.h == old_card.box.h) for c in table.played_cards)
-    # hands may be re-ordered by bottom_center_x sorting; find the hand that contains the new_top card
-    assert any(h.cards and h.cards[-1] == new_top for h in table.hands)
+    # old_card should have been removed from played_cards and replaced in the hand, then added to another hand (with new placement) and readded to played_cards
+    assert any(new_top in h.cards for h in table.hands)
+    assert any(other in h.cards for h in table.hands)
+    assert len(table.hands) == 2
     assert new_top in table.played_cards
+    assert other in table.played_cards
+    assert old_card not in table.played_cards
+    assert len(table.played_cards) == 2
+
