@@ -4,7 +4,6 @@ import re as regex
 from typing import Optional
 
 import numpy as np
-from skimage.io import image_stack
 
 from ImageProcessing.Utils import auto_canny
 from Models.Card import Card

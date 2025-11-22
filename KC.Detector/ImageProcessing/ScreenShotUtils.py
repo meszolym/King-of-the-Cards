@@ -1,4 +1,3 @@
-import sys
 import platform
 import numpy as np
 from typing import Optional, Tuple
