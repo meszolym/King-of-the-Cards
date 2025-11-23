@@ -24,7 +24,7 @@ def read_rois_and_card_dimensions(filepath: str):
         player_card_size_raw = sizes.get("PlayerCardSize", [0, 0])
         player_card_size = BoundingBox(0, 0, player_card_size_raw[0], player_card_size_raw[1])
 
-        img = cv.imread(base_image_path)
+        img = cv.imread(base_image_path) if base_image_path != "" else None
 
         rois_container = RoisContainer(dealer_roi, player_roi, message_roi, img)
         sizes_container = CardSizesContainer(dealer_card_size, player_card_size)
