@@ -32,342 +32,342 @@ def test_parse_filename(filename, expected_suit, expected_rank):
     "imgfilename, jsonfilename, dealer, players,",
     [
         ("MacOS/1.png", "MacOS/MacOS.json",
-         [Card(Rank.Queen, Suit.Hearts, None,None)],
-         [Card(Rank.Two, Suit.Spades, None,None)]),
+         [Card(Rank.Queen, Suit.Hearts, None, None)],
+         [Card(Rank.Two, Suit.Spades, None, None)]),
         ("MacOS/2.png", "MacOS/MacOS.json",
-         [Card(Rank.Queen, Suit.Hearts, None,None)],
-         [Card(Rank.Two, Suit.Diamonds, None,None)]),
+         [Card(Rank.Queen, Suit.Hearts, None, None)],
+         [Card(Rank.Two, Suit.Diamonds, None, None)]),
         ("MacOS/3.png", "MacOS/MacOS.json",
-         [Card(Rank.Queen, Suit.Hearts, None,None)],
-         [Card(Rank.King, Suit.Hearts, None,None)]),
+         [Card(Rank.Queen, Suit.Hearts, None, None)],
+         [Card(Rank.King, Suit.Hearts, None, None)]),
         ("MacOS/4.png", "MacOS/MacOS.json",
-         [Card(Rank.Queen, Suit.Hearts, None,None)],
-         [Card(Rank.Three, Suit.Diamonds, None,None)]),
+         [Card(Rank.Queen, Suit.Hearts, None, None)],
+         [Card(Rank.Three, Suit.Diamonds, None, None)]),
         ("MacOS/5.png", "MacOS/MacOS.json",
          [
-             Card(Rank.Queen, Suit.Hearts, None,None),
-             Card(Rank.Eight, Suit.Hearts, None,None)
+             Card(Rank.Queen, Suit.Hearts, None, None),
+             Card(Rank.Eight, Suit.Hearts, None, None)
          ],
-         [Card(Rank.Three, Suit.Diamonds, None,None)]),
+         [Card(Rank.Three, Suit.Diamonds, None, None)]),
         ("MacOS/6.png", "MacOS/MacOS.json",
-         [Card(Rank.Eight, Suit.Spades, None,None)],
+         [Card(Rank.Eight, Suit.Spades, None, None)],
          [
-             Card(Rank.Seven, Suit.Diamonds, None,None),
-             Card(Rank.Four, Suit.Clubs, None,None),
-             Card(Rank.Seven, Suit.Spades, None,None)]),
+             Card(Rank.Seven, Suit.Diamonds, None, None),
+             Card(Rank.Four, Suit.Clubs, None, None),
+             Card(Rank.Seven, Suit.Spades, None, None)]),
         ("MacOS/7.png", "MacOS/MacOS.json",
-         [Card(Rank.Eight, Suit.Spades, None,None)],
+         [Card(Rank.Eight, Suit.Spades, None, None)],
          [
-             Card(Rank.Five, Suit.Hearts, None,None),
-             Card(Rank.Jack, Suit.Clubs, None,None),
-             Card(Rank.Queen, Suit.Spades, None,None)
+             Card(Rank.Five, Suit.Hearts, None, None),
+             Card(Rank.Jack, Suit.Clubs, None, None),
+             Card(Rank.Queen, Suit.Spades, None, None)
          ]),
         ("MacOS/8.png", "MacOS/MacOS.json",
-         [Card(Rank.Eight, Suit.Hearts, None,None)],
+         [Card(Rank.Eight, Suit.Hearts, None, None)],
          [
-             Card(Rank.Six, Suit.Clubs, None,None),
-             Card(Rank.Eight, Suit.Diamonds, None,None),
-             Card(Rank.Seven, Suit.Clubs, None,None),
-             Card(Rank.Nine, Suit.Spades, None,None),
-             Card(Rank.Eight, Suit.Clubs, None,None)
+             Card(Rank.Six, Suit.Clubs, None, None),
+             Card(Rank.Eight, Suit.Diamonds, None, None),
+             Card(Rank.Seven, Suit.Clubs, None, None),
+             Card(Rank.Nine, Suit.Spades, None, None),
+             Card(Rank.Eight, Suit.Clubs, None, None)
          ]),
         ("MacOS/9.png", "MacOS/MacOS.json",
-         [Card(Rank.Eight, Suit.Hearts, None,None)],
+         [Card(Rank.Eight, Suit.Hearts, None, None)],
          [
-             Card(Rank.Four, Suit.Diamonds, None,None),
-             Card(Rank.Queen, Suit.Spades, None,None),
-             Card(Rank.Three, Suit.Diamonds, None,None),
-             Card(Rank.Five, Suit.Hearts, None,None),
-             Card(Rank.Queen, Suit.Hearts, None,None)
+             Card(Rank.Four, Suit.Diamonds, None, None),
+             Card(Rank.Queen, Suit.Spades, None, None),
+             Card(Rank.Three, Suit.Diamonds, None, None),
+             Card(Rank.Five, Suit.Hearts, None, None),
+             Card(Rank.Queen, Suit.Hearts, None, None)
          ]),
         ("MacOS/10.png", "MacOS/MacOS.json",
-         [Card(Rank.Eight, Suit.Hearts, None,None)],
+         [Card(Rank.Eight, Suit.Hearts, None, None)],
          [
-             Card(Rank.Nine, Suit.Spades, None,None),
-             Card(Rank.Queen, Suit.Spades, None,None),
-             Card(Rank.Three, Suit.Diamonds, None,None),
-             Card(Rank.Five, Suit.Hearts, None,None),
-             Card(Rank.Queen, Suit.Hearts, None,None)
+             Card(Rank.Nine, Suit.Spades, None, None),
+             Card(Rank.Queen, Suit.Spades, None, None),
+             Card(Rank.Three, Suit.Diamonds, None, None),
+             Card(Rank.Five, Suit.Hearts, None, None),
+             Card(Rank.Queen, Suit.Hearts, None, None)
          ]),
         ("MacOS/11.png", "MacOS/MacOS.json",
-         [Card(Rank.Eight, Suit.Hearts, None,None)],
+         [Card(Rank.Eight, Suit.Hearts, None, None)],
          [
-             Card(Rank.Nine, Suit.Spades, None,None),
-             Card(Rank.Queen, Suit.Spades, None,None),
-             Card(Rank.Seven, Suit.Diamonds, None,None),
-             Card(Rank.Five, Suit.Hearts, None,None),
-             Card(Rank.Queen, Suit.Hearts, None,None)
+             Card(Rank.Nine, Suit.Spades, None, None),
+             Card(Rank.Queen, Suit.Spades, None, None),
+             Card(Rank.Seven, Suit.Diamonds, None, None),
+             Card(Rank.Five, Suit.Hearts, None, None),
+             Card(Rank.Queen, Suit.Hearts, None, None)
          ]),
         ("MacOS/12.png", "MacOS/MacOS.json",
-         [Card(Rank.Eight, Suit.Hearts, None,None)],
+         [Card(Rank.Eight, Suit.Hearts, None, None)],
          [
-             Card(Rank.Nine, Suit.Spades, None,None),
-             Card(Rank.Queen, Suit.Spades, None,None),
-             Card(Rank.Seven, Suit.Diamonds, None,None),
-             Card(Rank.Ten, Suit.Hearts, None,None),
-             Card(Rank.Queen, Suit.Hearts, None,None)
+             Card(Rank.Nine, Suit.Spades, None, None),
+             Card(Rank.Queen, Suit.Spades, None, None),
+             Card(Rank.Seven, Suit.Diamonds, None, None),
+             Card(Rank.Ten, Suit.Hearts, None, None),
+             Card(Rank.Queen, Suit.Hearts, None, None)
          ]),
         ("MacOS/13.png", "MacOS/MacOS.json",
          [
-             Card(Rank.Eight, Suit.Hearts, None,None),
-             Card(Rank.Four, Suit.Clubs, None,None)
+             Card(Rank.Eight, Suit.Hearts, None, None),
+             Card(Rank.Four, Suit.Clubs, None, None)
          ],
          [
-             Card(Rank.Nine, Suit.Spades, None,None),
-             Card(Rank.Queen, Suit.Spades, None,None),
-             Card(Rank.Seven, Suit.Diamonds, None,None),
-             Card(Rank.Ten, Suit.Hearts, None,None),
-             Card(Rank.Queen, Suit.Hearts, None,None)
+             Card(Rank.Nine, Suit.Spades, None, None),
+             Card(Rank.Queen, Suit.Spades, None, None),
+             Card(Rank.Seven, Suit.Diamonds, None, None),
+             Card(Rank.Ten, Suit.Hearts, None, None),
+             Card(Rank.Queen, Suit.Hearts, None, None)
          ]),
         ("MacOS/14.png", "MacOS/MacOS.json",
          [
-             Card(Rank.Eight, Suit.Hearts, None,None),
-             Card(Rank.Four, Suit.Clubs, None,None),
-             Card(Rank.Queen, Suit.Hearts, None,None),
+             Card(Rank.Eight, Suit.Hearts, None, None),
+             Card(Rank.Four, Suit.Clubs, None, None),
+             Card(Rank.Queen, Suit.Hearts, None, None),
          ],
          [
-             Card(Rank.Nine, Suit.Spades, None,None),
-             Card(Rank.Queen, Suit.Spades, None,None),
-             Card(Rank.Seven, Suit.Diamonds, None,None),
-             Card(Rank.Ten, Suit.Hearts, None,None),
-             Card(Rank.Queen, Suit.Hearts, None,None)
+             Card(Rank.Nine, Suit.Spades, None, None),
+             Card(Rank.Queen, Suit.Spades, None, None),
+             Card(Rank.Seven, Suit.Diamonds, None, None),
+             Card(Rank.Ten, Suit.Hearts, None, None),
+             Card(Rank.Queen, Suit.Hearts, None, None)
          ]),
         ("MacOS/15.png", "MacOS/MacOS.json",
          [
-            Card(Rank.Jack, Suit.Spades, None,None)
+            Card(Rank.Jack, Suit.Spades, None, None)
          ],
          [
-            Card(Rank.King, Suit.Diamonds, None,None),
-            Card(Rank.Queen, Suit.Hearts, None,None),
-            Card(Rank.Seven, Suit.Diamonds, None,None)
+            Card(Rank.King, Suit.Diamonds, None, None),
+            Card(Rank.Queen, Suit.Hearts, None, None),
+            Card(Rank.Seven, Suit.Diamonds, None, None)
          ]),
         ("MacOS/16.png", "MacOS/MacOS.json",
          [
-            Card(Rank.Jack, Suit.Spades, None,None)
+            Card(Rank.Jack, Suit.Spades, None, None)
          ],
          [
-            Card(Rank.Eight, Suit.Spades, None,None),
-            Card(Rank.Two, Suit.Clubs, None,None),
-            Card(Rank.Queen, Suit.Spades, None,None)
+            Card(Rank.Eight, Suit.Spades, None, None),
+            Card(Rank.Two, Suit.Clubs, None, None),
+            Card(Rank.Queen, Suit.Spades, None, None)
          ]),
         ("MacOS/17.png", "MacOS/MacOS.json",
          [
-            Card(Rank.Jack, Suit.Spades, None,None)
+            Card(Rank.Jack, Suit.Spades, None, None)
          ],
          [
-            Card(Rank.Eight, Suit.Spades, None,None),
-            Card(Rank.Jack, Suit.Clubs, None,None),
-            Card(Rank.Queen, Suit.Spades, None,None)
+            Card(Rank.Eight, Suit.Spades, None, None),
+            Card(Rank.Jack, Suit.Clubs, None, None),
+            Card(Rank.Queen, Suit.Spades, None, None)
          ]),
         ("MacOS/18.png", "MacOS/MacOS.json",
          [
-            Card(Rank.Jack, Suit.Spades, None,None),
-             Card(Rank.Three, Suit.Hearts, None,None),
+            Card(Rank.Jack, Suit.Spades, None, None),
+             Card(Rank.Three, Suit.Hearts, None, None),
          ],
          [
-            Card(Rank.Eight, Suit.Spades, None,None),
-            Card(Rank.Jack, Suit.Clubs, None,None),
-            Card(Rank.Queen, Suit.Spades, None,None)
+            Card(Rank.Eight, Suit.Spades, None, None),
+            Card(Rank.Jack, Suit.Clubs, None, None),
+            Card(Rank.Queen, Suit.Spades, None, None)
          ]),
         ("MacOS/19.png", "MacOS/MacOS.json",
          [
-             Card(Rank.Jack, Suit.Spades, None,None),
-             Card(Rank.Three, Suit.Hearts, None,None),
-             Card(Rank.King, Suit.Clubs, None,None)
+             Card(Rank.Jack, Suit.Spades, None, None),
+             Card(Rank.Three, Suit.Hearts, None, None),
+             Card(Rank.King, Suit.Clubs, None, None)
          ],
          [
-            Card(Rank.Eight, Suit.Spades, None,None),
-            Card(Rank.Jack, Suit.Clubs, None,None),
-            Card(Rank.Queen, Suit.Spades, None,None)
+            Card(Rank.Eight, Suit.Spades, None, None),
+            Card(Rank.Jack, Suit.Clubs, None, None),
+            Card(Rank.Queen, Suit.Spades, None, None)
          ]),
         ("Windows/1.png", "Windows/Windows.json",
          [
-             Card(Rank.Queen, Suit.Spades, None,None),
-             Card(Rank.Nine, Suit.Clubs, None,None)
+             Card(Rank.Queen, Suit.Spades, None, None),
+             Card(Rank.Nine, Suit.Clubs, None, None)
          ],
          [
-             Card(Rank.Jack, Suit.Diamonds, None,None),
-             Card(Rank.Ace, Suit.Diamonds, None,None),
-             Card(Rank.Three, Suit.Diamonds, None,None)
+             Card(Rank.Jack, Suit.Diamonds, None, None),
+             Card(Rank.Ace, Suit.Diamonds, None, None),
+             Card(Rank.Three, Suit.Diamonds, None, None)
          ]),
         ("Windows/2.png", "Windows/Windows.json",
          [
-             Card(Rank.Queen, Suit.Spades, None,None),
+             Card(Rank.Queen, Suit.Spades, None, None),
          ],
          [
-             Card(Rank.Jack, Suit.Diamonds, None,None),
-             Card(Rank.Ace, Suit.Diamonds, None,None),
-             Card(Rank.Three, Suit.Diamonds, None,None)
+             Card(Rank.Jack, Suit.Diamonds, None, None),
+             Card(Rank.Ace, Suit.Diamonds, None, None),
+             Card(Rank.Three, Suit.Diamonds, None, None)
          ]),
         ("Windows/3.png", "Windows/Windows.json",
          [
-             Card(Rank.Three, Suit.Clubs, None,None)
+             Card(Rank.Three, Suit.Clubs, None, None)
          ],
          [
-             Card(Rank.Seven, Suit.Clubs, None,None)
+             Card(Rank.Seven, Suit.Clubs, None, None)
          ]),
         ("Windows/4.png", "Windows/Windows.json",
          [
-             Card(Rank.Three, Suit.Clubs, None,None)
+             Card(Rank.Three, Suit.Clubs, None, None)
          ],
          [
-             Card(Rank.King, Suit.Spades, None,None)
+             Card(Rank.King, Suit.Spades, None, None)
          ]),
         ("Windows/5.png", "Windows/Windows.json",
          [
-             Card(Rank.Jack, Suit.Hearts, None,None),
-             Card(Rank.Three, Suit.Clubs, None,None),
+             Card(Rank.Jack, Suit.Hearts, None, None),
+             Card(Rank.Three, Suit.Clubs, None, None),
          ],
          [
-             Card(Rank.King, Suit.Spades, None,None)
+             Card(Rank.King, Suit.Spades, None, None)
          ]),
         ("Windows/6.png", "Windows/Windows.json",
          [
-             Card(Rank.Jack, Suit.Hearts, None,None),
-             Card(Rank.Three, Suit.Clubs, None,None),
-             Card(Rank.Four, Suit.Clubs, None,None)
+             Card(Rank.Jack, Suit.Hearts, None, None),
+             Card(Rank.Three, Suit.Clubs, None, None),
+             Card(Rank.Four, Suit.Clubs, None, None)
          ],
          [
-             Card(Rank.King, Suit.Spades, None,None)
+             Card(Rank.King, Suit.Spades, None, None)
          ]),
         ("Windows/7.png", "Windows/Windows.json",
          [
-             Card(Rank.Ace, Suit.Hearts, None,None),
+             Card(Rank.Ace, Suit.Hearts, None, None),
          ],
          [
-             Card(Rank.Two, Suit.Spades, None,None),
-             Card(Rank.King, Suit.Spades, None,None),
-             Card(Rank.Jack, Suit.Diamonds, None,None)
+             Card(Rank.Two, Suit.Spades, None, None),
+             Card(Rank.King, Suit.Spades, None, None),
+             Card(Rank.Jack, Suit.Diamonds, None, None)
          ]),
         ("Windows/8.png", "Windows/Windows.json",
          [
-             Card(Rank.Ace, Suit.Hearts, None,None),
+             Card(Rank.Ace, Suit.Hearts, None, None),
          ],
          [
-             Card(Rank.Ten, Suit.Clubs, None,None),
-             Card(Rank.Eight, Suit.Clubs, None,None),
-             Card(Rank.Four, Suit.Hearts, None,None)
+             Card(Rank.Ten, Suit.Clubs, None, None),
+             Card(Rank.Eight, Suit.Clubs, None, None),
+             Card(Rank.Four, Suit.Hearts, None, None)
          ]),
         ("Windows/9.png", "Windows/Windows.json",
          [
-             Card(Rank.Seven, Suit.Clubs, None,None)
+             Card(Rank.Seven, Suit.Clubs, None, None)
          ],
          [
-             Card(Rank.Jack, Suit.Diamonds, None,None),
-             Card(Rank.Seven, Suit.Diamonds, None,None),
-             Card(Rank.Four, Suit.Hearts, None,None),
-             Card(Rank.Six, Suit.Spades, None,None),
-             Card(Rank.Three, Suit.Spades, None,None)
+             Card(Rank.Jack, Suit.Diamonds, None, None),
+             Card(Rank.Seven, Suit.Diamonds, None, None),
+             Card(Rank.Four, Suit.Hearts, None, None),
+             Card(Rank.Six, Suit.Spades, None, None),
+             Card(Rank.Three, Suit.Spades, None, None)
          ]),
         ("Windows/10.png", "Windows/Windows.json",
          [
-             Card(Rank.Seven, Suit.Clubs, None,None)
+             Card(Rank.Seven, Suit.Clubs, None, None)
          ],
          [
-             Card(Rank.Ace, Suit.Clubs, None,None),
-             Card(Rank.Five, Suit.Spades, None,None),
-             Card(Rank.Eight, Suit.Hearts, None,None),
-             Card(Rank.Six, Suit.Spades, None,None),
-             Card(Rank.Ten, Suit.Diamonds, None,None)
+             Card(Rank.Ace, Suit.Clubs, None, None),
+             Card(Rank.Five, Suit.Spades, None, None),
+             Card(Rank.Eight, Suit.Hearts, None, None),
+             Card(Rank.Six, Suit.Spades, None, None),
+             Card(Rank.Ten, Suit.Diamonds, None, None)
          ]),
         ("Windows/11.png", "Windows/Windows.json",
          [
-             Card(Rank.Six, Suit.Clubs, None,None)
+             Card(Rank.Six, Suit.Clubs, None, None)
          ],
          [
-             Card(Rank.Jack, Suit.Spades, None,None),
-             Card(Rank.Jack, Suit.Hearts, None,None),
-             Card(Rank.Four, Suit.Diamonds, None,None)
+             Card(Rank.Jack, Suit.Spades, None, None),
+             Card(Rank.Jack, Suit.Hearts, None, None),
+             Card(Rank.Four, Suit.Diamonds, None, None)
          ]),
         ("Windows/12.png", "Windows/Windows.json",
          [
-             Card(Rank.Six, Suit.Clubs, None,None)
+             Card(Rank.Six, Suit.Clubs, None, None)
          ],
          [
-             Card(Rank.Seven, Suit.Diamonds, None,None),
-             Card(Rank.Jack, Suit.Clubs, None,None),
-             Card(Rank.Ace, Suit.Diamonds, None,None)
+             Card(Rank.Seven, Suit.Diamonds, None, None),
+             Card(Rank.Jack, Suit.Clubs, None, None),
+             Card(Rank.Ace, Suit.Diamonds, None, None)
          ]),
         ("Windows/13.png", "Windows/Windows.json",
          [
-             Card(Rank.Six, Suit.Clubs, None,None)
+             Card(Rank.Six, Suit.Clubs, None, None)
          ],
          [
-             Card(Rank.Seven, Suit.Diamonds, None,None),
-             Card(Rank.Nine, Suit.Clubs, None,None),
-             Card(Rank.Jack, Suit.Clubs, None,None),
-             Card(Rank.Ace, Suit.Diamonds, None,None)
+             Card(Rank.Seven, Suit.Diamonds, None, None),
+             Card(Rank.Nine, Suit.Clubs, None, None),
+             Card(Rank.Jack, Suit.Clubs, None, None),
+             Card(Rank.Ace, Suit.Diamonds, None, None)
          ]),
         ("Windows/14.png", "Windows/Windows.json",
          [
-             Card(Rank.Six, Suit.Clubs, None,None)
+             Card(Rank.Six, Suit.Clubs, None, None)
          ],
          [
-             Card(Rank.Seven, Suit.Diamonds, None,None),
-             Card(Rank.Nine, Suit.Clubs, None,None),
-             Card(Rank.Three, Suit.Hearts, None,None),
-             Card(Rank.Ace, Suit.Diamonds, None,None)
+             Card(Rank.Seven, Suit.Diamonds, None, None),
+             Card(Rank.Nine, Suit.Clubs, None, None),
+             Card(Rank.Three, Suit.Hearts, None, None),
+             Card(Rank.Ace, Suit.Diamonds, None, None)
          ]),
         ("Windows/15.png", "Windows/Windows.json",
          [
-             Card(Rank.Six, Suit.Clubs, None,None)
+             Card(Rank.Six, Suit.Clubs, None, None)
          ],
          [
-             Card(Rank.Seven, Suit.Diamonds, None,None),
-             Card(Rank.Nine, Suit.Clubs, None,None),
-             Card(Rank.Three, Suit.Diamonds, None,None),
-             Card(Rank.Ace, Suit.Diamonds, None,None)
+             Card(Rank.Seven, Suit.Diamonds, None, None),
+             Card(Rank.Nine, Suit.Clubs, None, None),
+             Card(Rank.Three, Suit.Diamonds, None, None),
+             Card(Rank.Ace, Suit.Diamonds, None, None)
          ]),
         ("Windows/16.png", "Windows/Windows.json",
          [
-             Card(Rank.Six, Suit.Clubs, None,None)
+             Card(Rank.Six, Suit.Clubs, None, None)
          ],
          [
-             Card(Rank.Seven, Suit.Diamonds, None,None),
-             Card(Rank.Nine, Suit.Clubs, None,None),
-             Card(Rank.Three, Suit.Diamonds, None,None),
-             Card(Rank.Ten, Suit.Clubs, None,None)
+             Card(Rank.Seven, Suit.Diamonds, None, None),
+             Card(Rank.Nine, Suit.Clubs, None, None),
+             Card(Rank.Three, Suit.Diamonds, None, None),
+             Card(Rank.Ten, Suit.Clubs, None, None)
          ]),
         ("Windows/17.png", "Windows/Windows.json",
          [
-             Card(Rank.Six, Suit.Clubs, None,None),
-             Card(Rank.Seven, Suit.Diamonds, None,None),
+             Card(Rank.Six, Suit.Clubs, None, None),
+             Card(Rank.Seven, Suit.Diamonds, None, None),
          ],
          [
-             Card(Rank.Seven, Suit.Diamonds, None,None),
-             Card(Rank.Nine, Suit.Clubs, None,None),
-             Card(Rank.Three, Suit.Diamonds, None,None),
-             Card(Rank.Ten, Suit.Clubs, None,None)
+             Card(Rank.Seven, Suit.Diamonds, None, None),
+             Card(Rank.Nine, Suit.Clubs, None, None),
+             Card(Rank.Three, Suit.Diamonds, None, None),
+             Card(Rank.Ten, Suit.Clubs, None, None)
          ]),
         ("Windows/18.png", "Windows/Windows.json",
          [
-             Card(Rank.Six, Suit.Clubs, None,None),
-             Card(Rank.Seven, Suit.Diamonds, None,None),
-             Card(Rank.Jack, Suit.Diamonds, None,None),
+             Card(Rank.Six, Suit.Clubs, None, None),
+             Card(Rank.Seven, Suit.Diamonds, None, None),
+             Card(Rank.Jack, Suit.Diamonds, None, None),
          ],
          [
-             Card(Rank.Seven, Suit.Diamonds, None,None),
-             Card(Rank.Nine, Suit.Clubs, None,None),
-             Card(Rank.Three, Suit.Diamonds, None,None),
-             Card(Rank.Ten, Suit.Clubs, None,None)
+             Card(Rank.Seven, Suit.Diamonds, None, None),
+             Card(Rank.Nine, Suit.Clubs, None, None),
+             Card(Rank.Three, Suit.Diamonds, None, None),
+             Card(Rank.Ten, Suit.Clubs, None, None)
          ]),
         ("Windows/19.png", "Windows/Windows.json",
          [
-             Card(Rank.Queen, Suit.Spades, None,None),
+             Card(Rank.Queen, Suit.Spades, None, None),
          ],
          [
-             Card(Rank.Eight, Suit.Clubs, None,None),
-             Card(Rank.Seven, Suit.Spades, None,None),
-             Card(Rank.Ten, Suit.Hearts, None,None)
+             Card(Rank.Eight, Suit.Clubs, None, None),
+             Card(Rank.Seven, Suit.Spades, None, None),
+             Card(Rank.Ten, Suit.Hearts, None, None)
          ]),
         ("Windows/20.png", "Windows/Windows.json",
          [
-             Card(Rank.Queen, Suit.Spades, None,None),
+             Card(Rank.Queen, Suit.Spades, None, None),
          ],
          [
-             Card(Rank.Jack, Suit.Diamonds, None,None),
-             Card(Rank.Ace, Suit.Diamonds, None,None),
-             Card(Rank.Six, Suit.Hearts, None,None)
+             Card(Rank.Jack, Suit.Diamonds, None, None),
+             Card(Rank.Ace, Suit.Diamonds, None, None),
+             Card(Rank.Six, Suit.Hearts, None, None)
          ])
     ])
 def test_card_detection(imgfilename, jsonfilename, dealer, players):
