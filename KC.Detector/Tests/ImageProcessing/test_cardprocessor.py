@@ -1,7 +1,4 @@
 from collections import Counter
-from itertools import count
-
-import numpy as np
 import cv2 as cv
 import pytest
 
@@ -11,7 +8,6 @@ from ImageProcessing.CardProcessor import CardProcessor
 from ImageProcessing.RoisAndCardDimIO import read_rois_and_card_dimensions
 from Models.Card import Card
 from Models.Enums import Suit, Rank, CardType
-from Models.Table import Table
 
 
 @pytest.mark.parametrize(
@@ -28,8 +24,10 @@ def test_parse_filename(filename, expected_suit, expected_rank):
     suit, rank = CardProcessor.parse_filename(filename)
     assert suit == expected_suit
     assert rank == expected_rank
+
+
 @pytest.mark.parametrize(
-    "imgfilename, jsonfilename, dealer, players,",
+    "imgfilename, jsonfilename, dealer, players",
     [
         ("MacOS/1.png", "MacOS/MacOS.json",
          [Card(Rank.Queen, Suit.Hearts, None, None)],
