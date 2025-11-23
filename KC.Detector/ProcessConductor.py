@@ -23,8 +23,8 @@ from Models.JsonDataContainer import JsonDataContainer
 from Models.OverlayModel import overlay_data_from_table
 from Models.RoisContainer import RoisContainer
 from Models.Table import Table
-from ImageProcessing.RoisAndCardDimLogic import read_rois_and_card_dimensions as rois_and_card_dimensions_from_file
-from ImageProcessing.RoisAndCardDimLogic import write_rois_and_card_dimensions as write_rois_and_card_dimensions_to_file
+from ImageProcessing.RoisAndCardDimIO import read_rois_and_card_dimensions as rois_and_card_dimensions_from_file
+from ImageProcessing.RoisAndCardDimIO import write_rois_and_card_dimensions as write_rois_and_card_dimensions_to_file
 
 
 class ProcessConductor:
