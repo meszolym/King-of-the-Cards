@@ -1,0 +1,1406 @@
+{
+  "UpperBoundary": 17,
+  "LowerBoundary": 8,
+  "Entries": [
+    {
+      "DealerCard": "2",
+      "HandValue": "8",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "8",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "8",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "8",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "8",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "8",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "8",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "8",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "8",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "8",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "9",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "9",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "9",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "9",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "9",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "9",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "9",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "9",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "9",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "9",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "10",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "10",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "10",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "10",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "10",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "10",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "10",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "10",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "10",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "10",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "11",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "11",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "11",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "11",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "11",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "11",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "11",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "11",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "11",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "11",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "12",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "12",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "12",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "12",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "12",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "12",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "12",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "12",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "12",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "12",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "13",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "13",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "13",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "13",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "13",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "13",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "13",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "13",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "13",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "13",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "14",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "14",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "14",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "14",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "14",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "14",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "14",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "14",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "14",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "14",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "15",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "15",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "15",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "15",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "15",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "15",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "15",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "15",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "15",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "15",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "16",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "16",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "16",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "16",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "16",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "16",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "16",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "16",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "16",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "16",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "17",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "17",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "17",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "17",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "17",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "17",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "17",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "17",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "17",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "17",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "S13",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "S13",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "S13",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "S13",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "S13",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "S13",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "S13",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "S13",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "S13",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "S13",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "S14",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "S14",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "S14",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "S14",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "S14",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "S14",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "S14",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "S14",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "S14",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "S14",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "S15",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "S15",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "S15",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "S15",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "S15",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "S15",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "S15",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "S15",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "S15",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "S15",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "S16",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "S16",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "S16",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "S16",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "S16",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "S16",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "S16",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "S16",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "S16",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "S16",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "S17",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "S17",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "S17",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "S17",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "S17",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "S17",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "S17",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "S17",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "S17",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "S17",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "S18",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "S18",
+      "Move": "DoubleStand"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "S18",
+      "Move": "DoubleStand"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "S18",
+      "Move": "DoubleStand"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "S18",
+      "Move": "DoubleStand"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "S18",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "S18",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "S18",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "S18",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "S18",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "S19",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "S19",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "S19",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "S19",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "S19",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "S19",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "S19",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "S19",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "S19",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "S19",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "S20",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "S20",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "S20",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "S20",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "S20",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "S20",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "S20",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "S20",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "S20",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "S20",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "P2",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "P2",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "P2",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "P2",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "P2",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "P2",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "P2",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "P2",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "P2",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "P2",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "P3",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "P3",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "P3",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "P3",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "P3",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "P3",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "P3",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "P3",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "P3",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "P3",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "P4",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "P4",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "P4",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "P4",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "P4",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "P4",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "P4",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "P4",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "P4",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "P4",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "P5",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "P5",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "P5",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "P5",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "P5",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "P5",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "P5",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "P5",
+      "Move": "DoubleHit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "P5",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "P5",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "P6",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "P6",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "P6",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "P6",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "P6",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "P6",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "P6",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "P6",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "P6",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "P6",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "P7",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "P7",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "P7",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "P7",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "P7",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "P7",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "P7",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "P7",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "P7",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "P7",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "P8",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "P8",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "P8",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "P8",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "P8",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "P8",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "P8",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "P8",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "P8",
+      "Move": "Hit"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "P8",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "P9",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "P9",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "P9",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "P9",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "P9",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "P9",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "P9",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "P9",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "P9",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "P9",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "P10",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "P10",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "P10",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "P10",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "P10",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "P10",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "P10",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "P10",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "P10",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "P10",
+      "Move": "Stand"
+    },
+    {
+      "DealerCard": "2",
+      "HandValue": "P11",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "3",
+      "HandValue": "P11",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "4",
+      "HandValue": "P11",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "5",
+      "HandValue": "P11",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "6",
+      "HandValue": "P11",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "7",
+      "HandValue": "P11",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "8",
+      "HandValue": "P11",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "9",
+      "HandValue": "P11",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "10",
+      "HandValue": "P11",
+      "Move": "Split"
+    },
+    {
+      "DealerCard": "11",
+      "HandValue": "P11",
+      "Move": "Split"
+    }
+  ]
+}
