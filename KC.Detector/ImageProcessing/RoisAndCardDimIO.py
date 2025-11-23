@@ -50,4 +50,3 @@ def write_rois_and_card_dimensions(filepath: str, rois: RoisContainer, sizes: Ca
         json.dump(data, f, indent=4)
 
     cv.imwrite(image_path, rois.base_image)
-    return
