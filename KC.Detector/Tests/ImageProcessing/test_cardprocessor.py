@@ -381,25 +381,32 @@ def test_card_detection(imgfilename, jsonfilename, dealer, players):
     dealer_cards = processor.process_cards(dealer_roi, CardType.Dealer)
     player_cards = processor.process_cards(player_roi, CardType.Player)
 
-    def deduplicate_cards(cards): # this happens in the organizer normally
-        for c1 in cards:
-            for c2 in cards:
-                if c1 == c2:
+    def deduplicate_cards(cards): # Normally done in Organizer
+        to_remove = set()
+
+        for i, c1 in enumerate(cards):
+            if i in to_remove:
+                continue
+
+            for j, c2 in enumerate(cards):
+                if i >= j or j in to_remove:
                     continue
 
-                if boxes_match(c1.box,c2.box):
-                    # keep the one with the smaller box area (tighter fit)
+                if boxes_match(c1.box, c2.box):
+                    # Keep the one with the smaller box area (tighter fit)
                     if box_area(c1.box) <= box_area(c2.box):
-                        cards.remove(c2)
+                        to_remove.add(j)
                     else:
-                        cards.remove(c1)
-        return cards
+                        to_remove.add(i)
+                        break  # c1 is being removed, skip to next c1
+
+        return [card for i, card in enumerate(cards) if i not in to_remove]
 
     dealer_cards = deduplicate_cards(dealer_cards)
     player_cards = deduplicate_cards(player_cards)
 
     def extract_distinguishers(cards):
-        return [card.rank for card in cards if card.rank != Rank.Unknown] # we only care about rank here, and ignore unkowns
+        return [card.rank for card in cards if card.rank != Rank.Unknown] # we only care about rank here, and ignore unknowns
 
     dealer_cards = extract_distinguishers(dealer_cards)
     player_cards = extract_distinguishers(player_cards)
