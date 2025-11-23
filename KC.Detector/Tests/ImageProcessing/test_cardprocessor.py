@@ -5,6 +5,7 @@ import numpy as np
 import cv2 as cv
 import pytest
 
+from CardCounting.BoundingBoxLogic import boxes_match, box_area
 from ImageProcessing import Utils
 from ImageProcessing.CardProcessor import CardProcessor
 from ImageProcessing.RoisAndCardDimIO import read_rois_and_card_dimensions
@@ -191,68 +192,183 @@ def test_parse_filename(filename, expected_suit, expected_rank):
          ]),
         ("Windows/2.png", "Windows/Windows.json",
          [
+             Card(Rank.Queen, Suit.Spades, None,None),
+         ],
+         [
+             Card(Rank.Jack, Suit.Diamonds, None,None),
+             Card(Rank.Ace, Suit.Diamonds, None,None),
+             Card(Rank.Three, Suit.Diamonds, None,None)
+         ]),
+        ("Windows/3.png", "Windows/Windows.json",
+         [
              Card(Rank.Three, Suit.Clubs, None,None)
          ],
          [
-             Card(Rank.Two, Suit.Clubs, None,None)
+             Card(Rank.Seven, Suit.Clubs, None,None)
          ]),
-        # ("Windows/3.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/4.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/5.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/6.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/7.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/8.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/9.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/10.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/11.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/12.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/13.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/14.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/15.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/16.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/17.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/18.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/19.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/20.png", "Windows/Windows.json",
-        #  [],
-        #  []),
-        # ("Windows/21.png", "Windows/Windows.json",
-        #  [],
-        #  [])
+        ("Windows/4.png", "Windows/Windows.json",
+         [
+             Card(Rank.Three, Suit.Clubs, None,None)
+         ],
+         [
+             Card(Rank.King, Suit.Spades, None,None)
+         ]),
+        ("Windows/5.png", "Windows/Windows.json",
+         [
+             Card(Rank.Jack, Suit.Hearts, None,None),
+             Card(Rank.Three, Suit.Clubs, None,None),
+         ],
+         [
+             Card(Rank.King, Suit.Spades, None,None)
+         ]),
+        ("Windows/6.png", "Windows/Windows.json",
+         [
+             Card(Rank.Jack, Suit.Hearts, None,None),
+             Card(Rank.Three, Suit.Clubs, None,None),
+             Card(Rank.Four, Suit.Clubs, None,None)
+         ],
+         [
+             Card(Rank.King, Suit.Spades, None,None)
+         ]),
+        ("Windows/7.png", "Windows/Windows.json",
+         [
+             Card(Rank.Ace, Suit.Hearts, None,None),
+         ],
+         [
+             Card(Rank.Two, Suit.Spades, None,None),
+             Card(Rank.King, Suit.Spades, None,None),
+             Card(Rank.Jack, Suit.Diamonds, None,None)
+         ]),
+        ("Windows/8.png", "Windows/Windows.json",
+         [
+             Card(Rank.Ace, Suit.Hearts, None,None),
+         ],
+         [
+             Card(Rank.Ten, Suit.Clubs, None,None),
+             Card(Rank.Eight, Suit.Clubs, None,None),
+             Card(Rank.Four, Suit.Hearts, None,None)
+         ]),
+        ("Windows/9.png", "Windows/Windows.json",
+         [
+             Card(Rank.Seven, Suit.Clubs, None,None)
+         ],
+         [
+             Card(Rank.Jack, Suit.Diamonds, None,None),
+             Card(Rank.Seven, Suit.Diamonds, None,None),
+             Card(Rank.Four, Suit.Hearts, None,None),
+             Card(Rank.Six, Suit.Spades, None,None),
+             Card(Rank.Three, Suit.Spades, None,None)
+         ]),
+        ("Windows/10.png", "Windows/Windows.json",
+         [
+             Card(Rank.Seven, Suit.Clubs, None,None)
+         ],
+         [
+             Card(Rank.Ace, Suit.Clubs, None,None),
+             Card(Rank.Five, Suit.Spades, None,None),
+             Card(Rank.Eight, Suit.Hearts, None,None),
+             Card(Rank.Six, Suit.Spades, None,None),
+             Card(Rank.Ten, Suit.Diamonds, None,None)
+         ]),
+        ("Windows/11.png", "Windows/Windows.json",
+         [
+             Card(Rank.Six, Suit.Clubs, None,None)
+         ],
+         [
+             Card(Rank.Jack, Suit.Spades, None,None),
+             Card(Rank.Jack, Suit.Hearts, None,None),
+             Card(Rank.Four, Suit.Diamonds, None,None)
+         ]),
+        ("Windows/12.png", "Windows/Windows.json",
+         [
+             Card(Rank.Six, Suit.Clubs, None,None)
+         ],
+         [
+             Card(Rank.Seven, Suit.Diamonds, None,None),
+             Card(Rank.Jack, Suit.Clubs, None,None),
+             Card(Rank.Ace, Suit.Diamonds, None,None)
+         ]),
+        ("Windows/13.png", "Windows/Windows.json",
+         [
+             Card(Rank.Six, Suit.Clubs, None,None)
+         ],
+         [
+             Card(Rank.Seven, Suit.Diamonds, None,None),
+             Card(Rank.Nine, Suit.Clubs, None,None),
+             Card(Rank.Jack, Suit.Clubs, None,None),
+             Card(Rank.Ace, Suit.Diamonds, None,None)
+         ]),
+        ("Windows/14.png", "Windows/Windows.json",
+         [
+             Card(Rank.Six, Suit.Clubs, None,None)
+         ],
+         [
+             Card(Rank.Seven, Suit.Diamonds, None,None),
+             Card(Rank.Nine, Suit.Clubs, None,None),
+             Card(Rank.Three, Suit.Hearts, None,None),
+             Card(Rank.Ace, Suit.Diamonds, None,None)
+         ]),
+        ("Windows/15.png", "Windows/Windows.json",
+         [
+             Card(Rank.Six, Suit.Clubs, None,None)
+         ],
+         [
+             Card(Rank.Seven, Suit.Diamonds, None,None),
+             Card(Rank.Nine, Suit.Clubs, None,None),
+             Card(Rank.Three, Suit.Diamonds, None,None),
+             Card(Rank.Ace, Suit.Diamonds, None,None)
+         ]),
+        ("Windows/16.png", "Windows/Windows.json",
+         [
+             Card(Rank.Six, Suit.Clubs, None,None)
+         ],
+         [
+             Card(Rank.Seven, Suit.Diamonds, None,None),
+             Card(Rank.Nine, Suit.Clubs, None,None),
+             Card(Rank.Three, Suit.Diamonds, None,None),
+             Card(Rank.Ten, Suit.Clubs, None,None)
+         ]),
+        ("Windows/17.png", "Windows/Windows.json",
+         [
+             Card(Rank.Six, Suit.Clubs, None,None),
+             Card(Rank.Seven, Suit.Diamonds, None,None),
+         ],
+         [
+             Card(Rank.Seven, Suit.Diamonds, None,None),
+             Card(Rank.Nine, Suit.Clubs, None,None),
+             Card(Rank.Three, Suit.Diamonds, None,None),
+             Card(Rank.Ten, Suit.Clubs, None,None)
+         ]),
+        ("Windows/18.png", "Windows/Windows.json",
+         [
+             Card(Rank.Six, Suit.Clubs, None,None),
+             Card(Rank.Seven, Suit.Diamonds, None,None),
+             Card(Rank.Jack, Suit.Diamonds, None,None),
+         ],
+         [
+             Card(Rank.Seven, Suit.Diamonds, None,None),
+             Card(Rank.Nine, Suit.Clubs, None,None),
+             Card(Rank.Three, Suit.Diamonds, None,None),
+             Card(Rank.Ten, Suit.Clubs, None,None)
+         ]),
+        ("Windows/19.png", "Windows/Windows.json",
+         [
+             Card(Rank.Queen, Suit.Spades, None,None),
+         ],
+         [
+             Card(Rank.Eight, Suit.Clubs, None,None),
+             Card(Rank.Seven, Suit.Spades, None,None),
+             Card(Rank.Ten, Suit.Hearts, None,None)
+         ]),
+        ("Windows/20.png", "Windows/Windows.json",
+         [
+             Card(Rank.Queen, Suit.Spades, None,None),
+         ],
+         [
+             Card(Rank.Jack, Suit.Diamonds, None,None),
+             Card(Rank.Ace, Suit.Diamonds, None,None),
+             Card(Rank.Six, Suit.Hearts, None,None)
+         ])
     ])
 def test_card_detection(imgfilename, jsonfilename, dealer, players):
     processor = CardProcessor()
@@ -265,8 +381,25 @@ def test_card_detection(imgfilename, jsonfilename, dealer, players):
     dealer_cards = processor.process_cards(dealer_roi, CardType.Dealer)
     player_cards = processor.process_cards(player_roi, CardType.Player)
 
+    def deduplicate_cards(cards): # this happens in the organizer normally
+        for c1 in cards:
+            for c2 in cards:
+                if c1 == c2:
+                    continue
+
+                if boxes_match(c1.box,c2.box):
+                    # keep the one with the smaller box area (tighter fit)
+                    if box_area(c1.box) <= box_area(c2.box):
+                        cards.remove(c2)
+                    else:
+                        cards.remove(c1)
+        return cards
+
+    dealer_cards = deduplicate_cards(dealer_cards)
+    player_cards = deduplicate_cards(player_cards)
+
     def extract_distinguishers(cards):
-        return [card.rank for card in cards]
+        return [card.rank for card in cards if card.rank != Rank.Unknown] # we only care about rank here, and ignore unkowns
 
     dealer_cards = extract_distinguishers(dealer_cards)
     player_cards = extract_distinguishers(player_cards)

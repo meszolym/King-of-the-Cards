@@ -22,12 +22,12 @@
     },
     "Sizes": {
         "DealerCardSize": [
-            119,
+            120,
             164
         ],
         "PlayerCardSize": [
-            92,
-            124
+            90,
+            122
         ]
     }
 }
