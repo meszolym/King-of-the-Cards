@@ -48,19 +48,15 @@ namespace KC.Backend.API
             
             var app = builder.Build();
             
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            app.UseSwagger(options =>
             {
-                app.UseSwagger(options =>
-                {
-                    options.RouteTemplate = "/openapi/{documentName}.json";
-                });
-                app.MapScalarApiReference(options =>
-                {
-                    options.WithTheme(ScalarTheme.Kepler);
-                    options.WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
-                });
-            }
+                options.RouteTemplate = "/openapi/{documentName}.json";
+            });
+            app.MapScalarApiReference(options =>
+            {
+                options.WithTheme(ScalarTheme.Kepler);
+                options.WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+            });
 
             //app.UseAuthorization();
 
