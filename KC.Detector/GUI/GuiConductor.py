@@ -1,4 +1,4 @@
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 from typing import Optional
 
 from GUI.Overlay import Overlay, OverlayModel
@@ -43,13 +43,18 @@ class GuiConductor:
         self.main_window.stop_detection_observable.subscribe(lambda _: self.stop_detection())
         self.overlay.on_closing_observable.subscribe(lambda _: self.stop_detection())
         self.main_window.select_roi_observable.subscribe(lambda _: self.box_selector.open_roi_selector())
-        self.main_window.show_rois_observable.subscribe(lambda _: show_rois(self.rois))
+        self.main_window.show_rois_observable.subscribe(lambda _: self.show_rois_wrapper())
         self.main_window.select_card_dimensions_observable.subscribe(lambda _: self.box_selector.open_card_box_selector())
         self.main_window.read_rois_and_card_dimensions_json_observable.subscribe(lambda _: self.read_rois_and_card_sizes())
         self.main_window.write_rois_and_card_dimensions_json_observable.subscribe(lambda _: self.write_rois_and_card_sizes())
 
         self.box_selector.rois_selected_observable.subscribe(lambda rois: self.rois_selected(rois))
         self.box_selector.card_box_selected_observable.subscribe(lambda sizes: self.card_sizes_selected(sizes))
+
+    def show_rois_wrapper(self):
+        shown = show_rois(self.rois)
+        if not shown:
+            messagebox.showerror("ROIs cannot be displayed", "ROIs could not be shown because required data is missing.")
 
     def start_main_window(self):
         self.main_window.window.mainloop()

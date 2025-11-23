@@ -2,7 +2,9 @@ from Models.RoisContainer import RoisContainer
 import cv2 as cv
 from screeninfo import get_monitors
 
-def show_rois(rois: RoisContainer) -> None:
+def show_rois(rois: RoisContainer) -> bool:
+    if rois is None or rois.base_image is None:
+        return False
     img = rois.base_image.copy()
     window_name = "Selected ROIs"
     cv.namedWindow(window_name, cv.WINDOW_NORMAL)
@@ -30,4 +32,4 @@ def show_rois(rois: RoisContainer) -> None:
     cv.imshow(window_name, img)
     cv.waitKey(0)
     cv.destroyWindow(window_name)
-    return
+    return True

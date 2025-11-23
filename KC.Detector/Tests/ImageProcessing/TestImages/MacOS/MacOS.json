@@ -1,0 +1,33 @@
+{
+    "Rois": {
+        "DealerRoi": [
+            640,
+            35,
+            1280,
+            408
+        ],
+        "PlayerRoi": [
+            12,
+            457,
+            2535,
+            804
+        ],
+        "MessageRoi": [
+            1132,
+            809,
+            298,
+            103
+        ],
+        "BaseImagePath": ""
+    },
+    "Sizes": {
+        "DealerCardSize": [
+            117,
+            160
+        ],
+        "PlayerCardSize": [
+            89,
+            118
+        ]
+    }
+}

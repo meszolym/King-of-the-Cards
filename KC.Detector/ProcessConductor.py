@@ -23,6 +23,8 @@ from Models.JsonDataContainer import JsonDataContainer
 from Models.OverlayModel import overlay_data_from_table
 from Models.RoisContainer import RoisContainer
 from Models.Table import Table
+from ImageProcessing.RoisAndCardDimIO import read_rois_and_card_dimensions as rois_and_card_dimensions_from_file
+from ImageProcessing.RoisAndCardDimIO import write_rois_and_card_dimensions as write_rois_and_card_dimensions_to_file
 
 
 class ProcessConductor:
@@ -64,29 +66,8 @@ class ProcessConductor:
         return
 
     def read_rois_and_card_dimensions(self, filepath: str):
-        with open(filepath, "r") as f:
-            data = json.load(f)
-        rois = data.get("Rois", {})
-        sizes = data.get("Sizes", {})
 
-        dealer_roi_raw = rois.get("DealerRoi", [0, 0, 0, 0])
-        dealer_roi = BoundingBox(dealer_roi_raw[0], dealer_roi_raw[1], dealer_roi_raw[2], dealer_roi_raw[3])
-        player_roi_raw = rois.get("PlayerRoi", [0, 0, 0, 0])
-        player_roi = BoundingBox(player_roi_raw[0], player_roi_raw[1], player_roi_raw[2], player_roi_raw[3])
-        message_roi_raw = rois.get("MessageRoi", [0, 0, 0, 0])
-        message_roi = BoundingBox(message_roi_raw[0], message_roi_raw[1], message_roi_raw[2], message_roi_raw[3])
-        base_image_path = rois.get("BaseImagePath", "")
-
-        dealer_card_size_raw = sizes.get("DealerCardSize", [0, 0])
-        dealer_card_size = BoundingBox(0, 0, dealer_card_size_raw[0], dealer_card_size_raw[1])
-        player_card_size_raw = sizes.get("PlayerCardSize", [0, 0])
-        player_card_size = BoundingBox(0, 0, player_card_size_raw[0], player_card_size_raw[1])
-
-        img = cv.imread(base_image_path)
-
-        rois_container = RoisContainer(dealer_roi, player_roi, message_roi, img)
-        sizes_container = CardSizesContainer(dealer_card_size, player_card_size)
-
+        rois_container, sizes_container = rois_and_card_dimensions_from_file(filepath)
         self.rois_selected_handler(rois_container)
         self.card_sizes_selected_handler(sizes_container)
 
@@ -164,26 +145,6 @@ class ProcessConductor:
     def write_rois_and_card_dimensions(self, filepath):
         if self.rois is None or self.card_processor is None:
             return
-        rois = self.rois
-        sizes = self.card_processor.card_sizes
-        image_path = filepath[:-5] + ".jpg"
 
-
-        data = {
-            "Rois": {
-                "DealerRoi": [rois.dealer_roi.x, rois.dealer_roi.y, rois.dealer_roi.w, rois.dealer_roi.h],
-                "PlayerRoi": [rois.player_roi.x, rois.player_roi.y, rois.player_roi.w, rois.player_roi.h],
-                "MessageRoi": [rois.message_roi.x, rois.message_roi.y, rois.message_roi.w, rois.message_roi.h],
-                "BaseImagePath": image_path
-            },
-            "Sizes": {
-                "DealerCardSize": [sizes.dealer_card_box.w, sizes.dealer_card_box.h],
-                "PlayerCardSize": [sizes.player_card_box.w, sizes.player_card_box.h]
-            },
-        }
-        with open(filepath, "w") as f:
-            json.dump(data, f, indent=4)
-
-        cv.imwrite(image_path, rois.base_image)
-
+        write_rois_and_card_dimensions_to_file(filepath, self.rois, self.card_processor.card_sizes)
         return
