@@ -54,7 +54,7 @@ class GuiConductor:
     def show_rois_wrapper(self):
         shown = show_rois(self.rois)
         if not shown:
-            messagebox.showerror("ROIs not available", "ROIs could not be shown because required data is missing.")
+            messagebox.showerror("ROIs cannot be displayed", "ROIs could not be shown because required data is missing.")
 
     def start_main_window(self):
         self.main_window.window.mainloop()
