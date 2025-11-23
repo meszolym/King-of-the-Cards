@@ -1,9 +1,9 @@
 import json
 
+import cv2 as cv
 from Models.BoundingBox import BoundingBox
 from Models.CardSizesContainer import CardSizesContainer
 from Models.RoisContainer import RoisContainer
-import cv2 as cv
 
 def read_rois_and_card_dimensions(filepath: str):
     with open(filepath, "r") as f:
