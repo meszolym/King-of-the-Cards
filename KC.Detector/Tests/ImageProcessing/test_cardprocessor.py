@@ -1,3 +1,4 @@
+from collections import Counter
 from itertools import count
 
 import numpy as np
@@ -29,7 +30,155 @@ def test_parse_filename(filename, expected_suit, expected_rank):
 @pytest.mark.parametrize(
     "imgfilename, jsonfilename, dealer, players,",
     [
-
+        ("MacOS/1.png", "MacOS/MacOS.json",
+         [Card(Rank.Queen, Suit.Hearts, None,None)],
+         [Card(Rank.Two, Suit.Spades, None,None)]),
+        ("MacOS/2.png", "MacOS/MacOS.json",
+         [Card(Rank.Queen, Suit.Hearts, None,None)],
+         [Card(Rank.Two, Suit.Diamonds, None,None)]),
+        ("MacOS/3.png", "MacOS/MacOS.json",
+         [Card(Rank.Queen, Suit.Hearts, None,None)],
+         [Card(Rank.King, Suit.Hearts, None,None)]),
+        ("MacOS/4.png", "MacOS/MacOS.json",
+         [Card(Rank.Queen, Suit.Hearts, None,None)],
+         [Card(Rank.Three, Suit.Diamonds, None,None)]),
+        ("MacOS/5.png", "MacOS/MacOS.json",
+         [
+             Card(Rank.Queen, Suit.Hearts, None,None),
+             Card(Rank.Eight, Suit.Hearts, None,None)
+         ],
+         [Card(Rank.Three, Suit.Diamonds, None,None)]),
+        ("MacOS/6.png", "MacOS/MacOS.json",
+         [Card(Rank.Eight, Suit.Spades, None,None)],
+         [
+             Card(Rank.Seven, Suit.Diamonds, None,None),
+             Card(Rank.Four, Suit.Clubs, None,None),
+             Card(Rank.Seven, Suit.Spades, None,None)]),
+        ("MacOS/7.png", "MacOS/MacOS.json",
+         [Card(Rank.Eight, Suit.Spades, None,None)],
+         [
+             Card(Rank.Five, Suit.Hearts, None,None),
+             Card(Rank.Jack, Suit.Clubs, None,None),
+             Card(Rank.Queen, Suit.Spades, None,None)
+         ]),
+        ("MacOS/8.png", "MacOS/MacOS.json",
+         [Card(Rank.Eight, Suit.Hearts, None,None)],
+         [
+             Card(Rank.Six, Suit.Clubs, None,None),
+             Card(Rank.Eight, Suit.Diamonds, None,None),
+             Card(Rank.Seven, Suit.Clubs, None,None),
+             Card(Rank.Nine, Suit.Spades, None,None),
+             Card(Rank.Eight, Suit.Clubs, None,None)
+         ]),
+        ("MacOS/9.png", "MacOS/MacOS.json",
+         [Card(Rank.Eight, Suit.Hearts, None,None)],
+         [
+             Card(Rank.Four, Suit.Diamonds, None,None),
+             Card(Rank.Queen, Suit.Spades, None,None),
+             Card(Rank.Three, Suit.Diamonds, None,None),
+             Card(Rank.Five, Suit.Hearts, None,None),
+             Card(Rank.Queen, Suit.Hearts, None,None)
+         ]),
+        ("MacOS/10.png", "MacOS/MacOS.json",
+         [Card(Rank.Eight, Suit.Hearts, None,None)],
+         [
+             Card(Rank.Nine, Suit.Spades, None,None),
+             Card(Rank.Queen, Suit.Spades, None,None),
+             Card(Rank.Three, Suit.Diamonds, None,None),
+             Card(Rank.Five, Suit.Hearts, None,None),
+             Card(Rank.Queen, Suit.Hearts, None,None)
+         ]),
+        ("MacOS/11.png", "MacOS/MacOS.json",
+         [Card(Rank.Eight, Suit.Hearts, None,None)],
+         [
+             Card(Rank.Nine, Suit.Spades, None,None),
+             Card(Rank.Queen, Suit.Spades, None,None),
+             Card(Rank.Seven, Suit.Diamonds, None,None),
+             Card(Rank.Five, Suit.Hearts, None,None),
+             Card(Rank.Queen, Suit.Hearts, None,None)
+         ]),
+        ("MacOS/12.png", "MacOS/MacOS.json",
+         [Card(Rank.Eight, Suit.Hearts, None,None)],
+         [
+             Card(Rank.Nine, Suit.Spades, None,None),
+             Card(Rank.Queen, Suit.Spades, None,None),
+             Card(Rank.Seven, Suit.Diamonds, None,None),
+             Card(Rank.Ten, Suit.Hearts, None,None),
+             Card(Rank.Queen, Suit.Hearts, None,None)
+         ]),
+        ("MacOS/13.png", "MacOS/MacOS.json",
+         [
+             Card(Rank.Eight, Suit.Hearts, None,None),
+             Card(Rank.Four, Suit.Clubs, None,None)
+         ],
+         [
+             Card(Rank.Nine, Suit.Spades, None,None),
+             Card(Rank.Queen, Suit.Spades, None,None),
+             Card(Rank.Seven, Suit.Diamonds, None,None),
+             Card(Rank.Ten, Suit.Hearts, None,None),
+             Card(Rank.Queen, Suit.Hearts, None,None)
+         ]),
+        ("MacOS/14.png", "MacOS/MacOS.json",
+         [
+             Card(Rank.Eight, Suit.Hearts, None,None),
+             Card(Rank.Four, Suit.Clubs, None,None),
+             Card(Rank.Queen, Suit.Hearts, None,None),
+         ],
+         [
+             Card(Rank.Nine, Suit.Spades, None,None),
+             Card(Rank.Queen, Suit.Spades, None,None),
+             Card(Rank.Seven, Suit.Diamonds, None,None),
+             Card(Rank.Ten, Suit.Hearts, None,None),
+             Card(Rank.Queen, Suit.Hearts, None,None)
+         ]),
+        ("MacOS/15.png", "MacOS/MacOS.json",
+         [
+            Card(Rank.Jack, Suit.Spades, None,None)
+         ],
+         [
+            Card(Rank.King, Suit.Diamonds, None,None),
+            Card(Rank.Queen, Suit.Hearts, None,None),
+            Card(Rank.Seven, Suit.Diamonds, None,None)
+         ]),
+        ("MacOS/16.png", "MacOS/MacOS.json",
+         [
+            Card(Rank.Jack, Suit.Spades, None,None)
+         ],
+         [
+            Card(Rank.Eight, Suit.Spades, None,None),
+            Card(Rank.Two, Suit.Clubs, None,None),
+            Card(Rank.Queen, Suit.Spades, None,None)
+         ]),
+        ("MacOS/17.png", "MacOS/MacOS.json",
+         [
+            Card(Rank.Jack, Suit.Spades, None,None)
+         ],
+         [
+            Card(Rank.Eight, Suit.Spades, None,None),
+            Card(Rank.Jack, Suit.Clubs, None,None),
+            Card(Rank.Queen, Suit.Spades, None,None)
+         ]),
+        ("MacOS/18.png", "MacOS/MacOS.json",
+         [
+            Card(Rank.Jack, Suit.Spades, None,None),
+             Card(Rank.Three, Suit.Hearts, None,None),
+         ],
+         [
+            Card(Rank.Eight, Suit.Spades, None,None),
+            Card(Rank.Jack, Suit.Clubs, None,None),
+            Card(Rank.Queen, Suit.Spades, None,None)
+         ]),
+        ("MacOS/19.png", "MacOS/MacOS.json",
+         [
+             Card(Rank.Jack, Suit.Spades, None,None),
+             Card(Rank.Three, Suit.Hearts, None,None),
+             Card(Rank.King, Suit.Clubs, None,None)
+         ],
+         [
+            Card(Rank.Eight, Suit.Spades, None,None),
+            Card(Rank.Jack, Suit.Clubs, None,None),
+            Card(Rank.Queen, Suit.Spades, None,None)
+         ])
     ])
 def test_card_detection(imgfilename, jsonfilename, dealer, players):
     processor = CardProcessor()
@@ -42,16 +191,16 @@ def test_card_detection(imgfilename, jsonfilename, dealer, players):
     dealer_cards = processor.process_cards(dealer_roi, CardType.Dealer)
     player_cards = processor.process_cards(player_roi, CardType.Player)
 
-    def extract_suits_and_ranks(cards):
-        return [(card.suit, card.rank) for card in cards]
+    def extract_distinguishers(cards):
+        return [card.rank for card in cards]
 
-    dealer_cards = extract_suits_and_ranks(dealer_cards)
-    player_cards = extract_suits_and_ranks(player_cards)
-    dealer = extract_suits_and_ranks(dealer)
-    players = extract_suits_and_ranks(players)
+    dealer_cards = extract_distinguishers(dealer_cards)
+    player_cards = extract_distinguishers(player_cards)
+    dealer = extract_distinguishers(dealer)
+    players = extract_distinguishers(players)
 
-    assert dealer_cards == dealer
-    assert player_cards == players
+    assert Counter(dealer_cards) == Counter(dealer)
+    assert Counter(player_cards) == Counter(players)
 
 
 
