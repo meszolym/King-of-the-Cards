@@ -2,7 +2,7 @@ from Models.Enums import Rank
 from Models.Table import Table
 
 DECK_LENGTH = 52
-NUMBER_OF_DECKS = 8
+NUMBER_OF_DECKS = 6
 
 def hilo_running_count(table: Table) -> int:
     count = 0

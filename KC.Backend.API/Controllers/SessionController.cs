@@ -47,7 +47,7 @@ public class SessionController(ISessionLogic sessionLogic, IPlayerLogic playerLo
     }
     
     private const uint DefaultBoxes = 5;
-    private const uint DefaultDecks = 8;
+    private const uint DefaultDecks = 6;
     private const int DefaultShuffleCardPlacement = -40;
     private const uint DefaultShuffleCardRange = 10;
     private const uint DefaultBettingTimeSpanSecs = 10;

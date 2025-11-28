@@ -69,8 +69,8 @@ class HelpDialog:
 
         self.text_widget.insert(
             tk.END,
-            "If you are playing at an 8-deck table, and see that two decks have been played, "
-            "then you know you have 6 decks remaining. This is where your true count comes in: "
+            "If you are playing at a 6-deck table, and see that two decks have been played, "
+            "then you know you have 4 decks remaining. This is where your true count comes in: "
             "it's your running count divided by the estimated number of decks still in the shoe.\n\n"
         )
 
