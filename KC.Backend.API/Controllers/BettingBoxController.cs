@@ -40,12 +40,12 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
         var address = MacAddress.Parse(macAddress);
         var player = playerLogic.Get(address);
 
-        var alreadyPlaced = bettingBoxLogic.GetBetOnBox(dto.SessionId, dto.BoxIdx, dto.HandIdx);
+        var alreadyPlaced = bettingBoxLogic.GetBetOnBox(dto.SessionId, dto.BoxIdx);
         
         if (dto.Amount - alreadyPlaced > player.Balance)
             throw new InvalidOperationException("Player balance does not cover the bet.");
         
-        bettingBoxLogic.UpdateBetOnBox(dto.SessionId, dto.BoxIdx, address, dto.Amount, dto.HandIdx);
+        bettingBoxLogic.UpdateBetOnBox(dto.SessionId, dto.BoxIdx, address, dto.Amount);
         playerLogic.UpdateBalance(address, player.Balance - (dto.Amount - alreadyPlaced));
         
         await hub.SendMessageAsync(player.ConnectionId, SignalRMethods.PlayerBalanceUpdated, player.ToDto());

@@ -133,9 +133,9 @@ public partial class ExternalCommunicatorService
         await _client.DeleteAsync(
             ApiEndpoints.DisclaimBox.AddBody(new BoxOwnerUpdateDto(sessionId, boxIdx)));
 
-    public async Task UpdateBet(Guid sessionId, int boxIdx, double amount, int handIdx = 0) =>
+    public async Task UpdateBet(Guid sessionId, int boxIdx, double amount) =>
         await _client.PutAsync(
-            ApiEndpoints.UpdateBet.AddBody(new BoxBetUpdateDto(sessionId, boxIdx, amount, handIdx)));
+            ApiEndpoints.UpdateBet.AddBody(new BoxBetUpdateDto(sessionId, boxIdx, amount)));
 
     public async Task<IEnumerable<Move>> GetPossibleMovesOnHand(Guid sessionId, int boxIdx, int handIdx = 0) =>
         await  _client.GetAsync<IEnumerable<Move>>(ApiEndpoints.GetPossibleMovesOnHand.AddUrlSegment("sessionId", sessionId.ToString())
