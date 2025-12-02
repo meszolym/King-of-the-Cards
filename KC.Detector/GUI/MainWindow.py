@@ -13,6 +13,7 @@ class MainWindow:
     select_card_dimensions_observable : Subject
     read_rois_and_card_dimensions_json_observable : Subject
     write_rois_and_card_dimensions_json_observable : Subject
+    show_help_dialog_observable : Subject
 
     def __init__(self, roi_sel: bool):
         self.roi_selected = roi_sel
@@ -23,16 +24,23 @@ class MainWindow:
         self.select_card_dimensions_observable = Subject()
         self.read_rois_and_card_dimensions_json_observable = Subject()
         self.write_rois_and_card_dimensions_json_observable = Subject()
+        self.show_help_dialog_observable = Subject()
 
         self.window = Tk()
         self.window.protocol("WM_DELETE_WINDOW", lambda: self.window.destroy())
         self.window.title("KC Detector")
-        self.window.geometry("300x320")
-        self.window.minsize(300, 320)
-        self.window.maxsize(300, 320)
+        self.window.geometry("300x340")
+        self.window.resizable(False, False)
 
         self.title_label = Label(self.window, text="Welcome to KC Detector")
         self.title_label.pack(pady=(20, 10))
+        
+        self.help_button = Button(
+            self.window,
+            text="Help",
+            command = lambda: self.show_help_dialog_observable.on_next(None)
+        )
+        self.help_button.pack()
 
         self.roi_frame = Frame(self.window)
         self.select_roi_button = Button(

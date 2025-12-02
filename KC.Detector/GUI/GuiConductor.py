@@ -1,6 +1,7 @@
 from tkinter import filedialog, messagebox
 from typing import Optional
 
+from GUI.Help import HelpDialog
 from GUI.Overlay import Overlay, OverlayModel
 from GUI.MainWindow import MainWindow
 from GUI.BoxSelector import BoxSelector
@@ -16,6 +17,7 @@ class GuiConductor:
     main_window : MainWindow
     overlay : Overlay
     box_selector : BoxSelector
+    help_dialog : HelpDialog
 
     rois_selected_observable : Subject
     card_sizes_selected_observable : Subject
@@ -47,6 +49,7 @@ class GuiConductor:
         self.main_window.select_card_dimensions_observable.subscribe(lambda _: self.box_selector.open_card_box_selector())
         self.main_window.read_rois_and_card_dimensions_json_observable.subscribe(lambda _: self.read_rois_and_card_sizes())
         self.main_window.write_rois_and_card_dimensions_json_observable.subscribe(lambda _: self.write_rois_and_card_sizes())
+        self.main_window.show_help_dialog_observable.subscribe(lambda _: self.show_help())
 
         self.box_selector.rois_selected_observable.subscribe(lambda rois: self.rois_selected(rois))
         self.box_selector.card_box_selected_observable.subscribe(lambda sizes: self.card_sizes_selected(sizes))
@@ -109,4 +112,9 @@ class GuiConductor:
         if filename is None or filename == "":
             return
         self.write_rois_and_card_dimensions_json_observable.on_next(filename)
+        return
+
+    def show_help(self):
+        self.help_dialog = HelpDialog(self.main_window.window)
+        self.help_dialog.show()
         return

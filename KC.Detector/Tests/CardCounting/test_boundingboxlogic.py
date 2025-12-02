@@ -12,7 +12,7 @@ from Models.BoundingBox import BoundingBox
         (BoundingBox(0, 0, 10, 10), BoundingBox(2, 2, 4, 4), 1.0),
     ],
 )
-def test_boxes_overlap_param(b1, b2, expected):
+def test_boxes_overlap(b1, b2, expected):
     assert boxes_overlap(b1, b2) == pytest.approx(expected)
 
 
@@ -20,8 +20,10 @@ def test_boxes_overlap_param(b1, b2, expected):
     "b1,b2,expected",
     [
         (BoundingBox(0, 0, 100, 100), BoundingBox(1, 0, 100, 100), True),
+        (BoundingBox(1, 0, 100, 100), BoundingBox(0, 0, 100, 100), True),
         (BoundingBox(0, 0, 100, 100), BoundingBox(6, 0, 100, 100), False),
+        (BoundingBox(6, 0, 100, 100), BoundingBox(0, 0, 100, 100), False)
     ],
 )
-def test_boxes_match_param(b1, b2, expected):
+def test_boxes_match(b1, b2, expected):
     assert boxes_match(b1, b2) is expected

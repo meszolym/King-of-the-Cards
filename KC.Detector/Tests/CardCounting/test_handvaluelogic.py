@@ -15,7 +15,9 @@ from Tests.CardCounting.Utils import make_card
         ("S18", HandValue(value=18, is_soft=True, is_pair=False, is_blackjack=False, is_bust=False)),
         ("21", HandValue(value=21, is_soft=False, is_pair=False, is_blackjack=False, is_bust=False)),
         ("10", HandValue(value=10, is_soft=False, is_pair=False, is_blackjack=False, is_bust=False)),
-        ("P1", HandValue(value=2, is_soft=False, is_pair=True, is_blackjack=False, is_bust=False)),
+        ("BJ", HandValue(value=21, is_soft=False, is_pair=False, is_blackjack=True, is_bust=False)),
+        ("23", HandValue(value=23, is_soft=False, is_pair=False, is_blackjack=False, is_bust=True)),
+        ("P11", HandValue(value=12, is_soft=True, is_pair=True, is_blackjack=False, is_bust=False)),
     ],
 )
 def test_hand_value_from_string(input_str: str, expected: HandValue):

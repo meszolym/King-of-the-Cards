@@ -6,19 +6,28 @@ from CardCounting.CardLogic import card_value
 
 def hand_value_from_string(value: str) -> HandValue:
     value_number = 0
+    bj = False
+    soft = False
     match value[0]:
+        case 'P' if value == 'P11':
+            value_number = 12
+            soft = True
         case 'P':
             value_number = int(value[1:]) * 2
         case 'S':
             value_number = int(value[1:])
+            soft = True
+        case 'B' if value == 'BJ':
+            value_number = 21
+            bj = True
         case _:
             value_number = int(value)
 
     return HandValue(value = value_number,
-                     is_soft = value[0] == 'S',
+                     is_soft = soft,
                      is_pair = value[0] == 'P',
-                     is_blackjack = False,
-                     is_bust = False)
+                     is_blackjack = bj,
+                     is_bust = value_number > 21)
 
 
 def hand_value_from_hand(hand: Hand) -> HandValue:

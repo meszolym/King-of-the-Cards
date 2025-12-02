@@ -56,11 +56,10 @@ public class BettingBoxLogic(IList<Session> sessions, IDictionary<MacAddress, Gu
     /// <param name="boxIdx"></param>
     /// <param name="playerId"></param>
     /// <param name="amount"></param>
-    /// <param name="handIdx"></param>
     /// <exception cref="InvalidOperationException">"Cannot place bets at this time." if the round is already going.</exception>
     /// <exception cref="InvalidOperationException">"Box is not owned by player." if the box is nt owned by the player.</exception>
     /// <exception cref="ArgumentException">"Bet cannot be less than 0." if the amount is less than 0.</exception>
-    public void UpdateBetOnBox(Guid sessionId, int boxIdx, MacAddress playerId, double amount, int handIdx = 0)
+    public void UpdateBetOnBox(Guid sessionId, int boxIdx, MacAddress playerId, double amount)
     {
         var session = sessions.Single(s => s.Id == sessionId);
         if (!session.CanPlaceBets) throw new InvalidOperationException("Cannot place bets at this time.");
@@ -69,13 +68,13 @@ public class BettingBoxLogic(IList<Session> sessions, IDictionary<MacAddress, Gu
         
         if (box.OwnerId != macToPlayerGuid[playerId]) throw new InvalidOperationException("Box is not owned by player.");
 
-        box.Hands[handIdx].Bet = amount;
+        box.Hands[0].Bet = amount;
 
         session.DestructionTimer.Reset();
     }
 
-    public double GetBetOnBox(Guid sessionId, int boxIdx, int handIdx = 0) 
-        => sessions.Single(s => s.Id == sessionId).Table.BettingBoxes[boxIdx].Hands[handIdx].Bet;
+    public double GetBetOnBox(Guid sessionId, int boxIdx) 
+        => sessions.Single(s => s.Id == sessionId).Table.BettingBoxes[boxIdx].Hands[0].Bet;
     
     public BettingBox Get(Guid sessionId, int boxIdx) => sessions.Single(s => s.Id == sessionId).Table.BettingBoxes[boxIdx];
 
