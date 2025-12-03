@@ -38,6 +38,8 @@ def test_hand_value_from_string(input_str: str, expected: HandValue):
         ([make_card(Rank.Ace), make_card(Rank.Ace)], HandValue(value=12, is_soft=True, is_pair=True, is_blackjack=False, is_bust=False)),
         # Ace + King -> blackjack (2-card 21)
         ([make_card(Rank.Ace), make_card(Rank.King)], HandValue(value=21, is_soft=True, is_pair=False, is_blackjack=True, is_bust=False)),
+        # Ace + Ten -> blackjack (2-card 21)
+        ([make_card(Rank.Ace), make_card(Rank.Ten)], HandValue(value=21, is_soft=True, is_pair=False, is_blackjack=True, is_bust=False)),
         # King + Queen + Two -> bust 10+10+2 = 22
         ([make_card(Rank.King), make_card(Rank.Queen), make_card(Rank.Two)], HandValue(value=22, is_soft=False, is_pair=False, is_blackjack=False, is_bust=True)),
         # Ace + Nine -> 20 soft
