@@ -1,4 +1,3 @@
-<!-- BoxView.axaml -->
 <rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
                           x:TypeArguments="vm:Components.BoxViewModel"
                           xmlns:vm="using:KC.Frontend.Client.ViewModels"

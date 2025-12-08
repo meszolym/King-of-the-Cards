@@ -28,8 +28,6 @@ def overlay_data_from_table(table: Table, basic_strategy: BasicStrategy) -> Over
     player_hand_info = []
     for hand in table.hands:
         if hand is not None:
-            # x = hand.bottom_center_x
-            # y = hand.bottom_center_y
             score = hand_value_from_hand(hand).__str__()
             if table.dealer_hand is not None and table.dealer_hand.cards and len(table.dealer_hand.cards) > 0:
                 dealer_card_value = card_value(table.dealer_hand.cards[0])
@@ -40,8 +38,6 @@ def overlay_data_from_table(table: Table, basic_strategy: BasicStrategy) -> Over
 
     dealer_x, dealer_y, dealer_score = (0, 0, "")
     if table.dealer_hand is not None:
-        # dealer_x = table.dealer_hand.bottom_center_x
-        # dealer_y = table.dealer_hand.bottom_center_y
         dealer_score = hand_value_from_hand(table.dealer_hand).__str__()
 
     running_count = hilo_running_count(table)

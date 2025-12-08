@@ -7,7 +7,6 @@ from Models.BoundingBox import BoundingBox
 
 
 def get_roi(img: np.ndarray, box: BoundingBox) -> np.ndarray:
-    """Extracts the ROI from the image based on the bounding box."""
     x1 = int(box.x)
     y1 = int(box.y)
     x2 = int((box.x + box.w))
@@ -25,7 +24,6 @@ def _get_primary_monitor_bbox() -> tuple[int, int, int, int]:
 
 
 def take_screenshot() -> np.ndarray:
-    """ Takes a screenshot of the primary monitor and returns it as a BGR numpy array. """
     bbox = _get_primary_monitor_bbox()
     try:
         return su_take_screenshot(bbox)

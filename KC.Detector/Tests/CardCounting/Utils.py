@@ -9,7 +9,6 @@ def make_card(rank=Rank.Unknown, suit=Suit.Unknown, x=0, y=0, w=0, h=0, conf=Non
     return Card(rank=rank, suit=suit, box=BoundingBox(x, y, w, h), recognition_confidence=conf)
 
 def make_table(play_ranks: list[Rank], dealer_ranks: list[Rank] | None = None, hands_ranks: list[list[Rank]] | None = None) -> Table:
-    """Build a Table instance from lists of ranks for played cards, dealer hand and player hands."""
     played_cards = [make_card(r) for r in play_ranks]
     dealer_hand = None
     if dealer_ranks is not None:

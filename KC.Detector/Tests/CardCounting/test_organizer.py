@@ -10,7 +10,6 @@ from Tests.CardCounting.Utils import make_card
 
 @pytest.mark.parametrize("x_offset,y_offset", [(0, 0), (10, 5)])
 def test_organize_dealer_initial_sets_dealer_hand(x_offset, y_offset):
-    """When dealer_hand is None, the first detected card becomes the dealer hand and is added to played_cards."""
     detected = [make_card(Rank.Ace, Suit.Spades, 100, 10, 20, 30, conf=0.8)]
     table = Table(None, [], [])
 
@@ -38,7 +37,6 @@ def test_organize_dealer_initial_sets_dealer_hand(x_offset, y_offset):
 def test_organize_dealer_updates_same_card(
     initial_box, new_box, initial_conf, new_conf, initial_rank, new_rank, expect_box_updated, expect_rank_updated
 ):
-    """If the same card is detected again, Organizer should update box/rank when appropriate and not duplicate played_cards."""
     old_card = make_card(initial_rank, Suit.Hearts, initial_box.x, initial_box.y, initial_box.w, initial_box.h, conf=initial_conf)
     table = Table(Hand([old_card], 0, 0), [old_card], [])
 
@@ -73,7 +71,6 @@ def test_organize_dealer_updates_same_card(
     ],
 )
 def test_organize_players_append_or_new_hand(existing_box, new_box, should_append):
-    """If a detected player card overlaps an existing hand it should be appended; otherwise a new hand is created."""
     # existing hand with one card
     existing_card = make_card(Rank.Five, Suit.Clubs, existing_box.x, existing_box.y, existing_box.w, existing_box.h, conf=0.6)
     hand = Hand([existing_card], existing_box.x + existing_box.w // 2, existing_box.y + existing_box.h)
@@ -95,7 +92,6 @@ def test_organize_players_append_or_new_hand(existing_box, new_box, should_appen
 
 
 def test_organize_players_split_replaces_old_card():
-    """Handle split case: when boxes_match but rank changed and split_count > 0, old card should be removed from played_cards and replaced."""
     # initial hand with one card
     old_card = make_card(Rank.Seven, Suit.Diamonds, 20, 20, 10, 10, conf=0.9)
     hand = Hand([old_card], 25, 30)

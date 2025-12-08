@@ -19,7 +19,6 @@ def take_screenshot(bbox: Optional[Tuple[int, int, int, int]] = None) -> np.ndar
 
 
 def _take_screenshot_mss(bbox: Optional[Tuple[int, int, int, int]] = None) -> np.ndarray:
-    """Take screenshot using MSS (recommended, works on all platforms)."""
     import mss
 
     try:
@@ -40,15 +39,13 @@ def _take_screenshot_mss(bbox: Optional[Tuple[int, int, int, int]] = None) -> np
 
             # Convert BGRA to BGR numpy array
             img = np.array(screenshot)
-            img_bgr = img[:, :, :3]  # Drop alpha channel - MSS returns BGRA, so this gives us BGR
-            # NO reversal needed - MSS already provides BGR format after dropping alpha
+            img_bgr = img[:, :, :3]  # Discard alpha channel
             return img_bgr
     except Exception as e:
         raise RuntimeError(f"Screenshot failed with MSS: {e}")
 
 
 def _take_screenshot_windows(bbox: Optional[Tuple[int, int, int, int]] = None) -> np.ndarray:
-    """Fallback for Windows: use PIL ImageGrab."""
     from PIL import ImageGrab
 
     try:
@@ -62,7 +59,6 @@ def _take_screenshot_windows(bbox: Optional[Tuple[int, int, int, int]] = None) -
 
 
 def _take_screenshot_macos(bbox: Optional[Tuple[int, int, int, int]] = None) -> np.ndarray:
-    """Fallback for macOS: use native screencapture command."""
     import subprocess
     import tempfile
     import os
@@ -84,11 +80,9 @@ def _take_screenshot_macos(bbox: Optional[Tuple[int, int, int, int]] = None) -> 
 
             subprocess.run(cmd, check=True, capture_output=True)
 
-            # Load the captured image
             img_pil = Image.open(tmp_path)
             img_np = np.array(img_pil)
 
-            # Convert RGB to BGR
             img_bgr = img_np[..., ::-1]
             return img_bgr
         finally:
@@ -99,11 +93,6 @@ def _take_screenshot_macos(bbox: Optional[Tuple[int, int, int, int]] = None) -> 
 
 
 def _take_screenshot_linux(bbox: Optional[Tuple[int, int, int, int]] = None) -> np.ndarray:
-    """Fallback for Linux: try multiple backends."""
-    import subprocess
-    import tempfile
-    import os
-    from PIL import Image
 
     backends = [
         ("gnome-screenshot", _gnome_screenshot),
@@ -129,7 +118,6 @@ def _take_screenshot_linux(bbox: Optional[Tuple[int, int, int, int]] = None) -> 
 
 
 def _gnome_screenshot(bbox: Optional[Tuple[int, int, int, int]] = None) -> np.ndarray:
-    """GNOME screenshot backend."""
     import subprocess
     import tempfile
     import os
@@ -158,7 +146,6 @@ def _gnome_screenshot(bbox: Optional[Tuple[int, int, int, int]] = None) -> np.nd
 
 
 def _imagemagick_screenshot(bbox: Optional[Tuple[int, int, int, int]] = None) -> np.ndarray:
-    """ImageMagick import backend."""
     import subprocess
     import tempfile
     import os
@@ -188,7 +175,6 @@ def _imagemagick_screenshot(bbox: Optional[Tuple[int, int, int, int]] = None) ->
 
 
 def _scrot_screenshot(bbox: Optional[Tuple[int, int, int, int]] = None) -> np.ndarray:
-    """Scrot screenshot backend."""
     import subprocess
     import tempfile
     import os

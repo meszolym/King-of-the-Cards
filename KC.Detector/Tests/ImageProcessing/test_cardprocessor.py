@@ -413,7 +413,7 @@ class TestCardProcessor:
                             to_remove.add(j)
                         else:
                             to_remove.add(i)
-                            break  # c1 is being removed, skip to next c1
+                            break  # c1 is being removed, skip to next card
     
             return [card for i, card in enumerate(cards) if i not in to_remove]
     

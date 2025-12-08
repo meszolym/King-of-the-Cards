@@ -7,7 +7,7 @@ def main():
     # Create process conductor first
     process_conductor = ProcessConductor()
     
-    # Create GUI conductor (this will initialize PyQt6 for overlay)
+    # Create GUI conductor
     gui = GuiConductor()
 
     # Set up observables

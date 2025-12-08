@@ -8,7 +8,6 @@ using KC.Shared.Models.GameItems;
 
 namespace KC.Backend.Logic.Core;
 
-//This is done.
 public class RuleBook : IRuleBook
 {
     public List<Move> GetPossibleActionsOnHand(Hand hand)

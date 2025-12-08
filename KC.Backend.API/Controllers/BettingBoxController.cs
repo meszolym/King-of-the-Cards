@@ -34,7 +34,6 @@ public class BettingBoxController(IBettingBoxLogic bettingBoxLogic, IPlayerLogic
 
     [HttpPut]
     [Route("update-bet")]
-    //TODO: Maybe move to logic level?
     public async Task UpdateBet([FromHeader(Name = HeaderNames.PlayerMacAddress)] string macAddress, [FromBody] BoxBetUpdateDto dto)
     {
         var address = MacAddress.Parse(macAddress);

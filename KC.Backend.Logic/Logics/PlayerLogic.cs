@@ -8,7 +8,6 @@ using KC.Shared.Models.Misc;
 
 namespace KC.Backend.Logic.Logics;
 
-//This is done.
 public class PlayerLogic(IList<Player> players, IDictionary<MacAddress, Guid> macToPlayerGuid) : IPlayerLogic
 {
     public void AddPlayer(MacAddress mac, Player player, double balance = 500)

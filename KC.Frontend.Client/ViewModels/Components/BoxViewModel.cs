@@ -208,7 +208,6 @@ public partial class BoxViewModel : ReactiveObject
         }
         catch (Exception e)
         {
-            //TODO: Show dialog
             Debug.WriteLine(e);
             return false;
         }

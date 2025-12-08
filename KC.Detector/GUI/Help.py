@@ -16,11 +16,9 @@ class HelpDialog:
         self.setup_ui()
 
     def setup_ui(self) -> None:
-        # Title
         title_label = tk.Label(self.window, text="Help", font=("Segoe UI", 18, "bold"))
         title_label.pack(pady=(20, 10), padx=20)
 
-        # ScrolledText widget
         self.text_widget = scrolledtext.ScrolledText(
             self.window,
             wrap=tk.WORD,
@@ -30,11 +28,9 @@ class HelpDialog:
         )
         self.text_widget.pack(fill=tk.BOTH, expand=True, padx=20, pady=10)
 
-        # Configure tags for formatting
         self.text_widget.tag_config("heading", font=("Segoe UI", 12, "bold"))
         self.text_widget.tag_config("subheading", font=("Segoe UI", 10, "bold"))
 
-        # Insert content
         self.text_widget.insert(
             tk.END,
             "This program will help you learn card counting by letting you see the current "
@@ -107,7 +103,6 @@ class HelpDialog:
         # Disable editing
         self.text_widget.config(state=tk.DISABLED)
 
-        # Button frame
         self.button_frame = tk.Frame(self.window)
         self.button_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=20, pady=15)
 

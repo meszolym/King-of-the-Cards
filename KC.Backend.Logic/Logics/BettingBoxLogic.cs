@@ -9,7 +9,6 @@ using KC.Shared.Models.Misc;
 
 namespace KC.Backend.Logic.Logics;
 
-//This is done.
 public class BettingBoxLogic(IList<Session> sessions, IDictionary<MacAddress, Guid> macToPlayerGuid) : IBettingBoxLogic
 {
     /// <summary>

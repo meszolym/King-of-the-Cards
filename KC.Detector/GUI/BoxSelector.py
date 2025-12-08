@@ -30,23 +30,14 @@ class BoxSelector:
         return BoundingBox(x,y,w,h)
 
     def open_roi_selector(self):
-        # 1. Capture screenshot
-        img = take_screenshot()  # BGR numpy array
-
-        # 2. Prepare container
+        img = take_screenshot()
         base_img = img.copy()
-
-        # 3. Generic ROI picker using window title only
-
-        # 4. Pick ROIs with window titles
         rois = RoisContainer(
             dealer_roi=self._pick_bounding_box("Select Dealer ROI", img.copy()),
             player_roi=self._pick_bounding_box("Select Player ROI", img.copy()),
             message_roi=self._pick_bounding_box("Select Message ROI", img.copy()),
             base_image=base_img
         )
-
-        # 5. Emit result
         self.rois_selected_observable.on_next(rois)
 
     def open_card_box_selector(self):

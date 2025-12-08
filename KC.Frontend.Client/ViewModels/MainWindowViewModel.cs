@@ -93,7 +93,6 @@ namespace KC.Frontend.Client.ViewModels
             }
             catch (Exception e)
             {
-                //TODO: Show dialog
                 Debug.WriteLine(e.Message + "at Register in MainWindowViewModel");
             }
             
